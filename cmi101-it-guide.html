@@ -3,43 +3,61 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="description" content="CMI 101 IT Services Guide — MyPortal, @cmistudent.com email, Moodle, SONIS, Wi-Fi, computer labs, and IT support at the College of the Marshall Islands."/>
+<meta name="theme-color" content="#00008a"/>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2300008a'/%3E%3Ctext x='32' y='42' font-size='26' font-family='Arial' font-weight='700' text-anchor='middle' fill='%23f0c040'%3ECMI%3C/text%3E%3C/svg%3E"/>
 <title>CMI 101 – IT Services Guide</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{--navy:#00008a;--navy2:#1a1a99;--navy3:#3333a1;--navy4:#4d4dad;--gold:#f0c040;
-  --white:#fff;--offwhite:#f4f6fb;--light:#e8eaf6;--text:#1a1a2e;--muted:#5c5c8a;--green:#16a34a;}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif;background:var(--offwhite);color:var(--text);}
+  --white:#fff;--offwhite:#f4f6fb;--light:#e8eaf6;--text:#1a1a2e;--muted:#4f4f7a;--green:#15803d;--red:#b91c1c;}
+html{scroll-behavior:smooth;scroll-padding-top:64px;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif;background:var(--offwhite);color:var(--text);line-height:1.5;}
+a{color:var(--navy3);}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-radius:4px;}
+.skip-link{position:absolute;left:-999px;top:8px;background:var(--gold);color:var(--navy);padding:8px 14px;border-radius:8px;font-weight:700;z-index:2000;}
+.skip-link:focus{left:8px;}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0;}
 .rebbelip-bg{position:relative;overflow:hidden;}
 .rebbelip-bg::before{content:'';position:absolute;inset:0;
   background-image:repeating-linear-gradient(60deg,rgba(255,255,255,0.04) 0,rgba(255,255,255,0.04) 1px,transparent 0,transparent 50%),
   repeating-linear-gradient(-60deg,rgba(255,255,255,0.04) 0,rgba(255,255,255,0.04) 1px,transparent 0,transparent 50%);
   background-size:30px 52px;pointer-events:none;z-index:0;}
 /* HERO */
-.hero{background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 60%,var(--navy3) 100%);color:#fff;padding:60px 24px 50px;text-align:center;}
+.hero{background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 60%,var(--navy3) 100%);color:#fff;padding:56px 24px 44px;text-align:center;}
 .hero>*{position:relative;z-index:1;}
 .hero h1{font-size:2rem;font-weight:700;margin-bottom:8px;}
 .hero h1 span{color:var(--gold);}
-.hero p{font-size:1.05rem;font-weight:300;opacity:.9;max-width:560px;margin:0 auto 24px;}
+.hero p{font-size:1.05rem;font-weight:300;opacity:.92;max-width:560px;margin:0 auto 22px;}
 .hero-badge{display:inline-block;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:20px;padding:6px 18px;font-size:.85rem;font-weight:500;}
-/* QUICK LINKS */
-.quickbar{background:var(--navy);display:flex;justify-content:center;flex-wrap:wrap;border-bottom:3px solid var(--gold);}
-.quickbar a{color:rgba(255,255,255,0.85);text-decoration:none;padding:14px 18px;font-size:.84rem;font-weight:500;transition:all .2s;border-right:1px solid rgba(255,255,255,0.1);}
-.quickbar a:last-child{border-right:none;}
+.hero-links{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:22px;}
+.hero-links a{color:#fff;text-decoration:none;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);padding:9px 16px;border-radius:10px;font-size:.86rem;font-weight:500;transition:background .2s;}
+.hero-links a:hover{background:rgba(255,255,255,0.22);}
+.hero-progress{margin-top:18px;font-size:.84rem;opacity:.9;}
+.hero-progress a{color:var(--gold);font-weight:600;}
+/* STICKY SECTION NAV */
+.quickbar{position:sticky;top:0;z-index:900;background:var(--navy);border-bottom:3px solid var(--gold);box-shadow:0 2px 10px rgba(0,0,60,.25);}
+.quickbar ul{list-style:none;display:flex;justify-content:center;overflow-x:auto;scrollbar-width:none;max-width:1200px;margin:0 auto;}
+.quickbar ul::-webkit-scrollbar{display:none;}
+.quickbar a{display:block;white-space:nowrap;color:rgba(255,255,255,0.85);text-decoration:none;padding:13px 15px;font-size:.84rem;font-weight:500;transition:all .2s;border-bottom:3px solid transparent;margin-bottom:-3px;}
 .quickbar a:hover{background:rgba(255,255,255,0.12);color:#fff;}
+.quickbar a.active{color:#fff;border-bottom-color:#fff;background:rgba(255,255,255,0.1);}
 /* SECTIONS */
 .section{padding:52px 24px;}
 .section-inner{max-width:1100px;margin:0 auto;}
 .section-title{font-size:1.4rem;font-weight:700;color:var(--navy);margin-bottom:8px;display:flex;align-items:center;gap:10px;}
 .section-title::after{content:'';flex:1;height:2px;background:linear-gradient(90deg,var(--navy4),transparent);}
 .section-sub{color:var(--muted);font-size:.95rem;margin-bottom:32px;}
+.sub-head{font-size:.95rem;font-weight:600;color:var(--navy);margin-bottom:16px;}
 /* CARDS */
 .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:22px;}
-.card{background:#fff;border-radius:14px;padding:28px 24px;box-shadow:0 2px 12px rgba(0,0,138,.08);border:1px solid rgba(0,0,138,.07);transition:all .25s;position:relative;overflow:hidden;}
+.card{background:#fff;border-radius:14px;padding:28px 24px;box-shadow:0 2px 12px rgba(0,0,138,.08);border:1px solid rgba(0,0,138,.07);transition:transform .25s,box-shadow .25s;position:relative;overflow:hidden;display:flex;flex-direction:column;}
 .card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--navy),var(--navy4));}
 .card:hover{transform:translateY(-4px);box-shadow:0 8px 28px rgba(0,0,138,.15);}
 .card-icon{width:52px;height:52px;border-radius:12px;background:var(--light);display:flex;align-items:center;justify-content:center;font-size:1.6rem;margin-bottom:16px;}
 .card h3{font-size:1.05rem;font-weight:600;color:var(--navy);margin-bottom:8px;}
 .card p{font-size:.88rem;color:var(--muted);line-height:1.6;margin-bottom:16px;}
+.card-actions{margin-top:auto;}
 .card-link{display:inline-flex;align-items:center;gap:6px;background:var(--navy);color:#fff;text-decoration:none;padding:8px 16px;border-radius:8px;font-size:.82rem;font-weight:500;transition:background .2s;margin-right:6px;margin-bottom:6px;}
 .card-link:hover{background:var(--navy3);}
 .card-link.secondary{background:transparent;color:var(--navy);border:1px solid var(--navy);}
@@ -48,67 +66,94 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Ar
 .tag{background:var(--light);color:var(--navy3);font-size:.75rem;font-weight:500;padding:3px 10px;border-radius:20px;}
 /* SONIS GUIDE */
 .sonis-section{background:var(--offwhite);padding:52px 24px;}
-.sonis-steps{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;max-width:1100px;margin-bottom:28px;}
+.sonis-steps{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px;max-width:1100px;margin-bottom:36px;}
 .sonis-step{background:#fff;border-radius:12px;padding:20px;border-left:4px solid var(--navy);box-shadow:0 2px 8px rgba(0,0,138,.07);}
 .sonis-step .snum{width:32px;height:32px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;margin-bottom:10px;}
 .sonis-step h4{font-size:.92rem;font-weight:700;color:var(--navy);margin-bottom:6px;}
 .sonis-step p{font-size:.84rem;color:var(--muted);line-height:1.6;}
-.sonis-features{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;max-width:1100px;}
+.sonis-features{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;max-width:1100px;}
 .sonis-feat{background:#fff;border-radius:10px;padding:16px;display:flex;gap:12px;align-items:flex-start;box-shadow:0 1px 6px rgba(0,0,138,.06);}
 .sonis-feat .fi{font-size:1.4rem;}
 .sonis-feat h5{font-size:.88rem;font-weight:700;color:var(--navy);margin-bottom:3px;}
 .sonis-feat p{font-size:.8rem;color:var(--muted);line-height:1.5;}
+.info-note{margin-top:24px;background:var(--light);border-radius:10px;padding:14px 18px;max-width:700px;font-size:.87rem;color:var(--muted);}
+.info-note strong{color:var(--navy);}
+/* TABS (shared) */
+.tablist{display:flex;flex-wrap:wrap;margin-bottom:28px;border-radius:10px;overflow:hidden;width:fit-content;max-width:100%;}
+.tablist.light{border:1px solid rgba(0,0,138,.15);}
+.tablist.dark{border:1px solid rgba(255,255,255,0.15);}
+.tab{padding:10px 22px;border:none;cursor:pointer;font-family:inherit;font-size:.88rem;font-weight:500;transition:all .2s;}
+.tablist.light .tab{background:var(--offwhite);color:var(--muted);border-right:1px solid rgba(0,0,138,.1);}
+.tablist.light .tab[aria-selected="true"]{background:var(--navy);color:#fff;font-weight:600;}
+.tablist.dark .tab{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.8);border-right:1px solid rgba(255,255,255,0.1);}
+.tablist.dark .tab[aria-selected="true"]{background:#fff;color:var(--navy);font-weight:600;}
+.tab:last-child{border-right:none!important;}
+.tabpanel[hidden]{display:none;}
 /* GMAIL GUIDE */
 .gmail-section{background:#fff;padding:52px 24px;}
-.gmail-tabs{display:flex;gap:0;margin-bottom:28px;border-radius:10px;overflow:hidden;border:1px solid rgba(0,0,138,.15);width:fit-content;}
-.gmail-tab{padding:10px 22px;background:var(--offwhite);color:var(--muted);border:none;cursor:pointer;font-family:inherit;font-size:.88rem;font-weight:500;transition:all .2s;border-right:1px solid rgba(0,0,138,.1);}
-.gmail-tab:last-child{border-right:none;}
-.gmail-tab.active{background:var(--navy);color:#fff;font-weight:600;}
-.gmail-content{display:none;max-width:900px;}
-.gmail-content.active{display:block;}
-.gmail-steps{display:flex;flex-direction:column;gap:12px;}
+.gmail-steps{display:flex;flex-direction:column;gap:12px;max-width:900px;}
 .gmail-step{display:flex;gap:14px;padding:16px;background:var(--offwhite);border-radius:10px;align-items:flex-start;}
 .gmail-step .gs-num{width:30px;height:30px;min-width:30px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;}
 .gmail-step h4{font-size:.9rem;font-weight:600;color:var(--navy);margin-bottom:3px;}
 .gmail-step p{font-size:.84rem;color:var(--muted);line-height:1.6;}
-.etiquette-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;}
+.etiquette-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;max-width:1100px;}
 .etiq{background:var(--offwhite);border-radius:10px;padding:16px;border-left:3px solid var(--navy4);}
+.etiq.dont{border-left-color:var(--red);}
 .etiq h5{font-size:.88rem;font-weight:700;color:var(--navy);margin-bottom:4px;}
 .etiq p{font-size:.82rem;color:var(--muted);line-height:1.5;}
-.email-example{background:#f0f4ff;border:1px solid rgba(0,0,138,.15);border-radius:10px;padding:18px;margin-top:20px;font-size:.85rem;}
+.email-example{background:#f0f4ff;border:1px solid rgba(0,0,138,.15);border-radius:10px;padding:18px;margin-top:20px;font-size:.85rem;max-width:900px;position:relative;}
 .email-example .ee-label{font-size:.75rem;font-weight:700;color:var(--navy4);letter-spacing:1px;margin-bottom:4px;}
 .email-example .ee-field{padding:6px 0;border-bottom:1px solid rgba(0,0,138,.1);margin-bottom:6px;color:var(--text);}
 .email-example .ee-body{padding-top:8px;color:var(--muted);line-height:1.7;}
+.copy-btn{position:absolute;top:14px;right:14px;background:#fff;border:1px solid var(--navy4);color:var(--navy);border-radius:8px;padding:6px 12px;font-family:inherit;font-size:.78rem;font-weight:600;cursor:pointer;}
+.copy-btn:hover{background:var(--light);}
 /* LABS */
 .labs-section{background:linear-gradient(135deg,#0a0a70 0%,var(--navy) 100%);color:#fff;padding:52px 24px;}
-.labs-section .section-title{color:#fff;}
-.labs-section .section-title::after{background:linear-gradient(90deg,rgba(255,255,255,0.3),transparent);}
-.labs-section .section-sub{color:rgba(255,255,255,0.7);}
-.tabs{display:flex;margin-bottom:28px;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,0.15);width:fit-content;}
-.tab-btn{padding:10px 24px;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.75);border:none;cursor:pointer;font-family:inherit;font-size:.88rem;font-weight:500;transition:all .2s;border-right:1px solid rgba(255,255,255,0.1);}
-.tab-btn:last-child{border-right:none;}
-.tab-btn.active{background:#fff;color:var(--navy);font-weight:600;}
-.tab-content{display:none;}
-.tab-content.active{display:block;}
+.labs-section .section-title,.quiz-section .section-title,.contact-section .section-title,.dash-section .section-title{color:#fff;}
+.labs-section .section-title::after,.quiz-section .section-title::after,.contact-section .section-title::after,.dash-section .section-title::after{background:linear-gradient(90deg,rgba(255,255,255,0.3),transparent);}
+.labs-section .section-sub,.quiz-section .section-sub,.dash-section .section-sub{color:rgba(255,255,255,0.78);}
 .lab-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;}
-.lab-card{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);border-radius:10px;padding:16px 18px;transition:all .2s;}
+.lab-card{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);border-radius:10px;padding:16px 18px;transition:background .2s;}
 .lab-card:hover{background:rgba(255,255,255,0.18);}
 .lab-card .lab-icon{font-size:1.4rem;margin-bottom:8px;}
 .lab-card .lab-name{font-size:.9rem;font-weight:600;margin-bottom:4px;}
-.lab-card .lab-room{font-size:.8rem;color:rgba(255,255,255,0.65);}
-.lab-note{background:rgba(240,192,64,0.15);border:1px solid rgba(240,192,64,0.3);border-radius:8px;padding:12px 16px;margin-top:20px;font-size:.85rem;color:rgba(255,255,255,0.85);}
+.lab-card .lab-room{font-size:.8rem;color:rgba(255,255,255,0.72);}
+.lab-note{background:rgba(240,192,64,0.15);border:1px solid rgba(240,192,64,0.3);border-radius:8px;padding:12px 16px;margin-top:20px;font-size:.85rem;color:rgba(255,255,255,0.9);}
 .lab-note strong{color:var(--gold);}
-/* AUP */
+/* TIPS */
+.tips-section{background:#fff;padding:52px 24px;}
+.tips-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px;}
+.tip-card{background:var(--offwhite);border-radius:12px;padding:20px;border-left:4px solid var(--navy);}
+.tip-card h4{font-size:.9rem;font-weight:700;color:var(--navy);margin-bottom:6px;}
+.tip-card p{font-size:.84rem;color:var(--muted);line-height:1.6;}
+/* FAQ */
+.faq-section{background:var(--offwhite);padding:52px 24px;}
+.faq-search{width:100%;max-width:750px;padding:11px 14px;border:2px solid rgba(0,0,138,.2);border-radius:10px;font-family:inherit;font-size:.92rem;margin-bottom:16px;outline:none;background:#fff;}
+.faq-search:focus{border-color:var(--navy);}
+.faq-list{max-width:750px;display:flex;flex-direction:column;gap:10px;}
+.faq-item{background:#fff;border-radius:12px;border:1px solid rgba(0,0,138,.08);overflow:hidden;}
+.faq-q{width:100%;background:none;border:none;padding:16px 20px;text-align:left;font-family:inherit;font-size:.95rem;font-weight:600;color:var(--navy);cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;}
+.faq-q:hover{background:var(--light);}
+.faq-icon{font-size:1.1rem;transition:transform .3s;flex-shrink:0;}
+.faq-q[aria-expanded="true"] .faq-icon{transform:rotate(45deg);}
+.faq-a{padding:0 20px 16px;font-size:.88rem;color:var(--muted);line-height:1.7;}
+.faq-a[hidden]{display:none;}
+.faq-a a{font-weight:500;}
+.faq-empty{display:none;font-size:.9rem;color:var(--muted);padding:12px 4px;}
+/* SETUP BAND (AUP + REG) */
+.setup-intro{background:linear-gradient(135deg,var(--navy) 0%,var(--navy3) 100%);color:#fff;padding:40px 24px 30px;text-align:center;}
+.setup-intro>*{position:relative;z-index:1;}
+.setup-intro h2{font-size:1.5rem;margin-bottom:6px;}
+.setup-intro p{opacity:.88;font-size:.95rem;max-width:620px;margin:0 auto;}
 .aup-section{background:linear-gradient(135deg,#fffbeb,#fef9c3);padding:40px 24px;border-top:3px solid var(--gold);border-bottom:3px solid var(--gold);}
 .aup-inner{max-width:700px;margin:0 auto;}
 .aup-inner h3{font-size:1.2rem;font-weight:700;color:var(--navy);margin-bottom:6px;}
 .aup-inner p{font-size:.87rem;color:var(--muted);margin-bottom:16px;line-height:1.7;}
-.aup-items{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;}
-.aup-item{display:flex;align-items:flex-start;gap:10px;font-size:.86rem;color:var(--text);}
+.aup-items{list-style:none;display:flex;flex-direction:column;gap:8px;margin-bottom:20px;}
+.aup-items li{display:flex;align-items:flex-start;gap:10px;font-size:.86rem;color:var(--text);}
 .aup-check-row{display:flex;align-items:center;gap:10px;font-size:.9rem;font-weight:600;color:var(--navy);cursor:pointer;}
-.aup-check-row input{width:18px;height:18px;cursor:pointer;accent-color:var(--navy);}
+.aup-check-row input{width:20px;height:20px;cursor:pointer;accent-color:var(--navy);flex-shrink:0;}
 .aup-confirmed{display:none;background:#f0fdf4;border:2px solid #86efac;border-radius:10px;padding:12px 16px;font-size:.88rem;color:var(--green);font-weight:600;margin-top:12px;}
-/* REG */
 .reg-section{background:linear-gradient(135deg,#f0f4ff,#e8eaf6);padding:40px 24px;border-bottom:3px solid var(--navy);}
 .reg-inner{max-width:700px;margin:0 auto;text-align:center;}
 .reg-inner h2{font-size:1.3rem;font-weight:700;color:var(--navy);margin-bottom:6px;}
@@ -116,13 +161,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Ar
 .reg-form{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}
 .reg-form input{flex:1;min-width:180px;padding:10px 14px;border:2px solid rgba(0,0,138,.2);border-radius:10px;font-family:inherit;font-size:.9rem;outline:none;transition:border .2s;}
 .reg-form input:focus{border-color:var(--navy);}
+.reg-form input[aria-invalid="true"]{border-color:var(--red);}
 .reg-btn{background:var(--navy);color:#fff;border:none;padding:10px 22px;border-radius:10px;font-family:inherit;font-size:.9rem;font-weight:600;cursor:pointer;}
 .reg-btn:hover{background:var(--navy3);}
-.reg-status{background:#fff;border:2px solid var(--navy);border-radius:12px;padding:14px 20px;display:none;align-items:center;gap:14px;max-width:500px;margin:0 auto;}
+.reg-error{color:var(--red);font-size:.84rem;font-weight:600;margin-top:10px;min-height:1.2em;}
+.reg-privacy{font-size:.78rem!important;margin:12px 0 0!important;}
+.reg-status{background:#fff;border:2px solid var(--navy);border-radius:12px;padding:14px 20px;display:none;align-items:center;gap:14px;max-width:500px;margin:0 auto;text-align:left;}
 .reg-status.show{display:flex;}
-.reg-avatar{width:44px;height:44px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
+.reg-avatar{width:44px;height:44px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:700;flex-shrink:0;}
 .reg-info h4{font-size:.95rem;font-weight:700;color:var(--navy);}
-.reg-info p{font-size:.8rem;color:var(--muted);}
+.reg-info p{font-size:.8rem;color:var(--muted);margin:0;}
 .reg-change{background:none;border:1px solid var(--muted);color:var(--muted);padding:4px 10px;border-radius:6px;font-family:inherit;font-size:.75rem;cursor:pointer;margin-left:auto;}
 /* CHECKLIST */
 .checklist-section{background:#fff;padding:52px 24px;}
@@ -130,95 +178,90 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Ar
 .progress-bar{height:100%;border-radius:20px;background:linear-gradient(90deg,var(--navy),var(--navy4));transition:width .4s cubic-bezier(.4,0,.2,1);width:0%;}
 .progress-label{font-size:.85rem;color:var(--muted);margin-bottom:28px;font-weight:500;}
 .progress-label span{color:var(--navy);font-weight:700;}
-.steps{display:flex;flex-direction:column;gap:8px;max-width:700px;}
+.steps{list-style:none;display:flex;flex-direction:column;gap:8px;max-width:700px;}
 .step{display:flex;gap:16px;padding:18px 16px;border-radius:12px;border:2px solid transparent;cursor:pointer;transition:all .25s;background:var(--offwhite);}
+.step:hover{border-color:var(--light);}
 .step.done{background:#f0fdf4;border-color:#86efac;}
-.step-check{width:28px;height:28px;min-width:28px;border-radius:50%;border:2px solid var(--navy4);display:flex;align-items:center;justify-content:center;font-size:.9rem;transition:all .25s;background:#fff;}
+.step-check{width:28px;height:28px;min-width:28px;border-radius:50%;border:2px solid var(--navy4);display:flex;align-items:center;justify-content:center;font-size:.9rem;transition:all .25s;background:#fff;color:transparent;font-weight:700;}
 .step.done .step-check{background:var(--green);border-color:var(--green);color:#fff;}
 .step-body h4{font-size:.95rem;font-weight:600;color:var(--navy);margin-bottom:3px;}
-.step.done .step-body h4{color:var(--green);text-decoration:line-through;opacity:.7;}
+.step.done .step-body h4{color:var(--green);text-decoration:line-through;opacity:.8;}
 .step-body p{font-size:.86rem;color:var(--muted);line-height:1.6;}
-.step-body a{color:var(--navy3);font-weight:500;}
+.step-body a{font-weight:500;}
 .checklist-complete{display:none;margin-top:24px;background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:2px solid #86efac;border-radius:16px;padding:24px;text-align:center;max-width:700px;}
 .checklist-complete h3{font-size:1.3rem;font-weight:700;color:var(--green);margin-bottom:6px;}
 .checklist-complete p{font-size:.9rem;color:#166534;}
 /* QUIZ */
 .quiz-section{background:linear-gradient(135deg,var(--navy) 0%,var(--navy3) 100%);color:#fff;padding:52px 24px;}
-.quiz-section .section-title{color:#fff;}
-.quiz-section .section-title::after{background:linear-gradient(90deg,rgba(255,255,255,0.3),transparent);}
-.quiz-section .section-sub{color:rgba(255,255,255,0.75);}
 .quiz-box{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:16px;padding:28px;max-width:700px;}
-.q-counter{font-size:.8rem;font-weight:600;color:rgba(255,255,255,0.5);letter-spacing:1px;margin-bottom:8px;}
+.q-counter{font-size:.8rem;font-weight:600;color:rgba(255,255,255,0.65);letter-spacing:1px;margin-bottom:8px;}
 .q-text{font-size:1.1rem;font-weight:600;margin-bottom:20px;line-height:1.5;}
 .q-options{display:flex;flex-direction:column;gap:10px;}
 .q-opt{background:rgba(255,255,255,0.1);border:1.5px solid rgba(255,255,255,0.2);border-radius:10px;padding:12px 18px;cursor:pointer;font-family:inherit;font-size:.9rem;color:#fff;text-align:left;transition:all .2s;font-weight:500;}
 .q-opt:hover:not(:disabled){background:rgba(255,255,255,0.2);}
-.q-opt.correct{background:rgba(22,163,74,0.3);border-color:#4ade80;}
-.q-opt.wrong{background:rgba(220,38,38,0.3);border-color:#f87171;}
+.q-opt.correct{background:rgba(22,163,74,0.35);border-color:#4ade80;}
+.q-opt.wrong{background:rgba(220,38,38,0.35);border-color:#f87171;}
 .q-opt:disabled{cursor:default;}
 .q-feedback{margin-top:14px;font-size:.88rem;padding:10px 14px;border-radius:8px;display:none;}
 .q-feedback.show{display:block;}
-.q-feedback.ok{background:rgba(22,163,74,0.2);color:#86efac;}
-.q-feedback.bad{background:rgba(220,38,38,0.2);color:#fca5a5;}
+.q-feedback.ok{background:rgba(22,163,74,0.25);color:#bbf7d0;}
+.q-feedback.bad{background:rgba(220,38,38,0.25);color:#fecaca;}
 .q-next{margin-top:16px;background:#fff;color:var(--navy);border:none;padding:10px 24px;border-radius:8px;font-family:inherit;font-size:.9rem;font-weight:700;cursor:pointer;display:none;}
 .quiz-prog-wrap{background:rgba(255,255,255,0.15);border-radius:20px;height:6px;margin-bottom:24px;overflow:hidden;}
 .quiz-prog-bar{height:100%;border-radius:20px;background:var(--gold);transition:width .4s;}
 .quiz-result{display:none;text-align:center;padding:20px 0;}
 .result-badge{font-size:4rem;margin-bottom:12px;}
 .result-title{font-size:1.6rem;font-weight:800;margin-bottom:8px;}
-.result-sub{font-size:.95rem;color:rgba(255,255,255,0.8);margin-bottom:20px;}
+.result-sub{font-size:.95rem;color:rgba(255,255,255,0.85);margin-bottom:20px;}
 .result-score{display:inline-block;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);border-radius:12px;padding:12px 28px;font-size:1.4rem;font-weight:700;margin-bottom:24px;}
 .retry-btn{background:#fff;color:var(--navy);border:none;padding:10px 28px;border-radius:8px;font-family:inherit;font-size:.95rem;font-weight:700;cursor:pointer;}
-/* FAQ */
-.faq-section{background:var(--offwhite);padding:52px 24px;}
-.faq-list{max-width:750px;display:flex;flex-direction:column;gap:10px;}
-.faq-item{background:#fff;border-radius:12px;border:1px solid rgba(0,0,138,.08);overflow:hidden;}
-.faq-q{width:100%;background:none;border:none;padding:16px 20px;text-align:left;font-family:inherit;font-size:.95rem;font-weight:600;color:var(--navy);cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
-.faq-q:hover{background:var(--light);}
-.faq-icon{font-size:1.1rem;transition:transform .3s;}
-.faq-item.open .faq-icon{transform:rotate(45deg);}
-.faq-a{display:none;padding:0 20px 16px;font-size:.88rem;color:var(--muted);line-height:1.7;}
-.faq-a a{color:var(--navy3);font-weight:500;}
-.faq-item.open .faq-a{display:block;}
-/* TIPS */
-.tips-section{background:#fff;padding:52px 24px;}
-.tips-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px;}
-.tip-card{background:var(--offwhite);border-radius:12px;padding:20px;border-left:4px solid var(--navy);}
-.tip-card h4{font-size:.9rem;font-weight:700;color:var(--navy);margin-bottom:6px;}
-.tip-card p{font-size:.84rem;color:var(--muted);line-height:1.6;}
-/* CONTACT */
-.contact-section{background:var(--navy);color:#fff;padding:40px 24px;}
-.contact-section .section-title{color:#fff;}
-.contact-section .section-title::after{background:linear-gradient(90deg,rgba(255,255,255,0.3),transparent);}
-.contact-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;}
-.contact-card{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);border-radius:12px;padding:20px;}
-.contact-card h4{font-size:.9rem;font-weight:600;color:var(--gold);margin-bottom:8px;}
-.contact-card p{font-size:.84rem;color:rgba(255,255,255,0.8);line-height:1.7;}
-.contact-card a{color:#a5b4fc;}
-/* DASH */
-.dash-section{background:linear-gradient(135deg,#0a0a70,var(--navy));color:#fff;padding:40px 24px;}
-.dash-section .section-title{color:#fff;}
-.dash-section .section-title::after{background:linear-gradient(90deg,rgba(255,255,255,0.3),transparent);}
-.dash-inner{max-width:700px;}
+/* DASHBOARD */
+.dash-section{background:linear-gradient(135deg,#0a0a70,var(--navy));color:#fff;padding:44px 24px;}
+.dash-inner{max-width:760px;}
 .dash-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px;}
 .dash-card{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);border-radius:12px;padding:18px;text-align:center;}
 .dash-card .dc-val{font-size:2rem;font-weight:800;color:var(--gold);}
-.dash-card .dc-lbl{font-size:.78rem;color:rgba(255,255,255,0.65);margin-top:4px;}
-.dash-log{background:rgba(255,255,255,0.07);border-radius:10px;padding:14px;font-size:.83rem;color:rgba(255,255,255,0.75);max-height:160px;overflow-y:auto;}
-.dash-log-entry{padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.08);}
-.dash-log-entry:last-child{border:none;}
-/* AI CHAT */
+.dash-card .dc-lbl{font-size:.78rem;color:rgba(255,255,255,0.75);margin-top:4px;}
+.dash-log{list-style:none;background:rgba(255,255,255,0.07);border-radius:10px;padding:14px;font-size:.83rem;color:rgba(255,255,255,0.8);max-height:160px;overflow-y:auto;}
+.dash-log li{padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.08);}
+.dash-log li:last-child{border:none;}
+.dash-log .empty{color:rgba(255,255,255,0.5);}
+.dash-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px;}
+.dash-btn{background:#fff;color:var(--navy);border:none;padding:10px 18px;border-radius:8px;font-family:inherit;font-size:.86rem;font-weight:700;cursor:pointer;}
+.dash-btn.ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.4);font-weight:500;}
+.dash-btn:disabled{opacity:.45;cursor:not-allowed;}
+.dash-hint{font-size:.8rem;color:rgba(255,255,255,0.7);margin-top:10px;}
+/* CONTACT */
+.contact-section{background:var(--navy);color:#fff;padding:44px 24px;}
+.contact-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;}
+.contact-card{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);border-radius:12px;padding:20px;}
+.contact-card h4{font-size:.9rem;font-weight:600;color:var(--gold);margin-bottom:8px;}
+.contact-card p{font-size:.84rem;color:rgba(255,255,255,0.85);line-height:1.7;}
+.contact-card a{color:#c7d2fe;}
+.open-now{display:inline-block;margin-top:6px;font-size:.75rem;font-weight:700;padding:2px 10px;border-radius:20px;}
+.open-now.yes{background:rgba(74,222,128,.2);color:#86efac;}
+.open-now.no{background:rgba(248,113,113,.2);color:#fecaca;}
+/* FOOTER */
+footer{background:#00006e;color:rgba(255,255,255,0.8);text-align:center;padding:32px 24px 90px;}
+footer .footer-logo{font-size:1.1rem;font-weight:700;color:#fff;margin-bottom:6px;}
+footer a{color:var(--gold);text-decoration:none;}
+footer .divider{margin:0 8px;opacity:.4;}
+/* FLOATING BUTTONS */
+#toTop{position:fixed;bottom:24px;left:24px;width:44px;height:44px;border-radius:50%;background:#fff;color:var(--navy);border:2px solid var(--navy);cursor:pointer;font-size:1.1rem;font-weight:700;box-shadow:0 4px 14px rgba(0,0,138,.25);z-index:990;opacity:0;pointer-events:none;transition:opacity .25s;}
+#toTop.show{opacity:1;pointer-events:auto;}
+/* CHAT */
 #chatToggle{position:fixed;bottom:24px;right:24px;width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--navy3));color:#fff;border:none;cursor:pointer;font-size:1.5rem;box-shadow:0 4px 20px rgba(0,0,138,.4);z-index:999;transition:transform .2s;}
-#chatToggle:hover{transform:scale(1.1);}
-#chatWindow{position:fixed;bottom:94px;right:24px;width:360px;max-height:520px;background:#fff;border-radius:18px;box-shadow:0 8px 40px rgba(0,0,138,.25);display:none;flex-direction:column;z-index:998;overflow:hidden;border:1px solid rgba(0,0,138,.1);}
+#chatToggle:hover{transform:scale(1.08);}
+#chatWindow{position:fixed;bottom:94px;right:24px;width:370px;height:min(540px,calc(100vh - 120px));background:#fff;border-radius:18px;box-shadow:0 8px 40px rgba(0,0,138,.25);display:none;flex-direction:column;z-index:998;overflow:hidden;border:1px solid rgba(0,0,138,.1);}
 #chatWindow.open{display:flex;}
-.chat-header{background:linear-gradient(135deg,var(--navy),var(--navy3));color:#fff;padding:16px 18px;display:flex;align-items:center;gap:10px;}
+.chat-header{background:linear-gradient(135deg,var(--navy),var(--navy3));color:#fff;padding:14px 16px;display:flex;align-items:center;gap:10px;}
 .chat-avatar{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:1.1rem;}
 .chat-header-text h4{font-size:.95rem;font-weight:600;margin-bottom:1px;}
-.chat-header-text p{font-size:.75rem;opacity:.75;}
-.chat-online{width:8px;height:8px;background:#4ade80;border-radius:50%;margin-left:auto;}
-#chatMessages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;min-height:200px;}
-.msg{max-width:82%;padding:10px 14px;border-radius:14px;font-size:.87rem;line-height:1.5;}
+.chat-header-text p{font-size:.75rem;opacity:.8;}
+.chat-close{margin-left:auto;background:rgba(255,255,255,.15);border:none;color:#fff;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:.95rem;}
+#chatMessages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;}
+.msg{max-width:85%;padding:10px 14px;border-radius:14px;font-size:.87rem;line-height:1.5;white-space:pre-line;overflow-wrap:anywhere;}
+.msg a{color:var(--navy3);font-weight:600;}
 .msg.bot{background:var(--light);color:var(--text);border-bottom-left-radius:4px;align-self:flex-start;}
 .msg.user{background:var(--navy);color:#fff;border-bottom-right-radius:4px;align-self:flex-end;}
 .msg.typing{display:flex;gap:4px;align-items:center;padding:12px 16px;}
@@ -231,116 +274,159 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Ar
 #chatInput:focus{border-color:var(--navy4);}
 #chatSend{background:var(--navy);color:#fff;border:none;border-radius:10px;padding:9px 14px;cursor:pointer;font-size:1rem;transition:background .2s;}
 #chatSend:hover{background:var(--navy3);}
+#chatSend:disabled{opacity:.5;}
 .chat-sugs{display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 12px;}
 .sug{background:var(--light);border:1px solid rgba(0,0,138,.1);border-radius:20px;padding:5px 12px;font-size:.78rem;color:var(--navy);cursor:pointer;transition:all .2s;font-family:inherit;}
 .sug:hover{background:var(--navy);color:#fff;}
-/* FOOTER */
-footer{background:var(--navy);color:rgba(255,255,255,0.75);text-align:center;padding:32px 24px;position:relative;overflow:hidden;}
-footer .footer-logo{font-size:1.1rem;font-weight:700;color:#fff;margin-bottom:6px;}
-footer a{color:var(--gold);text-decoration:none;}
-footer .divider{margin:0 8px;opacity:.4;}
+.chat-foot{font-size:.7rem;color:var(--muted);text-align:center;padding:0 12px 8px;}
+/* PRINTABLE RECORD */
+#printRecord{display:none;}
+@media print{
+  body>*:not(#printRecord){display:none!important;}
+  #printRecord{display:block!important;padding:40px;font-size:12pt;color:#000;}
+  #printRecord h1{font-size:20pt;color:#00008a;margin-bottom:4px;}
+  #printRecord table{width:100%;border-collapse:collapse;margin-top:18px;}
+  #printRecord td{border:1px solid #999;padding:8px 10px;}
+  #printRecord .sig{margin-top:48px;display:flex;gap:40px;}
+  #printRecord .sig div{flex:1;border-top:1px solid #000;padding-top:4px;font-size:10pt;}
+}
 @media(max-width:600px){
+  .hero{padding:44px 16px 36px;}
   .hero h1{font-size:1.5rem;}
-  .quickbar a{padding:10px 10px;font-size:.75rem;}
+  .section,.sonis-section,.gmail-section,.labs-section,.tips-section,.faq-section,.checklist-section,.quiz-section,.dash-section,.contact-section{padding-left:16px;padding-right:16px;}
+  .quickbar ul{justify-content:flex-start;}
+  .quickbar a{padding:11px 12px;font-size:.8rem;}
   .cards,.tips-grid,.contact-grid,.sonis-features,.etiquette-grid{grid-template-columns:1fr;}
   .lab-grid{grid-template-columns:repeat(2,1fr);}
-  .dash-cards{grid-template-columns:repeat(3,1fr);}
-  #chatWindow{width:calc(100vw - 32px);right:16px;}
+  .dash-card .dc-val{font-size:1.5rem;}
+  #chatWindow{width:calc(100vw - 32px);right:16px;bottom:88px;}
   .reg-form{flex-direction:column;}
-  .gmail-tabs{flex-wrap:wrap;}
+  .tab{padding:10px 14px;}
+  .copy-btn{position:static;margin-bottom:10px;}
+  .quiz-box{padding:20px;}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto;}
+  *,*::before,*::after{transition:none!important;animation:none!important;}
 }
 </style>
 </head>
 <body>
+<a class="skip-link" href="#main">Skip to main content</a>
 
 <!-- HERO -->
 <header class="hero rebbelip-bg">
   <h1>Welcome to <span>CMI</span> — IT Services Guide</h1>
   <p>Everything you need to get connected, stay productive, and succeed at the College of the Marshall Islands.</p>
   <span class="hero-badge">📘 CMI 101 · Information Technology Department</span>
+  <div class="hero-links">
+    <a href="https://myportal.cmi.edu" target="_blank">🔑 MyPortal SSO</a>
+    <a href="https://elearning.cmi.edu" target="_blank">📚 Moodle</a>
+    <a href="https://sonis.cmi.edu" target="_blank">🎓 SONIS</a>
+    <a href="https://helpdesk.cmi.edu" target="_blank">🎫 Help Desk</a>
+    <a href="mailto:helpdesk@cmi.edu">✉️ Email IT</a>
+  </div>
+  <p class="hero-progress" id="heroProgress" hidden></p>
 </header>
 
-<!-- QUICK LINKS -->
-<nav class="quickbar">
-  <a href="https://helpdesk.cmi.edu" target="_blank">🎫 Help Desk</a>
-  <a href="https://myportal.cmi.edu" target="_blank">🔑 MyPortal SSO</a>
-  <a href="https://elearning.cmi.edu" target="_blank">📚 Moodle</a>
-  <a href="https://sonis.cmi.edu" target="_blank">🎓 SONIS</a>
-  <a href="mailto:helpdesk@cmi.edu">✉️ Email IT</a>
+<!-- STICKY SECTION NAV -->
+<nav class="quickbar" aria-label="Page sections">
+  <ul>
+    <li><a href="#services">⚙️ Services</a></li>
+    <li><a href="#sonis-guide">🎓 SONIS</a></li>
+    <li><a href="#gmail-guide">📧 Email</a></li>
+    <li><a href="#labs">💻 Labs</a></li>
+    <li><a href="#tips">💡 Tips</a></li>
+    <li><a href="#faq">❓ FAQ</a></li>
+    <li><a href="#my-setup">🚀 My Setup</a></li>
+    <li><a href="#quiz">🧠 Quiz</a></li>
+    <li><a href="#contact">📞 Contact</a></li>
+  </ul>
 </nav>
 
+<main id="main">
+
 <!-- SERVICES -->
-<section class="section" style="background:#fff;">
+<section class="section" id="services" style="background:#fff;">
   <div class="section-inner">
-    <div class="section-title">⚙️ Core IT Services</div>
+    <h2 class="section-title">⚙️ Core IT Services</h2>
     <p class="section-sub">Your essential tools as a CMI student — click any card to get started.</p>
     <div class="cards">
-      <div class="card">
-        <div class="card-icon">🎫</div>
-        <h3>IT Help Desk</h3>
-        <p>Having a tech issue? Submit a support ticket and our IT team will assist you. Available to all CMI students and staff.</p>
-        <div class="card-tags"><span class="tag">Support</span><span class="tag">Tickets</span></div>
-        <a href="https://helpdesk.cmi.edu" target="_blank" class="card-link">Open Help Desk ↗</a>
-      </div>
-      <div class="card">
-        <div class="card-icon">🔑</div>
+      <article class="card">
+        <div class="card-icon" aria-hidden="true">🔑</div>
         <h3>Single Sign-On (SSO) Portal</h3>
-        <p>One login for all CMI apps — Moodle, SONIS, Google Workspace, and M365. Use your CMI student credentials.</p>
+        <p>One login for all CMI apps — Moodle, SONIS, Google Workspace, and M365. Use your CMI student credentials. <strong>Start here first.</strong></p>
         <div class="card-tags"><span class="tag">Google</span><span class="tag">M365</span><span class="tag">SONIS</span><span class="tag">Moodle</span></div>
-        <a href="https://myportal.cmi.edu" target="_blank" class="card-link">Go to MyPortal ↗</a>
-      </div>
-      <div class="card">
-        <div class="card-icon">📧</div>
+        <div class="card-actions"><a href="https://myportal.cmi.edu" target="_blank" class="card-link">Go to MyPortal ↗</a></div>
+      </article>
+      <article class="card">
+        <div class="card-icon" aria-hidden="true">📧</div>
         <h3>Google Workspace (Gmail)</h3>
         <p>Your official CMI student email is <strong>@cmistudent.com</strong>. Also includes Drive, Docs, Sheets, and Meet — all via MyPortal.</p>
         <div class="card-tags"><span class="tag">@cmistudent.com</span><span class="tag">Drive</span><span class="tag">Meet</span></div>
-        <a href="https://myportal.cmi.edu" target="_blank" class="card-link">Access via MyPortal ↗</a>
-        <a href="#gmail-guide" class="card-link secondary">Gmail Guide ↓</a>
-      </div>
-      <div class="card">
-        <div class="card-icon">💼</div>
-        <h3>Microsoft 365</h3>
-        <p>Word, Excel, PowerPoint, Teams, and OneDrive with your CMI credentials. Great for coursework and collaboration.</p>
-        <div class="card-tags"><span class="tag">Word</span><span class="tag">Excel</span><span class="tag">Teams</span></div>
-        <a href="https://myportal.cmi.edu" target="_blank" class="card-link">Access via MyPortal ↗</a>
-      </div>
-      <div class="card">
-        <div class="card-icon">📚</div>
+        <div class="card-actions">
+          <a href="https://myportal.cmi.edu" target="_blank" class="card-link">Access via MyPortal ↗</a>
+          <a href="#gmail-guide" class="card-link secondary">Gmail Guide ↓</a>
+        </div>
+      </article>
+      <article class="card">
+        <div class="card-icon" aria-hidden="true">📚</div>
         <h3>Moodle (eLearning)</h3>
         <p>All your courses, assignments, quizzes, and class materials. Access directly or via MyPortal SSO.</p>
         <div class="card-tags"><span class="tag">Courses</span><span class="tag">Assignments</span><span class="tag">Quizzes</span></div>
-        <a href="https://elearning.cmi.edu" target="_blank" class="card-link">Open Moodle ↗</a>
-        <a href="https://myportal.cmi.edu" target="_blank" class="card-link secondary">Via MyPortal</a>
-      </div>
-      <div class="card">
-        <div class="card-icon">🎓</div>
+        <div class="card-actions">
+          <a href="https://elearning.cmi.edu" target="_blank" class="card-link">Open Moodle ↗</a>
+          <a href="https://myportal.cmi.edu" target="_blank" class="card-link secondary">Via MyPortal</a>
+        </div>
+      </article>
+      <article class="card">
+        <div class="card-icon" aria-hidden="true">🎓</div>
         <h3>SONIS – Student Information</h3>
         <p>View your schedule, grades, transcripts, register for courses, and check financial aid. Access directly or via MyPortal.</p>
         <div class="card-tags"><span class="tag">Grades</span><span class="tag">Schedule</span><span class="tag">Registration</span></div>
-        <a href="https://sonis.cmi.edu" target="_blank" class="card-link">Open SONIS ↗</a>
-        <a href="#sonis-guide" class="card-link secondary">SONIS Guide ↓</a>
-      </div>
-      <div class="card">
-        <div class="card-icon">📶</div>
+        <div class="card-actions">
+          <a href="https://sonis.cmi.edu" target="_blank" class="card-link">Open SONIS ↗</a>
+          <a href="#sonis-guide" class="card-link secondary">SONIS Guide ↓</a>
+        </div>
+      </article>
+      <article class="card">
+        <div class="card-icon" aria-hidden="true">💼</div>
+        <h3>Microsoft 365</h3>
+        <p>Word, Excel, PowerPoint, Teams, and OneDrive with your CMI credentials. Great for coursework and collaboration.</p>
+        <div class="card-tags"><span class="tag">Word</span><span class="tag">Excel</span><span class="tag">Teams</span></div>
+        <div class="card-actions"><a href="https://myportal.cmi.edu" target="_blank" class="card-link">Access via MyPortal ↗</a></div>
+      </article>
+      <article class="card">
+        <div class="card-icon" aria-hidden="true">🎫</div>
+        <h3>IT Help Desk</h3>
+        <p>Having a tech issue? Submit a support ticket and our IT team will assist you. Available to all CMI students and staff.</p>
+        <div class="card-tags"><span class="tag">Support</span><span class="tag">Tickets</span></div>
+        <div class="card-actions"><a href="https://helpdesk.cmi.edu" target="_blank" class="card-link">Open Help Desk ↗</a></div>
+      </article>
+      <article class="card">
+        <div class="card-icon" aria-hidden="true">📶</div>
         <h3>Campus Wi-Fi (UniFi)</h3>
         <p>Connect to CMI campus wireless using a <strong>Wi-Fi voucher</strong>. Get yours from the IT Help Desk or campus coordinator.</p>
         <div class="card-tags"><span class="tag">Wireless</span><span class="tag">Voucher</span></div>
-        <a href="https://helpdesk.cmi.edu" target="_blank" class="card-link secondary">Request Voucher →</a>
-      </div>
-      <div class="card">
-        <div class="card-icon">🔧</div>
+        <div class="card-actions"><a href="https://helpdesk.cmi.edu" target="_blank" class="card-link secondary">Request Voucher →</a></div>
+      </article>
+      <article class="card">
+        <div class="card-icon" aria-hidden="true">🔧</div>
         <h3>Personal Device Support</h3>
         <p>The IT Department assists students with personal laptops, phones, and tablets — troubleshooting issues, fixing reported problems, and installing free software licensed to CMI (antivirus, Microsoft 365, and more).</p>
         <div class="card-tags"><span class="tag">Laptop</span><span class="tag">Phone</span><span class="tag">Free Software</span></div>
-        <a href="https://helpdesk.cmi.edu" target="_blank" class="card-link">Submit a Ticket ↗</a>
-      </div>
-      <div class="card">
-        <div class="card-icon">📖</div>
+        <div class="card-actions"><a href="https://helpdesk.cmi.edu" target="_blank" class="card-link">Submit a Ticket ↗</a></div>
+      </article>
+      <article class="card">
+        <div class="card-icon" aria-hidden="true">📖</div>
         <h3>eBooks – Cengage</h3>
-        <p>Some courses use Cengage digital textbooks. Your instructor will provide access instructions and required access codes.</p>
+        <p>Some courses use Cengage digital textbooks. Your instructor will provide access instructions and required access codes — check your course syllabus on Moodle.</p>
         <div class="card-tags"><span class="tag">Cengage</span><span class="tag">Textbooks</span></div>
-        <a href="#" class="card-link secondary">Contact Your Instructor →</a>
-      </div>
+        <div class="card-actions">
+          <a href="https://elearning.cmi.edu" target="_blank" class="card-link secondary">Check Syllabus in Moodle ↗</a>
+          <a href="#faq-cengage" class="card-link secondary">FAQ ↓</a>
+        </div>
+      </article>
     </div>
   </div>
 </section>
@@ -348,29 +434,29 @@ footer .divider{margin:0 8px;opacity:.4;}
 <!-- SONIS GUIDE -->
 <section class="sonis-section" id="sonis-guide">
   <div class="section-inner">
-    <div class="section-title">🎓 SONIS Student Portal — How to Use It</div>
+    <h2 class="section-title">🎓 SONIS Student Portal — How to Use It</h2>
     <p class="section-sub">SONIS is your official Student Information System. Here's how to log in and navigate the key features.</p>
 
-    <p style="font-size:.95rem;font-weight:600;color:var(--navy);margin-bottom:16px;">🔐 How to Log In</p>
-    <div class="sonis-steps" style="margin-bottom:36px;">
-      <div class="sonis-step"><div class="snum">1</div><h4>Go to SONIS</h4><p>Open your browser and visit <a href="https://sonis.cmi.edu" target="_blank" style="color:var(--navy3);font-weight:600;">sonis.cmi.edu</a> — or access it from your MyPortal SSO dashboard.</p></div>
-      <div class="sonis-step"><div class="snum">2</div><h4>Click Login → Student</h4><p>Click the <strong>"Login"</strong> button on the homepage and select <strong>"Student"</strong> from the options.</p></div>
-      <div class="sonis-step"><div class="snum">3</div><h4>Enter Your ID & PIN</h4><p>Type in your <strong>Student ID</strong> and <strong>PIN</strong>, then click the <strong>"Login"</strong> button. Contact the IT Department if you need your login details.</p></div>
-      <div class="sonis-step"><div class="snum">4</div><h4>You're In!</h4><p>A successful login takes you to your biographical information page — your home base in SONIS.</p></div>
-    </div>
+    <h3 class="sub-head">🔐 How to Log In</h3>
+    <ol class="sonis-steps" style="list-style:none;">
+      <li class="sonis-step"><div class="snum" aria-hidden="true">1</div><h4>Go to SONIS</h4><p>Open your browser and visit <a href="https://sonis.cmi.edu" target="_blank" style="font-weight:600;">sonis.cmi.edu</a> — or access it from your MyPortal SSO dashboard.</p></li>
+      <li class="sonis-step"><div class="snum" aria-hidden="true">2</div><h4>Click Login → Student</h4><p>Click the <strong>"Login"</strong> button on the homepage and select <strong>"Student"</strong> from the options.</p></li>
+      <li class="sonis-step"><div class="snum" aria-hidden="true">3</div><h4>Enter Your ID &amp; PIN</h4><p>Type in your <strong>Student ID</strong> and <strong>PIN</strong>, then click <strong>"Login"</strong>. Contact the IT Department if you need your login details.</p></li>
+      <li class="sonis-step"><div class="snum" aria-hidden="true">4</div><h4>You're In!</h4><p>A successful login takes you to your biographical information page — your home base in SONIS.</p></li>
+    </ol>
 
-    <p style="font-size:.95rem;font-weight:600;color:var(--navy);margin-bottom:16px;">📋 What You Can Do in SONIS</p>
+    <h3 class="sub-head">📋 What You Can Do in SONIS</h3>
     <div class="sonis-features">
-      <div class="sonis-feat"><div class="fi">📅</div><div><h5>View Your Schedule</h5><p>Go to <strong>Academics → Schedule</strong> to see your enrolled courses, meeting times, and room locations. You can also view grades from previous semesters.</p></div></div>
-      <div class="sonis-feat"><div class="fi">📝</div><div><h5>Register for Courses</h5><p>Go to <strong>Academics → Registration</strong> to enroll in courses for the upcoming semester. The system checks prerequisites automatically.</p></div></div>
-      <div class="sonis-feat"><div class="fi">📊</div><div><h5>Check Your Grades</h5><p>View Midterm and Final grades from your Schedule page. Change the School Year and Semester to view past results.</p></div></div>
-      <div class="sonis-feat"><div class="fi">💰</div><div><h5>Billing Information</h5><p>During registration, SONIS shows your anticipated billing based on selected courses. Note: this is not final until registration is complete.</p></div></div>
-      <div class="sonis-feat"><div class="fi">🚫</div><div><h5>Prerequisite Alerts</h5><p>If you try to register for a course you haven't qualified for, SONIS will notify you of the required prerequisite course to take first.</p></div></div>
-      <div class="sonis-feat"><div class="fi">✅</div><div><h5>Complete Registration</h5><p>After selecting your courses, click <strong>"Continue Registration Process"</strong> then <strong>"Complete Registration"</strong> to finalize your enrollment.</p></div></div>
+      <div class="sonis-feat"><div class="fi" aria-hidden="true">📅</div><div><h5>View Your Schedule</h5><p>Go to <strong>Academics → Schedule</strong> to see your enrolled courses, meeting times, and room locations. You can also view grades from previous semesters.</p></div></div>
+      <div class="sonis-feat"><div class="fi" aria-hidden="true">📝</div><div><h5>Register for Courses</h5><p>Go to <strong>Academics → Registration</strong> to enroll in courses for the upcoming semester. The system checks prerequisites automatically.</p></div></div>
+      <div class="sonis-feat"><div class="fi" aria-hidden="true">📊</div><div><h5>Check Your Grades</h5><p>View Midterm and Final grades from your Schedule page. Change the School Year and Semester to view past results.</p></div></div>
+      <div class="sonis-feat"><div class="fi" aria-hidden="true">💰</div><div><h5>Billing Information</h5><p>During registration, SONIS shows your anticipated billing based on selected courses. Note: this is not final until registration is complete.</p></div></div>
+      <div class="sonis-feat"><div class="fi" aria-hidden="true">🚫</div><div><h5>Prerequisite Alerts</h5><p>If you try to register for a course you haven't qualified for, SONIS will tell you which prerequisite course to take first.</p></div></div>
+      <div class="sonis-feat"><div class="fi" aria-hidden="true">✅</div><div><h5>Complete Registration</h5><p>After selecting your courses, click <strong>"Continue Registration Process"</strong> then <strong>"Complete Registration"</strong> to finalize your enrollment.</p></div></div>
     </div>
-    <div style="margin-top:24px;background:#e8eaf6;border-radius:10px;padding:14px 18px;max-width:700px;font-size:.87rem;color:var(--muted);">
-      📎 <strong style="color:var(--navy);">Full Guide:</strong> For detailed screenshots and instructions, visit the official
-      <a href="https://helpdesk.cmi.edu/hc/en-us/articles/21147987045657-SONIS-Student-Portal-User-Guide" target="_blank" style="color:var(--navy3);font-weight:600;">SONIS Student Portal User Guide ↗</a>
+    <div class="info-note">
+      📎 <strong>Full Guide:</strong> For detailed screenshots and instructions, visit the official
+      <a href="https://helpdesk.cmi.edu/hc/en-us/articles/21147987045657-SONIS-Student-Portal-User-Guide" target="_blank" style="font-weight:600;">SONIS Student Portal User Guide ↗</a>
     </div>
   </div>
 </section>
@@ -378,92 +464,157 @@ footer .divider{margin:0 8px;opacity:.4;}
 <!-- GMAIL GUIDE -->
 <section class="gmail-section" id="gmail-guide">
   <div class="section-inner">
-    <div class="section-title">📧 Gmail Guide & Email Etiquette</div>
+    <h2 class="section-title">📧 Gmail Guide &amp; Email Etiquette</h2>
     <p class="section-sub">Your CMI student email is <strong>@cmistudent.com</strong> — learn how to use it effectively and professionally.</p>
-    <div class="gmail-tabs">
-      <button class="gmail-tab active" onclick="switchGmailTab('compose',this)">✍️ How to Compose & Send</button>
-      <button class="gmail-tab" onclick="switchGmailTab('etiquette',this)">🤝 Email Etiquette</button>
+    <div class="tablist light" role="tablist" aria-label="Gmail guide">
+      <button class="tab" role="tab" id="t-compose" aria-controls="p-compose" aria-selected="true">✍️ How to Compose &amp; Send</button>
+      <button class="tab" role="tab" id="t-etiquette" aria-controls="p-etiquette" aria-selected="false" tabindex="-1">🤝 Email Etiquette</button>
     </div>
 
-    <div id="gmail-compose" class="gmail-content active">
-      <div class="gmail-steps">
-        <div class="gmail-step"><div class="gs-num">1</div><div><h4>Open Gmail</h4><p>Log in at <a href="https://myportal.cmi.edu" target="_blank">myportal.cmi.edu</a> and click the Gmail icon. Your CMI email address ends in <strong>@cmistudent.com</strong>.</p></div></div>
-        <div class="gmail-step"><div class="gs-num">2</div><div><h4>Click "Compose"</h4><p>Click the big <strong>+ Compose</strong> button in the top-left corner. A new message window will pop up in the bottom-right of your screen.</p></div></div>
-        <div class="gmail-step"><div class="gs-num">3</div><div><h4>Fill in the "To" Field</h4><p>Type the recipient's email address in the <strong>To</strong> field. For instructors, use their <strong>@cmi.edu</strong> address (e.g. instructor@cmi.edu). For classmates, use their <strong>@cmistudent.com</strong> address.</p></div></div>
-        <div class="gmail-step"><div class="gs-num">4</div><div><h4>Add CC or BCC (Optional)</h4><p><strong>CC</strong> (Carbon Copy) sends a copy to others visibly. <strong>BCC</strong> (Blind CC) sends a copy without other recipients seeing it. Click "CC" or "BCC" next to the To field to add them.</p></div></div>
-        <div class="gmail-step"><div class="gs-num">5</div><div><h4>Write a Clear Subject Line</h4><p>Click the <strong>Subject</strong> field and type a brief, descriptive subject. Example: <em>"Question about ICS 101 Assignment 2"</em> — not just "Question" or "Hi".</p></div></div>
-        <div class="gmail-step"><div class="gs-num">6</div><div><h4>Write Your Message</h4><p>Click the large white area below the subject and type your message. Start with a greeting (e.g. "Dear Professor Smith,"), write your message clearly, and end with a sign-off (e.g. "Respectfully, [Your Name]").</p></div></div>
-        <div class="gmail-step"><div class="gs-num">7</div><div><h4>Attach Files (If Needed)</h4><p>Click the <strong>📎 paperclip icon</strong> at the bottom of the compose window to attach files such as assignments or photos. You can also drag and drop files directly into the message.</p></div></div>
-        <div class="gmail-step"><div class="gs-num">8</div><div><h4>Review & Send</h4><p>Read your message once more to check for spelling and tone. When ready, click the blue <strong>Send</strong> button. A confirmation "Message sent" will appear at the bottom of your screen.</p></div></div>
-      </div>
+    <div id="p-compose" class="tabpanel" role="tabpanel" aria-labelledby="t-compose">
+      <ol class="gmail-steps" style="list-style:none;">
+        <li class="gmail-step"><div class="gs-num" aria-hidden="true">1</div><div><h4>Open Gmail</h4><p>Log in at <a href="https://myportal.cmi.edu" target="_blank">myportal.cmi.edu</a> and click the Gmail icon. Your CMI email address ends in <strong>@cmistudent.com</strong>.</p></div></li>
+        <li class="gmail-step"><div class="gs-num" aria-hidden="true">2</div><div><h4>Click "Compose"</h4><p>Click the big <strong>+ Compose</strong> button in the top-left corner. A new message window will pop up in the bottom-right of your screen.</p></div></li>
+        <li class="gmail-step"><div class="gs-num" aria-hidden="true">3</div><div><h4>Fill in the "To" Field</h4><p>Type the recipient's email address in the <strong>To</strong> field. For instructors, use their <strong>@cmi.edu</strong> address. For classmates, use their <strong>@cmistudent.com</strong> address.</p></div></li>
+        <li class="gmail-step"><div class="gs-num" aria-hidden="true">4</div><div><h4>Add CC or BCC (Optional)</h4><p><strong>CC</strong> (Carbon Copy) sends a visible copy to others. <strong>BCC</strong> (Blind CC) sends a copy without other recipients seeing it. Click "CC" or "BCC" next to the To field to add them.</p></div></li>
+        <li class="gmail-step"><div class="gs-num" aria-hidden="true">5</div><div><h4>Write a Clear Subject Line</h4><p>Type a brief, descriptive subject. Example: <em>"Question about ICS 101 Assignment 2"</em> — not just "Question" or "Hi".</p></div></li>
+        <li class="gmail-step"><div class="gs-num" aria-hidden="true">6</div><div><h4>Write Your Message</h4><p>Start with a greeting (e.g. "Dear Professor Smith,"), write your message clearly, and end with a sign-off (e.g. "Respectfully, [Your Name]").</p></div></li>
+        <li class="gmail-step"><div class="gs-num" aria-hidden="true">7</div><div><h4>Attach Files (If Needed)</h4><p>Click the <strong>📎 paperclip icon</strong> at the bottom of the compose window, or drag and drop files into the message. <strong>Tip:</strong> if you write "attached" in your message, double-check the file is really there.</p></div></li>
+        <li class="gmail-step"><div class="gs-num" aria-hidden="true">8</div><div><h4>Review &amp; Send</h4><p>Re-read your message for spelling and tone, then click the blue <strong>Send</strong> button. A "Message sent" confirmation appears at the bottom of your screen.</p></div></li>
+      </ol>
 
       <div class="email-example">
+        <button class="copy-btn" id="copyTemplate" type="button">📋 Copy template</button>
         <div class="ee-label">EXAMPLE OF A GOOD STUDENT EMAIL</div>
         <div class="ee-field"><strong>To:</strong> instructor@cmi.edu</div>
-        <div class="ee-field"><strong>Subject:</strong> Question About ICS 101 Assignment 2 – [Your Name]</div>
-        <div class="ee-body">
-          Dear Professor [Last Name],<br><br>
-          I hope you are doing well. I am writing to ask for clarification on Assignment 2 for ICS 101. Specifically, I am unsure whether we need to submit both the written report and the diagram, or just the written report.<br><br>
-          I would greatly appreciate your guidance. Thank you for your time.<br><br>
-          Respectfully,<br>
-          [Your Full Name]<br>
-          Student ID: 2024-XXXX<br>
-          ICS 101 – Section A
-        </div>
+        <div class="ee-field"><strong>Subject:</strong> <span id="tplSubject">Question About ICS 101 Assignment 2 – [Your Name]</span></div>
+        <div class="ee-body" id="tplBody">Dear Professor [Last Name],<br><br>I hope you are doing well. I am writing to ask for clarification on Assignment 2 for ICS 101. Specifically, I am unsure whether we need to submit both the written report and the diagram, or just the written report.<br><br>I would greatly appreciate your guidance. Thank you for your time.<br><br>Respectfully,<br>[Your Full Name]<br>Student ID: [Your Student ID]<br>ICS 101 – Section A</div>
       </div>
     </div>
 
-    <div id="gmail-etiquette" class="gmail-content">
+    <div id="p-etiquette" class="tabpanel" role="tabpanel" aria-labelledby="t-etiquette" hidden>
       <div class="etiquette-grid">
         <div class="etiq"><h5>✅ Use a Professional Subject Line</h5><p>Always include a clear, specific subject. Vague subjects like "Help" or "Question" may be ignored or delayed.</p></div>
         <div class="etiq"><h5>✅ Use a Proper Greeting</h5><p>Start with "Dear Professor [Name]," or "Good morning, [Name]," — never start with "Hey" or no greeting at all.</p></div>
-        <div class="etiq"><h5>✅ Identify Yourself</h5><p>Always state your full name, Student ID, and which class you're in — instructors may have many students and won't always recognize your email.</p></div>
-        <div class="etiq"><h5>✅ Be Clear and Concise</h5><p>Get to your point quickly. State your question or concern in 2–4 sentences. Avoid very long emails when a short one will do.</p></div>
-        <div class="etiq"><h5>✅ Use a Professional Sign-Off</h5><p>End with "Respectfully," "Sincerely," or "Thank you," followed by your full name. Never just send a message with no sign-off.</p></div>
-        <div class="etiq"><h5>✅ Check Before You Send</h5><p>Re-read your email for spelling, grammar, and tone. A poorly written email reflects on your professionalism as a student.</p></div>
-        <div class="etiq"><h5>❌ Don't Use All Caps</h5><p>Writing in ALL CAPS comes across as shouting. Use normal capitalization throughout your message.</p></div>
-        <div class="etiq"><h5>❌ Don't Use Slang or Emojis</h5><p>Keep academic emails formal. Avoid texting language like "u," "lol," "gonna," or emoji — even if you're on good terms with the instructor.</p></div>
-        <div class="etiq"><h5>❌ Don't Reply All Unnecessarily</h5><p>If an instructor emails the whole class, only use "Reply All" if your response is relevant to everyone. Otherwise, reply only to the sender.</p></div>
-        <div class="etiq"><h5>⏰ Respond Within 24–48 Hours</h5><p>Check your CMI email daily. Instructors and the college send important notices — a missed email is not an accepted excuse for missed deadlines.</p></div>
+        <div class="etiq"><h5>✅ Identify Yourself</h5><p>Always state your full name, Student ID, and which class you're in — instructors have many students and won't always recognize your email.</p></div>
+        <div class="etiq"><h5>✅ Be Clear and Concise</h5><p>Get to your point quickly. State your question or concern in 2–4 sentences.</p></div>
+        <div class="etiq"><h5>✅ Use a Professional Sign-Off</h5><p>End with "Respectfully," "Sincerely," or "Thank you," followed by your full name.</p></div>
+        <div class="etiq"><h5>✅ Check Before You Send</h5><p>Re-read your email for spelling, grammar, and tone. A well-written email reflects your professionalism as a student.</p></div>
+        <div class="etiq dont"><h5>❌ Don't Use All Caps</h5><p>Writing in ALL CAPS comes across as shouting. Use normal capitalization throughout your message.</p></div>
+        <div class="etiq dont"><h5>❌ Don't Use Slang or Emojis</h5><p>Keep academic emails formal. Avoid texting language like "u," "lol," "gonna," or emoji — even if you're on good terms with the instructor.</p></div>
+        <div class="etiq dont"><h5>❌ Don't Reply All Unnecessarily</h5><p>If an instructor emails the whole class, only use "Reply All" if your response is relevant to everyone.</p></div>
+        <div class="etiq dont"><h5>🎣 Watch Out for Phishing</h5><p>CMI IT will never ask for your password by email. Don't click links in unexpected messages asking you to "verify" your account — report them to the Help Desk.</p></div>
+        <div class="etiq"><h5>⏰ Respond Within 24–48 Hours</h5><p>Check your CMI email daily. A missed email is not an accepted excuse for missed deadlines.</p></div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- COMPUTER LABS -->
-<section class="labs-section rebbelip-bg">
+<section class="labs-section rebbelip-bg" id="labs">
   <div class="section-inner" style="position:relative;z-index:1;">
-    <div class="section-title">💻 Computer Labs</div>
+    <h2 class="section-title">💻 Computer Labs</h2>
     <p class="section-sub">Free to use for all enrolled CMI students during open lab hours.</p>
-    <div class="tabs">
-      <button class="tab-btn active" onclick="switchTab('uliga',this)">🏫 Uliga Campus</button>
-      <button class="tab-btn" onclick="switchTab('outer',this)">🌏 Other Campuses</button>
+    <div class="tablist dark" role="tablist" aria-label="Campus">
+      <button class="tab" role="tab" id="t-uliga" aria-controls="p-uliga" aria-selected="true">🏫 Uliga Campus</button>
+      <button class="tab" role="tab" id="t-outer" aria-controls="p-outer" aria-selected="false" tabindex="-1">🌏 Other Campuses</button>
     </div>
-    <div id="tab-uliga" class="tab-content active">
+    <div id="p-uliga" class="tabpanel" role="tabpanel" aria-labelledby="t-uliga">
       <div class="lab-grid">
-        <div class="lab-card"><div class="lab-icon">🖥️</div><div class="lab-name">TH Lab 1</div><div class="lab-room">Thomas Hall · Room 209</div></div>
-        <div class="lab-card"><div class="lab-icon">🖥️</div><div class="lab-name">TH Lab 2</div><div class="lab-room">Thomas Hall · Room 105</div></div>
-        <div class="lab-card"><div class="lab-icon">🖥️</div><div class="lab-name">WH Lab 1</div><div class="lab-room">Wellness Hall · Room 201</div></div>
-        <div class="lab-card"><div class="lab-icon">🖥️</div><div class="lab-name">WH Lab 2</div><div class="lab-room">Wellness Hall · Room 202</div></div>
-        <div class="lab-card"><div class="lab-icon">🖥️</div><div class="lab-name">WH Lab 3</div><div class="lab-room">Wellness Hall · Room 203</div></div>
-        <div class="lab-card"><div class="lab-icon">🖥️</div><div class="lab-name">WH Lab 4</div><div class="lab-room">Wellness Hall · Room 204</div></div>
-        <div class="lab-card"><div class="lab-icon">🖥️</div><div class="lab-name">RH Lab 1</div><div class="lab-room">Rairok Hall · Room 204</div></div>
-        <div class="lab-card"><div class="lab-icon">🖥️</div><div class="lab-name">RH Lab 2</div><div class="lab-room">Rairok Hall · Room 119</div></div>
-        <div class="lab-card"><div class="lab-icon">🔬</div><div class="lab-name">BS Lab</div><div class="lab-room">Basic Science Lab</div></div>
-        <div class="lab-card"><div class="lab-icon">📐</div><div class="lab-name">EDU Lab</div><div class="lab-room">Education Lab</div></div>
-        <div class="lab-card"><div class="lab-icon">🏗️</div><div class="lab-name">ABE Lab</div><div class="lab-room">ABE / Adult Ed Lab</div></div>
+        <div class="lab-card"><div class="lab-icon" aria-hidden="true">🖥️</div><div class="lab-name">TH Lab 1</div><div class="lab-room">Thomas Hall · Room 209</div></div>
+        <div class="lab-card"><div class="lab-icon" aria-hidden="true">🖥️</div><div class="lab-name">TH Lab 2</div><div class="lab-room">Thomas Hall · Room 105</div></div>
+        <div class="lab-card"><div class="lab-icon" aria-hidden="true">🖥️</div><div class="lab-name">WH Lab 1</div><div class="lab-room">Wellness Hall · Room 201</div></div>
+        <div class="lab-card"><div class="lab-icon" aria-hidden="true">🖥️</div><div class="lab-name">WH Lab 2</div><div class="lab-room">Wellness Hall · Room 202</div></div>
+        <div class="lab-card"><div class="lab-icon" aria-hidden="true">🖥️</div><div class="lab-name">WH Lab 3</div><div class="lab-room">Wellness Hall · Room 203</div></div>
+        <div class="lab-card"><div class="lab-icon" aria-hidden="true">🖥️</div><div class="lab-name">WH Lab 4</div><div class="lab-room">Wellness Hall · Room 204</div></div>
+        <div class="lab-card"><div class="lab-icon" aria-hidden="true">🖥️</div><div class="lab-name">RH Lab 1</div><div class="lab-room">Rairok Hall · Room 204</div></div>
+        <div class="lab-card"><div class="lab-icon" aria-hidden="true">🖥️</div><div class="lab-name">RH Lab 2</div><div class="lab-room">Rairok Hall · Room 119</div></div>
+        <div class="lab-card"><div class="lab-icon" aria-hidden="true">🔬</div><div class="lab-name">BS Lab</div><div class="lab-room">Basic Science Lab</div></div>
+        <div class="lab-card"><div class="lab-icon" aria-hidden="true">📐</div><div class="lab-name">EDU Lab</div><div class="lab-room">Education Lab</div></div>
+        <div class="lab-card"><div class="lab-icon" aria-hidden="true">🏗️</div><div class="lab-name">ABE Lab</div><div class="lab-room">ABE / Adult Ed Lab</div></div>
       </div>
-      <div class="lab-note">⚠️ <strong>Lab hours vary by semester.</strong> Check with your instructor or IT Help Desk for current schedules.</div>
+      <div class="lab-note">⚠️ <strong>Lab hours vary by semester.</strong> Check with your instructor or IT Help Desk for current schedules. Save your work to Google Drive or OneDrive — lab computers may be wiped after sessions.</div>
     </div>
-    <div id="tab-outer" class="tab-content">
+    <div id="p-outer" class="tabpanel" role="tabpanel" aria-labelledby="t-outer" hidden>
       <div class="lab-grid">
-        <div class="lab-card"><div class="lab-icon">🏝️</div><div class="lab-name">Arrak Campus</div><div class="lab-room">Arrak Computer Lab</div></div>
-        <div class="lab-card"><div class="lab-icon">🏝️</div><div class="lab-name">Jaluit Campus</div><div class="lab-room">Jaluit Computer Lab</div></div>
-        <div class="lab-card"><div class="lab-icon">🏝️</div><div class="lab-name">Wotje Campus</div><div class="lab-room">Wotje Computer Lab</div></div>
-        <div class="lab-card"><div class="lab-icon">🏝️</div><div class="lab-name">Kwajalein Campus</div><div class="lab-room">Kwaj Campus Computer Lab</div></div>
-        <div class="lab-card"><div class="lab-icon">🏝️</div><div class="lab-name">Likiep Campus</div><div class="lab-room">Likiep Computer Lab</div></div>
+        <div class="lab-card"><div class="lab-icon" aria-hidden="true">🏝️</div><div class="lab-name">Arrak Campus</div><div class="lab-room">Arrak Computer Lab</div></div>
+        <div class="lab-card"><div class="lab-icon" aria-hidden="true">🏝️</div><div class="lab-name">Jaluit Campus</div><div class="lab-room">Jaluit Computer Lab</div></div>
+        <div class="lab-card"><div class="lab-icon" aria-hidden="true">🏝️</div><div class="lab-name">Wotje Campus</div><div class="lab-room">Wotje Computer Lab</div></div>
+        <div class="lab-card"><div class="lab-icon" aria-hidden="true">🏝️</div><div class="lab-name">Kwajalein Campus</div><div class="lab-room">Kwaj Campus Computer Lab</div></div>
+        <div class="lab-card"><div class="lab-icon" aria-hidden="true">🏝️</div><div class="lab-name">Likiep Campus</div><div class="lab-room">Likiep Computer Lab</div></div>
       </div>
       <div class="lab-note">📞 <strong>Outer campus students:</strong> Contact your local campus coordinator for lab hours and IT support.</div>
+    </div>
+  </div>
+</section>
+
+<!-- TIPS -->
+<section class="tips-section" id="tips">
+  <div class="section-inner">
+    <h2 class="section-title">💡 Smart Tips for CMI Students</h2>
+    <p class="section-sub">Keep these in mind throughout your time at CMI.</p>
+    <div class="tips-grid">
+      <div class="tip-card"><h4>🔐 Keep Your Password Strong</h4><p>Use a long passphrase with uppercase, lowercase, numbers, and symbols. Never share your password — not even with IT staff.</p></div>
+      <div class="tip-card"><h4>💾 Always Back Up Your Work</h4><p>Save to Google Drive or OneDrive — never only on a lab computer or a USB drive. Lab files may be wiped after sessions.</p></div>
+      <div class="tip-card"><h4>📧 Check Your Email Daily</h4><p>Important announcements come to your @cmistudent.com email. Don't miss deadlines or class changes!</p></div>
+      <div class="tip-card"><h4>🔒 Log Out of Shared Computers</h4><p>Always log out of all accounts after using lab computers to protect your student information.</p></div>
+      <div class="tip-card"><h4>🎣 Spot Phishing Emails</h4><p>Be suspicious of urgent messages asking you to log in, verify your account, or pay something. When in doubt, ask the Help Desk before clicking.</p></div>
+      <div class="tip-card"><h4>📱 Free Software for Your Device</h4><p>IT can install free college-licensed software on your personal device — Microsoft 365, antivirus, and more. Submit a Help Desk ticket to request.</p></div>
+      <div class="tip-card"><h4>🎫 Submit a Ticket — Don't Wait</h4><p>For any tech problem, submit a Help Desk ticket right away and describe what you see (a screenshot helps). Early tickets get faster resolutions.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq-section" id="faq">
+  <div class="section-inner">
+    <h2 class="section-title">❓ Troubleshooting FAQ</h2>
+    <p class="section-sub">Common first-week issues and how to fix them.</p>
+    <label for="faqSearch" class="sr-only">Search the FAQ</label>
+    <input type="search" id="faqSearch" class="faq-search" placeholder="🔍 Search the FAQ — e.g. password, Wi-Fi, Moodle"/>
+    <div class="faq-list" id="faqList">
+      <div class="faq-item"><button class="faq-q" aria-expanded="false">I forgot my SONIS PIN — what do I do? <span class="faq-icon" aria-hidden="true">+</span></button><div class="faq-a" hidden>Contact the IT Department at <a href="https://helpdesk.cmi.edu" target="_blank">helpdesk.cmi.edu</a> or visit in person. Bring your Student ID — IT can reset your SONIS PIN for you.</div></div>
+      <div class="faq-item"><button class="faq-q" aria-expanded="false">I forgot my MyPortal password — what do I do? <span class="faq-icon" aria-hidden="true">+</span></button><div class="faq-a" hidden>Go to <a href="https://myportal.cmi.edu" target="_blank">myportal.cmi.edu</a> and use the "Forgot Password" option, or submit a ticket at <a href="https://helpdesk.cmi.edu" target="_blank">helpdesk.cmi.edu</a>.</div></div>
+      <div class="faq-item"><button class="faq-q" aria-expanded="false">My course isn't showing in Moodle — what do I do? <span class="faq-icon" aria-hidden="true">+</span></button><div class="faq-a" hidden>Confirm your enrollment in SONIS first. Then contact your instructor — they may need to enroll you manually. If it persists, submit a Help Desk ticket.</div></div>
+      <div class="faq-item"><button class="faq-q" aria-expanded="false">I can't connect to campus Wi-Fi — what do I do? <span class="faq-icon" aria-hidden="true">+</span></button><div class="faq-a" hidden>Make sure you have an active Wi-Fi voucher from the IT Help Desk. Try forgetting the network and reconnecting, then re-enter the voucher code. If it still fails, visit the Help Desk or submit a ticket.</div></div>
+      <div class="faq-item"><button class="faq-q" aria-expanded="false">I received a suspicious email asking for my password. <span class="faq-icon" aria-hidden="true">+</span></button><div class="faq-a" hidden>Don't reply or click any links. CMI IT will never ask for your password by email. Report it through <a href="https://helpdesk.cmi.edu" target="_blank">helpdesk.cmi.edu</a> or forward it to <a href="mailto:helpdesk@cmi.edu">helpdesk@cmi.edu</a>. If you already entered your password, change it right away at MyPortal.</div></div>
+      <div class="faq-item"><button class="faq-q" aria-expanded="false">Can IT fix my personal laptop or phone? <span class="faq-icon" aria-hidden="true">+</span></button><div class="faq-a" hidden>Yes! The IT Department assists students with personal devices — troubleshooting, fixing reported issues, and installing free college-licensed software. Submit a ticket at <a href="https://helpdesk.cmi.edu" target="_blank">helpdesk.cmi.edu</a> to get started.</div></div>
+      <div class="faq-item"><button class="faq-q" aria-expanded="false">What free software can IT install on my device? <span class="faq-icon" aria-hidden="true">+</span></button><div class="faq-a" hidden>CMI has college-wide licenses for software including Microsoft 365 (Word, Excel, PowerPoint) and antivirus tools. Visit the IT Help Desk or submit a ticket to request installation on your personal device.</div></div>
+      <div class="faq-item" id="faq-cengage"><button class="faq-q" aria-expanded="false">How do I access Cengage eBooks? <span class="faq-icon" aria-hidden="true">+</span></button><div class="faq-a" hidden>Cengage access is set up by your course instructor. Check your syllabus on Moodle or email your instructor at their <strong>@cmi.edu</strong> address for the access code.</div></div>
+    </div>
+    <p class="faq-empty" id="faqEmpty">No matching questions. Try the 🤖 IT Assistant or <a href="https://helpdesk.cmi.edu" target="_blank">submit a Help Desk ticket</a>.</p>
+  </div>
+</section>
+
+<!-- MY SETUP -->
+<section class="setup-intro rebbelip-bg" id="my-setup">
+  <h2>🚀 My CMI Tech Setup</h2>
+  <p>Four quick parts: save your name, acknowledge the IT policy, finish the checklist, and take the quiz. Your progress is saved in this browser so you can come back anytime.</p>
+</section>
+
+<!-- REG -->
+<section class="reg-section">
+  <div class="reg-inner">
+    <h2>👤 Step 1 · Save Your Progress</h2>
+    <p>Enter your name and Student ID so your checklist, quiz score, and completion record show your details.</p>
+    <form id="regForm" novalidate>
+      <div class="reg-form">
+        <label for="regName" class="sr-only">Your full name</label>
+        <input type="text" id="regName" placeholder="Your Full Name" maxlength="60" autocomplete="name" required/>
+        <label for="regId" class="sr-only">Student ID</label>
+        <input type="text" id="regId" placeholder="Student ID" maxlength="20" autocomplete="off"/>
+        <button class="reg-btn" type="submit">Save My Progress 💾</button>
+      </div>
+      <div class="reg-error" id="regError" role="alert"></div>
+      <p class="reg-privacy">🔒 Saved only on this device's browser — nothing is sent to CMI servers. On a shared lab computer, use "Reset" when you're done.</p>
+    </form>
+    <div class="reg-status" id="regStatus">
+      <div class="reg-avatar" id="regAvatar" aria-hidden="true">👤</div>
+      <div class="reg-info">
+        <h4 id="regDisplayName"></h4>
+        <p id="regDisplayInfo"></p>
+      </div>
+      <button class="reg-change" id="regChange" type="button">Change</button>
     </div>
   </div>
 </section>
@@ -471,155 +622,107 @@ footer .divider{margin:0 8px;opacity:.4;}
 <!-- AUP -->
 <section class="aup-section">
   <div class="aup-inner">
-    <h3>📋 IT Acceptable Use Policy</h3>
+    <h3>📋 Step 2 · IT Acceptable Use Policy</h3>
     <p>By using CMI IT resources, you agree to use them responsibly and appropriately. Please review and acknowledge the following:</p>
-    <div class="aup-items">
-      <div class="aup-item"><span>✅</span> I will only use CMI systems for academic and educational purposes.</div>
-      <div class="aup-item"><span>✅</span> I will not share my login credentials with anyone.</div>
-      <div class="aup-item"><span>✅</span> I will not download or install unauthorized software on CMI lab computers.</div>
-      <div class="aup-item"><span>✅</span> I will respect other students' privacy and data.</div>
-      <div class="aup-item"><span>✅</span> I understand that misuse of IT resources may result in disciplinary action.</div>
-    </div>
+    <ul class="aup-items">
+      <li><span aria-hidden="true">✅</span> I will use CMI systems primarily for academic and educational purposes.</li>
+      <li><span aria-hidden="true">✅</span> I will not share my login credentials with anyone.</li>
+      <li><span aria-hidden="true">✅</span> I will not download or install unauthorized software on CMI lab computers.</li>
+      <li><span aria-hidden="true">✅</span> I will respect other students' privacy and data.</li>
+      <li><span aria-hidden="true">✅</span> I understand that misuse of IT resources may result in disciplinary action.</li>
+    </ul>
     <label class="aup-check-row">
-      <input type="checkbox" id="aupCheck" onchange="confirmAUP(this)"/>
+      <input type="checkbox" id="aupCheck"/>
       I have read and agree to the CMI IT Acceptable Use Policy
     </label>
-    <div class="aup-confirmed" id="aupConfirmed">✅ Thank you for acknowledging the CMI IT Acceptable Use Policy!</div>
-  </div>
-</section>
-
-<!-- REG -->
-<section class="reg-section">
-  <div class="reg-inner">
-    <h2>📊 Track Your Setup Progress</h2>
-    <p>Enter your name and Student ID so your checklist progress and quiz score are saved.</p>
-    <div id="regForm">
-      <div class="reg-form">
-        <input type="text" id="regName" placeholder="Your Full Name" maxlength="60"/>
-        <input type="text" id="regId" placeholder="Student ID (e.g. 2024-0001)" maxlength="20"/>
-        <button class="reg-btn" onclick="registerStudent()">Save My Progress 💾</button>
-      </div>
-    </div>
-    <div class="reg-status" id="regStatus">
-      <div class="reg-avatar">👤</div>
-      <div class="reg-info">
-        <h4 id="regDisplayName"></h4>
-        <p id="regDisplayInfo"></p>
-      </div>
-      <button class="reg-change" onclick="changeStudent()">Change</button>
-    </div>
+    <div class="aup-confirmed" id="aupConfirmed" role="status">✅ Thank you for acknowledging the CMI IT Acceptable Use Policy!</div>
   </div>
 </section>
 
 <!-- CHECKLIST -->
 <section class="checklist-section">
   <div class="section-inner">
-    <div class="section-title">🚀 Getting Started Checklist</div>
-    <p class="section-sub">Click each step to mark it complete. Your progress is saved automatically!</p>
+    <h2 class="section-title">✅ Step 3 · Getting Started Checklist</h2>
+    <p class="section-sub">Click (or press Space on) each step to mark it complete. Your progress is saved automatically.</p>
     <div style="max-width:700px;">
-      <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
-      <p class="progress-label" id="progressLabel"><span id="doneCount">0</span> of 7 steps completed</p>
+      <div class="progress-wrap" role="progressbar" aria-label="Checklist progress" aria-valuemin="0" aria-valuemax="7" aria-valuenow="0" id="progressWrap"><div class="progress-bar" id="progressBar"></div></div>
+      <p class="progress-label" id="progressLabel"><span id="doneCount">0</span> of <span id="totalCount">7</span> steps completed</p>
     </div>
-    <div class="steps" id="checklistSteps">
-      <div class="step" data-idx="0" onclick="toggleStep(this)"><div class="step-check">☐</div><div class="step-body"><h4>Log in to MyPortal (SSO)</h4><p>Visit <a href="https://myportal.cmi.edu" target="_blank">myportal.cmi.edu</a> — sign in with your Student ID and change your password on first login.</p></div></div>
-      <div class="step" data-idx="1" onclick="toggleStep(this)"><div class="step-check">☐</div><div class="step-body"><h4>Set up your CMI Email (@cmistudent.com)</h4><p>Access Gmail from MyPortal. Your official email ends in <strong>@cmistudent.com</strong> — check it every day for announcements and instructor messages.</p></div></div>
-      <div class="step" data-idx="2" onclick="toggleStep(this)"><div class="step-check">☐</div><div class="step-body"><h4>Open Moodle and find your courses</h4><p>Go to <a href="https://elearning.cmi.edu" target="_blank">elearning.cmi.edu</a> or via MyPortal. All enrolled courses should appear. Missing one? Contact your instructor.</p></div></div>
-      <div class="step" data-idx="3" onclick="toggleStep(this)"><div class="step-check">☐</div><div class="step-body"><h4>Check SONIS for your schedule &amp; grades</h4><p>Go to <a href="https://sonis.cmi.edu" target="_blank">sonis.cmi.edu</a> — log in with your Student ID &amp; PIN to verify your schedule and financial aid.</p></div></div>
-      <div class="step" data-idx="4" onclick="toggleStep(this)"><div class="step-check">☐</div><div class="step-body"><h4>Get your Wi-Fi voucher</h4><p>Visit the IT Help Desk or campus coordinator to receive your Wi-Fi voucher and connect to the CMI UniFi network.</p></div></div>
-      <div class="step" data-idx="5" onclick="toggleStep(this)"><div class="step-check">☐</div><div class="step-body"><h4>Bookmark the Help Desk</h4><p>Save <a href="https://helpdesk.cmi.edu" target="_blank">helpdesk.cmi.edu</a> — submit a ticket anytime for tech support, personal device help, or free software requests.</p></div></div>
-      <div class="step" data-idx="6" onclick="toggleStep(this)"><div class="step-check">☐</div><div class="step-body"><h4>Locate your nearest Computer Lab</h4><p>Find your building's lab above. Always save your work to Google Drive or OneDrive — never only on the lab computer!</p></div></div>
-    </div>
-    <div class="checklist-complete" id="checklistComplete">
-      <div style="font-size:3rem;margin-bottom:8px;">🏅</div>
+    <ul class="steps" id="checklistSteps">
+      <li class="step" role="checkbox" aria-checked="false" tabindex="0"><div class="step-check" aria-hidden="true">✓</div><div class="step-body"><h4>Log in to MyPortal (SSO)</h4><p>Visit <a href="https://myportal.cmi.edu" target="_blank">myportal.cmi.edu</a> — sign in with your Student ID and change your password on first login.</p></div></li>
+      <li class="step" role="checkbox" aria-checked="false" tabindex="0"><div class="step-check" aria-hidden="true">✓</div><div class="step-body"><h4>Set up your CMI Email (@cmistudent.com)</h4><p>Access Gmail from MyPortal. Your official email ends in <strong>@cmistudent.com</strong> — check it every day for announcements and instructor messages.</p></div></li>
+      <li class="step" role="checkbox" aria-checked="false" tabindex="0"><div class="step-check" aria-hidden="true">✓</div><div class="step-body"><h4>Open Moodle and find your courses</h4><p>Go to <a href="https://elearning.cmi.edu" target="_blank">elearning.cmi.edu</a> or via MyPortal. All enrolled courses should appear. Missing one? Contact your instructor.</p></div></li>
+      <li class="step" role="checkbox" aria-checked="false" tabindex="0"><div class="step-check" aria-hidden="true">✓</div><div class="step-body"><h4>Check SONIS for your schedule &amp; grades</h4><p>Go to <a href="https://sonis.cmi.edu" target="_blank">sonis.cmi.edu</a> — log in with your Student ID &amp; PIN to verify your schedule and financial aid.</p></div></li>
+      <li class="step" role="checkbox" aria-checked="false" tabindex="0"><div class="step-check" aria-hidden="true">✓</div><div class="step-body"><h4>Get your Wi-Fi voucher</h4><p>Visit the IT Help Desk or campus coordinator to receive your Wi-Fi voucher and connect to the CMI UniFi network.</p></div></li>
+      <li class="step" role="checkbox" aria-checked="false" tabindex="0"><div class="step-check" aria-hidden="true">✓</div><div class="step-body"><h4>Bookmark the Help Desk</h4><p>Save <a href="https://helpdesk.cmi.edu" target="_blank">helpdesk.cmi.edu</a> — submit a ticket anytime for tech support, personal device help, or free software requests.</p></div></li>
+      <li class="step" role="checkbox" aria-checked="false" tabindex="0"><div class="step-check" aria-hidden="true">✓</div><div class="step-body"><h4>Locate your nearest Computer Lab</h4><p>Find your building's lab in the <a href="#labs">Computer Labs</a> section. Always save your work to Google Drive or OneDrive — never only on the lab computer!</p></div></li>
+    </ul>
+    <div class="checklist-complete" id="checklistComplete" role="status">
+      <div style="font-size:3rem;margin-bottom:8px;" aria-hidden="true">🏅</div>
       <h3>You're CMI Tech Ready!</h3>
-      <p>All 7 steps complete. You're fully set up to start your semester. Welcome to CMI! 🎉</p>
+      <p>All steps complete. Now take the <a href="#quiz">IT Readiness Quiz</a> to finish your setup. 🎉</p>
     </div>
   </div>
 </section>
 
-<!-- TIPS -->
-<section class="tips-section">
-  <div class="section-inner">
-    <div class="section-title">💡 Smart Tips for CMI Students</div>
-    <p class="section-sub">Keep these in mind throughout your time at CMI.</p>
-    <div class="tips-grid">
-      <div class="tip-card"><h4>🔐 Keep Your Password Strong</h4><p>Use uppercase, lowercase, numbers, and symbols. Never share your password — not even with IT staff.</p></div>
-      <div class="tip-card"><h4>💾 Always Back Up Your Work</h4><p>Save to Google Drive or OneDrive — never only on a lab computer. Lab files may be wiped after sessions.</p></div>
-      <div class="tip-card"><h4>📧 Check Your Email Daily</h4><p>Important announcements come to your @cmistudent.com email. Don't miss deadlines or class changes!</p></div>
-      <div class="tip-card"><h4>🔒 Log Out of Shared Computers</h4><p>Always log out of all accounts after using lab computers to protect your student information.</p></div>
-      <div class="tip-card"><h4>📱 Free Software for Your Device</h4><p>IT can install free college-licensed software on your personal device — Microsoft 365, antivirus, and more. Submit a Help Desk ticket to request.</p></div>
-      <div class="tip-card"><h4>🎫 Submit a Ticket — Don't Wait</h4><p>For personal device issues or any tech problem, submit a Help Desk ticket right away. Early tickets get faster resolutions.</p></div>
-    </div>
-  </div>
-</section>
-
-<!-- FAQ -->
-<section class="faq-section">
-  <div class="section-inner">
-    <div class="section-title">❓ Troubleshooting FAQ</div>
-    <p class="section-sub">Common first-week issues and how to fix them.</p>
-    <div class="faq-list">
-      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">I forgot my SONIS PIN — what do I do? <span class="faq-icon">+</span></button><div class="faq-a">Contact the IT Department at <a href="https://helpdesk.cmi.edu" target="_blank">helpdesk.cmi.edu</a> or visit in person. Bring your Student ID — IT can reset your SONIS PIN for you.</div></div>
-      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">I forgot my MyPortal password — what do I do? <span class="faq-icon">+</span></button><div class="faq-a">Go to <a href="https://myportal.cmi.edu" target="_blank">myportal.cmi.edu</a> and use the "Forgot Password" option, or submit a ticket at <a href="https://helpdesk.cmi.edu" target="_blank">helpdesk.cmi.edu</a>.</div></div>
-      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">My course isn't showing in Moodle — what do I do? <span class="faq-icon">+</span></button><div class="faq-a">Confirm your enrollment in SONIS first. Then contact your instructor — they may need to enroll you manually. If it persists, submit a Help Desk ticket.</div></div>
-      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">I can't connect to campus Wi-Fi — what do I do? <span class="faq-icon">+</span></button><div class="faq-a">Make sure you have an active Wi-Fi voucher from the IT Help Desk. If you have one but still can't connect, visit the Help Desk or submit a ticket.</div></div>
-      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">Can IT fix my personal laptop or phone? <span class="faq-icon">+</span></button><div class="faq-a">Yes! The IT Department assists students with personal devices — troubleshooting, fixing reported issues, and installing free college-licensed software. Submit a ticket at <a href="https://helpdesk.cmi.edu" target="_blank">helpdesk.cmi.edu</a> to get started.</div></div>
-      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">What free software can IT install on my device? <span class="faq-icon">+</span></button><div class="faq-a">CMI has college-wide licenses for software including Microsoft 365 (Word, Excel, PowerPoint) and antivirus tools. Visit the IT Help Desk or submit a ticket to request installation on your personal device.</div></div>
-      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">How do I access Cengage eBooks? <span class="faq-icon">+</span></button><div class="faq-a">Cengage access is set up by your course instructor. Check your syllabus on Moodle or email your instructor directly at their <strong>@cmi.edu</strong> address for the access code.</div></div>
-    </div>
-  </div>
-</section>
-
-<!-- CONTACT -->
-<section class="contact-section rebbelip-bg">
+<!-- QUIZ -->
+<section class="quiz-section rebbelip-bg" id="quiz">
   <div class="section-inner" style="position:relative;z-index:1;">
-    <div class="section-title">📞 IT Support Contacts</div>
-    <div class="contact-grid">
-      <div class="contact-card"><h4>🎫 Help Desk (Tickets)</h4><p>Submit any IT issue online<br><a href="https://helpdesk.cmi.edu" target="_blank">helpdesk.cmi.edu</a></p></div>
-      <div class="contact-card"><h4>✉️ Email Support</h4><p>Reach IT via email<br><a href="mailto:helpdesk@cmi.edu">helpdesk@cmi.edu</a></p></div>
-      <div class="contact-card"><h4>🕐 Support Hours</h4><p>Monday – Friday<br>8:00 AM – 5:00 PM (RMI Time)</p></div>
-      <div class="contact-card"><h4>🏢 IT Office Location</h4><p>Uliga Campus<br>Visit in person for urgent issues</p></div>
+    <h2 class="section-title">🧠 Step 4 · IT Readiness Quiz</h2>
+    <p class="section-sub">Test what you've learned! <span id="quizLen">8</span> quick questions about CMI IT services. Score 80% or higher to pass.</p>
+    <div class="quiz-box">
+      <div class="quiz-prog-wrap"><div class="quiz-prog-bar" id="quizProgBar" style="width:0%"></div></div>
+      <div id="quizContent">
+        <div class="q-counter" id="qCounter">QUESTION 1</div>
+        <div class="q-text" id="qText"></div>
+        <div class="q-options" id="qOptions" role="group" aria-labelledby="qText"></div>
+        <div class="q-feedback" id="qFeedback" aria-live="polite"></div>
+        <button class="q-next" id="qNext" type="button">Next Question →</button>
+      </div>
+      <div class="quiz-result" id="quizResult" aria-live="polite">
+        <div class="result-badge" id="resultBadge"></div>
+        <div class="result-title" id="resultTitle"></div>
+        <div class="result-sub" id="resultSub"></div>
+        <div class="result-score" id="resultScore"></div>
+        <div><button class="retry-btn" id="retryBtn" type="button">🔄 Try Again</button></div>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- PROGRESS DASHBOARD -->
-<section class="dash-section rebbelip-bg">
+<section class="dash-section rebbelip-bg" id="dashboard">
   <div class="section-inner dash-inner" style="position:relative;z-index:1;">
-    <div class="section-title">📊 My Progress Dashboard</div>
+    <h2 class="section-title">📊 My Progress Dashboard</h2>
+    <p class="section-sub">Complete all four parts to unlock your printable CMI 101 completion record.</p>
     <div class="dash-cards">
       <div class="dash-card"><div class="dc-val" id="dashSteps">0/7</div><div class="dc-lbl">Setup Steps</div></div>
-      <div class="dash-card"><div class="dc-val" id="dashQuiz">—</div><div class="dc-lbl">Quiz Score</div></div>
+      <div class="dash-card"><div class="dc-val" id="dashQuiz">—</div><div class="dc-lbl">Best Quiz Score</div></div>
       <div class="dash-card"><div class="dc-val" id="dashAup">❌</div><div class="dc-lbl">AUP Signed</div></div>
     </div>
-    <div class="dash-log" id="dashLog"><div style="color:rgba(255,255,255,0.4);font-size:.82rem;">No activity yet.</div></div>
+    <ul class="dash-log" id="dashLog" aria-label="Activity log"><li class="empty">No activity yet.</li></ul>
+    <div class="dash-actions">
+      <button class="dash-btn" id="printBtn" type="button" disabled>🖨️ Print Completion Record</button>
+      <button class="dash-btn ghost" id="resetBtn" type="button">↺ Reset My Progress</button>
+    </div>
+    <p class="dash-hint" id="dashHint"></p>
   </div>
 </section>
 
-<!-- QUIZ -->
-<section class="quiz-section rebbelip-bg">
+<!-- CONTACT -->
+<section class="contact-section rebbelip-bg" id="contact">
   <div class="section-inner" style="position:relative;z-index:1;">
-    <div class="section-title">🧠 IT Readiness Quiz</div>
-    <p class="section-sub">Test what you've learned! 5 quick questions about CMI IT services.</p>
-    <div class="quiz-box">
-      <div class="quiz-prog-wrap"><div class="quiz-prog-bar" id="quizProgBar" style="width:0%"></div></div>
-      <div id="quizContent">
-        <div class="q-counter" id="qCounter">QUESTION 1 OF 5</div>
-        <div class="q-text" id="qText"></div>
-        <div class="q-options" id="qOptions"></div>
-        <div class="q-feedback" id="qFeedback"></div>
-        <button class="q-next" id="qNext" onclick="nextQuestion()">Next Question →</button>
-      </div>
-      <div class="quiz-result" id="quizResult">
-        <div class="result-badge" id="resultBadge"></div>
-        <div class="result-title" id="resultTitle"></div>
-        <div class="result-sub" id="resultSub"></div>
-        <div class="result-score" id="resultScore"></div>
-        <button class="retry-btn" onclick="startQuiz()">🔄 Try Again</button>
-      </div>
+    <h2 class="section-title">📞 IT Support Contacts</h2>
+    <div class="contact-grid">
+      <div class="contact-card"><h4>🎫 Help Desk (Tickets)</h4><p>Submit any IT issue online<br><a href="https://helpdesk.cmi.edu" target="_blank">helpdesk.cmi.edu</a></p></div>
+      <div class="contact-card"><h4>✉️ Email Support</h4><p>Reach IT via email<br><a href="mailto:helpdesk@cmi.edu">helpdesk@cmi.edu</a></p></div>
+      <div class="contact-card"><h4>🕐 Support Hours</h4><p>Monday – Friday<br>8:00 AM – 5:00 PM (RMI Time)<br><span class="open-now" id="openNow"></span></p></div>
+      <div class="contact-card"><h4>🏢 IT Office Location</h4><p>Uliga Campus<br>Visit in person for urgent issues</p></div>
     </div>
   </div>
 </section>
+
+</main>
 
 <!-- FOOTER -->
 <footer class="rebbelip-bg">
@@ -633,135 +736,244 @@ footer .divider{margin:0 8px;opacity:.4;}
       <span class="divider">|</span>
       <a href="mailto:helpdesk@cmi.edu">helpdesk@cmi.edu</a>
     </p>
-    <p style="margin-top:16px;font-size:.78rem;opacity:.5;">CMI 101 · First Year Experience · Iitdam Kapeel · 1993</p>
+    <p style="margin-top:16px;font-size:.78rem;opacity:.65;">CMI 101 · First Year Experience · Iitdam Kapeel · 1993</p>
   </div>
 </footer>
 
-<!-- AI CHAT -->
-<button id="chatToggle" onclick="toggleChat()">🤖</button>
-<div id="chatWindow">
+<button id="toTop" type="button" aria-label="Back to top">↑</button>
+
+<!-- IT ASSISTANT -->
+<button id="chatToggle" type="button" aria-label="Open CMI IT Assistant" aria-expanded="false" aria-controls="chatWindow">🤖</button>
+<div id="chatWindow" role="dialog" aria-label="CMI IT Assistant">
   <div class="chat-header">
-    <div class="chat-avatar">🤖</div>
-    <div class="chat-header-text"><h4>CMI IT Assistant</h4><p>Ask me anything about IT</p></div>
-    <div class="chat-online"></div>
+    <div class="chat-avatar" aria-hidden="true">🤖</div>
+    <div class="chat-header-text"><h4>CMI IT Assistant</h4><p>Ask me anything about CMI IT</p></div>
+    <button class="chat-close" id="chatClose" type="button" aria-label="Close assistant">✕</button>
   </div>
-  <div id="chatMessages">
+  <div id="chatMessages" aria-live="polite">
     <div class="msg bot">👋 Iakwe! I'm your CMI IT Assistant. Ask me about your @cmistudent.com email, Moodle, SONIS, Wi-Fi, personal device support, or any tech question!</div>
   </div>
   <div class="chat-sugs" id="chatSugs">
-    <button class="sug" onclick="sendSug(this)">How do I log into SONIS?</button>
-    <button class="sug" onclick="sendSug(this)">What is my student email?</button>
-    <button class="sug" onclick="sendSug(this)">Can IT fix my laptop?</button>
-    <button class="sug" onclick="sendSug(this)">How do I get Wi-Fi?</button>
+    <button class="sug" type="button">How do I log into SONIS?</button>
+    <button class="sug" type="button">What is my student email?</button>
+    <button class="sug" type="button">Can IT fix my laptop?</button>
+    <button class="sug" type="button">How do I get Wi-Fi?</button>
   </div>
   <div class="chat-input-row">
-    <textarea id="chatInput" rows="1" placeholder="Type your question…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg();}"></textarea>
-    <button id="chatSend" onclick="sendMsg()">➤</button>
+    <label for="chatInput" class="sr-only">Your question</label>
+    <textarea id="chatInput" rows="1" placeholder="Type your question…"></textarea>
+    <button id="chatSend" type="button" aria-label="Send">➤</button>
   </div>
+  <div class="chat-foot">For account problems, always confirm with the <a href="https://helpdesk.cmi.edu" target="_blank">Help Desk</a>.</div>
 </div>
 
+<!-- PRINTABLE COMPLETION RECORD (only visible when printing) -->
+<div id="printRecord" aria-hidden="true"></div>
+
 <script>
-var studentName='',studentId='',stepStates=[false,false,false,false,false,false,false];
-var quizScore=null,aupSigned=false,activityLog=[];
+(function(){
+'use strict';
 
-function switchTab(id,btn){
-  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('tab-'+id).classList.add('active');
-  btn.classList.add('active');
-}
-function switchGmailTab(id,btn){
-  document.querySelectorAll('.gmail-content').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.gmail-tab').forEach(b=>b.classList.remove('active'));
-  document.getElementById('gmail-'+id).classList.add('active');
-  btn.classList.add('active');
-}
-function toggleFaq(btn){btn.parentElement.classList.toggle('open');}
+/* ───────── CONFIG ─────────
+   CHAT_API: optional URL of your server-side proxy (e.g. the PHP proxy on a CMI server)
+   that forwards {system, messages} to the Anthropic API and returns its JSON response.
+   Leave empty to use the built-in offline answers only (works on GitHub Pages). */
+var CHAT_API = '';
+var STORE_KEY = 'cmi101-it-progress-v2';
+var PASS_PCT = 0.8;
 
-async function registerStudent(){
-  var n=document.getElementById('regName').value.trim();
-  var id=document.getElementById('regId').value.trim();
-  if(!n){alert('Please enter your name.');return;}
-  studentName=n;studentId=id;
-  showRegStatus();logActivity('Registered as '+n+(id?' ('+id+')':''));
-  await saveProgress();
+var $ = function(id){return document.getElementById(id);};
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+
+/* External links: open safely */
+document.querySelectorAll('a[target="_blank"]').forEach(function(a){a.rel='noopener noreferrer';});
+
+/* ───────── STATE & STORAGE ───────── */
+var steps = Array.prototype.slice.call(document.querySelectorAll('#checklistSteps .step'));
+var TOTAL = steps.length;
+var state = {name:'',id:'',steps:steps.map(function(){return false;}),quizBest:null,quizLast:null,aup:false,log:[]};
+
+function save(){
+  var data = JSON.stringify(Object.assign({},state,{saved:Date.now()}));
+  try{localStorage.setItem(STORE_KEY,data);}catch(e){}
+  try{if(window.storage&&window.storage.set)window.storage.set(STORE_KEY,data);}catch(e){}
 }
-function showRegStatus(){
-  document.getElementById('regForm').style.display='none';
-  document.getElementById('regStatus').classList.add('show');
-  document.getElementById('regDisplayName').textContent=studentName;
-  document.getElementById('regDisplayInfo').textContent=studentId?'Student ID: '+studentId:'Progress tracking active';
+function applyData(d){
+  if(!d||typeof d!=='object')return;
+  state.name=d.name||'';state.id=d.id||'';
+  if(Array.isArray(d.steps))state.steps=state.steps.map(function(_,i){return !!d.steps[i];});
+  state.quizBest=(typeof d.quizBest==='number')?d.quizBest:null;
+  state.quizLast=(typeof d.quizLast==='number')?d.quizLast:null;
+  state.aup=!!d.aup;state.log=Array.isArray(d.log)?d.log.slice(0,20):[];
 }
-function changeStudent(){
-  document.getElementById('regStatus').classList.remove('show');
-  document.getElementById('regForm').style.display='block';
-  document.getElementById('regName').value=studentName;
-  document.getElementById('regId').value=studentId;
+async function load(){
+  var raw=null;
+  try{raw=localStorage.getItem(STORE_KEY);}catch(e){}
+  if(!raw){try{if(window.storage&&window.storage.get){var r=await window.storage.get(STORE_KEY);raw=r&&r.value;}}catch(e){}}
+  if(raw){try{applyData(JSON.parse(raw));}catch(e){}}
+  renderAll();
 }
-function toggleStep(el){
-  var idx=parseInt(el.dataset.idx);
-  stepStates[idx]=!stepStates[idx];
-  el.classList.toggle('done',stepStates[idx]);
-  el.querySelector('.step-check').textContent=stepStates[idx]?'✓':'☐';
-  var done=stepStates.filter(Boolean).length;
-  document.getElementById('progressBar').style.width=(done/7*100)+'%';
-  document.getElementById('doneCount').textContent=done;
-  document.getElementById('checklistComplete').style.display=done===7?'block':'none';
-  if(stepStates[idx])logActivity('✅ '+el.querySelector('h4').textContent);
-  updateDash();saveProgress();
-}
-function confirmAUP(cb){
-  aupSigned=cb.checked;
-  document.getElementById('aupConfirmed').style.display=aupSigned?'block':'none';
-  document.getElementById('dashAup').textContent=aupSigned?'✅':'❌';
-  if(aupSigned)logActivity('📋 Acknowledged IT Acceptable Use Policy');
-  updateDash();saveProgress();
-}
+
 function logActivity(msg){
-  var t=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-  activityLog.unshift('['+t+'] '+msg);
-  if(activityLog.length>20)activityLog.pop();
-  renderLog();
+  var t=new Date().toLocaleString([],{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+  state.log.unshift('['+t+'] '+msg);
+  if(state.log.length>20)state.log.length=20;
 }
-function renderLog(){
-  var el=document.getElementById('dashLog');
-  if(!activityLog.length){el.innerHTML='<div style="color:rgba(255,255,255,0.4);font-size:.82rem;">No activity yet.</div>';return;}
-  el.innerHTML=activityLog.map(e=>'<div class="dash-log-entry">'+e+'</div>').join('');
-}
-function updateDash(){
-  var done=stepStates.filter(Boolean).length;
-  document.getElementById('dashSteps').textContent=done+'/7';
-  document.getElementById('dashAup').textContent=aupSigned?'✅':'❌';
-  if(quizScore!==null)document.getElementById('dashQuiz').textContent=quizScore+'/5';
-}
-async function saveProgress(){
-  if(!studentName)return;
-  try{await window.storage.set('cmi101-progress',JSON.stringify({name:studentName,id:studentId,steps:stepStates,quiz:quizScore,aup:aupSigned,log:activityLog,saved:Date.now()}));}catch(e){}
-}
-async function loadProgress(){
-  try{
-    var r=await window.storage.get('cmi101-progress');
-    if(!r)return;
-    var d=JSON.parse(r.value);
-    studentName=d.name||'';studentId=d.id||'';stepStates=d.steps||stepStates;
-    quizScore=d.quiz||null;aupSigned=d.aup||false;activityLog=d.log||[];
-    if(studentName){
-      showRegStatus();
-      document.querySelectorAll('.step').forEach(el=>{
-        var i=parseInt(el.dataset.idx);
-        if(stepStates[i]){el.classList.add('done');el.querySelector('.step-check').textContent='✓';}
-      });
-      var done=stepStates.filter(Boolean).length;
-      document.getElementById('progressBar').style.width=(done/7*100)+'%';
-      document.getElementById('doneCount').textContent=done;
-      if(done===7)document.getElementById('checklistComplete').style.display='block';
-      if(aupSigned){document.getElementById('aupCheck').checked=true;document.getElementById('aupConfirmed').style.display='block';}
-      updateDash();renderLog();
-    }
-  }catch(e){}
-}
-loadProgress();
 
+/* ───────── RENDER ───────── */
+function renderAll(){renderReg();renderSteps();renderAup();renderDash();}
+
+function renderReg(){
+  var has=!!state.name;
+  $('regForm').style.display=has?'none':'block';
+  $('regStatus').classList.toggle('show',has);
+  if(has){
+    $('regDisplayName').textContent=state.name;
+    $('regDisplayInfo').textContent=state.id?'Student ID: '+state.id:'Progress tracking active';
+    var ini=state.name.split(/\s+/).filter(Boolean).map(function(w){return w[0];}).slice(0,2).join('').toUpperCase();
+    $('regAvatar').textContent=ini||'👤';
+  }
+}
+function renderSteps(){
+  steps.forEach(function(el,i){
+    el.classList.toggle('done',state.steps[i]);
+    el.setAttribute('aria-checked',state.steps[i]?'true':'false');
+  });
+  var done=doneCount();
+  $('progressBar').style.width=(done/TOTAL*100)+'%';
+  $('progressWrap').setAttribute('aria-valuenow',done);
+  $('doneCount').textContent=done;
+  $('totalCount').textContent=TOTAL;
+  $('checklistComplete').style.display=done===TOTAL?'block':'none';
+}
+function renderAup(){
+  $('aupCheck').checked=state.aup;
+  $('aupConfirmed').style.display=state.aup?'block':'none';
+}
+function doneCount(){return state.steps.filter(Boolean).length;}
+function quizPassed(){return state.quizBest!==null&&state.quizBest/quizQs.length>=PASS_PCT;}
+function allComplete(){return !!state.name&&doneCount()===TOTAL&&state.aup&&quizPassed();}
+
+function renderDash(){
+  var done=doneCount();
+  $('dashSteps').textContent=done+'/'+TOTAL;
+  $('dashAup').textContent=state.aup?'✅':'❌';
+  $('dashQuiz').textContent=state.quizBest===null?'—':state.quizBest+'/'+quizQs.length;
+  var log=$('dashLog');log.innerHTML='';
+  if(!state.log.length){var e=document.createElement('li');e.className='empty';e.textContent='No activity yet.';log.appendChild(e);}
+  state.log.forEach(function(m){var li=document.createElement('li');li.textContent=m;log.appendChild(li);});
+  var missing=[];
+  if(!state.name)missing.push('save your name');
+  if(!state.aup)missing.push('sign the AUP');
+  if(done<TOTAL)missing.push('finish the checklist ('+(TOTAL-done)+' left)');
+  if(!quizPassed())missing.push('pass the quiz (80%+)');
+  $('printBtn').disabled=missing.length>0;
+  $('dashHint').textContent=missing.length?'To unlock your completion record: '+missing.join(', ')+'.':'🎉 All parts complete — print your record or save it as PDF to show your CMI 101 instructor.';
+  // Hero progress summary
+  var parts=(state.name?1:0)+(state.aup?1:0)+(done===TOTAL?1:0)+(quizPassed()?1:0);
+  var hp=$('heroProgress');
+  var started=state.name||state.aup||done>0||state.quizBest!==null;
+  hp.hidden=!started;
+  if(started){
+    hp.innerHTML=parts===4?'🏅 Setup complete — <a href="#dashboard">view your completion record</a>'
+      :'📊 Your setup: '+parts+' of 4 parts done — <a href="#my-setup">continue where you left off</a>';
+  }
+}
+
+/* ───────── REGISTRATION ───────── */
+$('regForm').addEventListener('submit',function(ev){
+  ev.preventDefault();
+  var n=$('regName').value.trim().replace(/\s+/g,' ');
+  var id=$('regId').value.trim();
+  $('regName').removeAttribute('aria-invalid');$('regError').textContent='';
+  if(n.length<2){$('regName').setAttribute('aria-invalid','true');$('regError').textContent='Please enter your full name.';$('regName').focus();return;}
+  if(id&&!/^[A-Za-z0-9\-]{3,20}$/.test(id)){$('regId').setAttribute('aria-invalid','true');$('regError').textContent='Student ID can only contain letters, numbers, and dashes.';$('regId').focus();return;}
+  $('regId').removeAttribute('aria-invalid');
+  state.name=n;state.id=id;
+  logActivity('👤 Saved progress as '+n+(id?' ('+id+')':''));
+  save();renderAll();
+});
+$('regChange').addEventListener('click',function(){
+  $('regStatus').classList.remove('show');$('regForm').style.display='block';
+  $('regName').value=state.name;$('regId').value=state.id;$('regName').focus();
+});
+
+/* ───────── AUP ───────── */
+$('aupCheck').addEventListener('change',function(){
+  state.aup=this.checked;
+  logActivity(state.aup?'📋 Acknowledged IT Acceptable Use Policy':'📋 Withdrew AUP acknowledgement');
+  save();renderAup();renderDash();
+});
+
+/* ───────── CHECKLIST ───────── */
+function toggleStep(i){
+  state.steps[i]=!state.steps[i];
+  if(state.steps[i])logActivity('✅ '+steps[i].querySelector('h4').textContent);
+  save();renderSteps();renderDash();
+}
+steps.forEach(function(el,i){
+  el.addEventListener('click',function(ev){if(ev.target.closest('a'))return;toggleStep(i);});
+  el.addEventListener('keydown',function(ev){
+    if(ev.target!==el)return;
+    if(ev.key===' '||ev.key==='Enter'){ev.preventDefault();toggleStep(i);}
+  });
+});
+
+/* ───────── TABS (keyboard accessible) ───────── */
+document.querySelectorAll('[role="tablist"]').forEach(function(list){
+  var tabs=Array.prototype.slice.call(list.querySelectorAll('[role="tab"]'));
+  function select(t){
+    tabs.forEach(function(x){
+      var on=x===t;x.setAttribute('aria-selected',on);x.tabIndex=on?0:-1;
+      $(x.getAttribute('aria-controls')).hidden=!on;
+    });
+  }
+  tabs.forEach(function(t,i){
+    t.addEventListener('click',function(){select(t);});
+    t.addEventListener('keydown',function(ev){
+      var j=null;
+      if(ev.key==='ArrowRight')j=(i+1)%tabs.length;
+      if(ev.key==='ArrowLeft')j=(i-1+tabs.length)%tabs.length;
+      if(j!==null){ev.preventDefault();select(tabs[j]);tabs[j].focus();}
+    });
+  });
+});
+
+/* ───────── FAQ (accordion + search) ───────── */
+var faqItems=Array.prototype.slice.call(document.querySelectorAll('.faq-item'));
+function setFaq(item,open){
+  var b=item.querySelector('.faq-q');b.setAttribute('aria-expanded',open);item.querySelector('.faq-a').hidden=!open;
+}
+faqItems.forEach(function(item){
+  item.querySelector('.faq-q').addEventListener('click',function(){setFaq(item,this.getAttribute('aria-expanded')!=='true');});
+});
+$('faqSearch').addEventListener('input',function(){
+  var norm=function(s){return s.toLowerCase().replace(/[^a-z0-9 ]/g,'');};
+  var q=norm(this.value.trim()),shown=0;
+  faqItems.forEach(function(item){
+    var hit=!q||norm(item.textContent).indexOf(q)>-1;
+    item.style.display=hit?'':'none';if(hit)shown++;
+    setFaq(item,!!q&&hit);
+  });
+  $('faqEmpty').style.display=shown?'none':'block';
+});
+// Open an FAQ item when linked to directly (e.g. #faq-cengage)
+function openHashFaq(){var el=location.hash&&document.querySelector(location.hash);if(el&&el.classList.contains('faq-item'))setFaq(el,true);}
+window.addEventListener('hashchange',openHashFaq);openHashFaq();
+
+/* ───────── EMAIL TEMPLATE COPY ───────── */
+$('copyTemplate').addEventListener('click',function(){
+  var btn=this;
+  var text='Subject: '+$('tplSubject').textContent+'\n\n'+$('tplBody').innerText;
+  if(state.name)text=text.replace(/\[Your (Full )?Name\]/g,state.name);
+  if(state.id)text=text.replace('[Your Student ID]',state.id);
+  var done=function(){btn.textContent='✅ Copied!';setTimeout(function(){btn.textContent='📋 Copy template';},2000);};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(done,function(){fallbackCopy(text);done();});}
+  else{fallbackCopy(text);done();}
+});
+function fallbackCopy(t){var ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');}catch(e){}ta.remove();}
+
+/* ───────── QUIZ ───────── */
 var quizQs=[
   {q:"What is your official CMI student email domain?",
    opts:["@cmi.edu","@cmistudent.com","@gmail.com","@rmi.gov.mh"],ans:1,
@@ -774,91 +986,223 @@ var quizQs=[
    explain:"CMI uses a UniFi Wi-Fi system with vouchers. Get yours from the IT Help Desk or campus coordinator."},
   {q:"Can the IT Department help fix your personal laptop or phone?",
    opts:["No, IT only supports lab computers","Only if you pay a fee","Yes — IT assists with personal devices and installs free college-licensed software","Only for staff, not students"],ans:2,
-   explain:"Yes! IT assists students with personal devices — troubleshooting, repairs, and free software like Microsoft 365. Submit a ticket at helpdesk.cmi.edu."},
+   explain:"IT assists students with personal devices — troubleshooting, repairs, and free software like Microsoft 365. Submit a ticket at helpdesk.cmi.edu."},
   {q:"Where do you find your course assignments, quizzes, and class materials online?",
    opts:["SONIS","Google Drive","Moodle (elearning.cmi.edu)","Microsoft OneDrive"],ans:2,
    explain:"Moodle at elearning.cmi.edu is CMI's Learning Management System — all your course content lives there."},
+  {q:"Which single login gives you access to Gmail, Microsoft 365, Moodle, and SONIS?",
+   opts:["MyPortal SSO (myportal.cmi.edu)","Your Wi-Fi voucher","The Help Desk","Facebook"],ans:0,
+   explain:"MyPortal is CMI's Single Sign-On portal — one login for all your CMI apps."},
+  {q:"You get an email saying \"Your account will be closed — reply with your password.\" What should you do?",
+   opts:["Reply quickly so you don't lose access","Forward your password to a classmate to check","Don't reply — report it to the IT Help Desk","Ignore all emails from CMI from now on"],ans:2,
+   explain:"That's phishing. CMI IT will never ask for your password by email. Report it at helpdesk.cmi.edu."},
+  {q:"Where should you save your assignments when working in a computer lab?",
+   opts:["On the lab computer's Desktop","In Google Drive or OneDrive","In the Recycle Bin","Nowhere — just print it"],ans:1,
+   explain:"Lab files may be wiped after sessions. Save to Google Drive or OneDrive so your work follows you."}
 ];
-var qIdx=0,score=0;
-function startQuiz(){qIdx=0;score=0;document.getElementById('quizContent').style.display='block';document.getElementById('quizResult').style.display='none';document.getElementById('quizProgBar').style.width='0%';renderQuestion();}
+$('quizLen').textContent=quizQs.length;
+var qIdx=0,score=0,order=[],optOrder=[];
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function startQuiz(){
+  qIdx=0;score=0;order=shuffle(quizQs.map(function(_,i){return i;}));
+  $('quizContent').style.display='block';$('quizResult').style.display='none';
+  renderQuestion();
+}
 function renderQuestion(){
-  var q=quizQs[qIdx];
-  document.getElementById('qCounter').textContent='QUESTION '+(qIdx+1)+' OF '+quizQs.length;
-  document.getElementById('qText').textContent=q.q;
-  document.getElementById('quizProgBar').style.width=((qIdx/quizQs.length)*100)+'%';
-  var opts=document.getElementById('qOptions');opts.innerHTML='';
-  q.opts.forEach((o,i)=>{var b=document.createElement('button');b.className='q-opt';b.textContent=o;b.onclick=()=>selectAnswer(i,b);opts.appendChild(b);});
-  document.getElementById('qFeedback').className='q-feedback';document.getElementById('qFeedback').textContent='';
-  document.getElementById('qNext').style.display='none';
+  var q=quizQs[order[qIdx]];
+  $('qCounter').textContent='QUESTION '+(qIdx+1)+' OF '+quizQs.length;
+  $('qText').textContent=q.q;
+  $('quizProgBar').style.width=((qIdx/quizQs.length)*100)+'%';
+  var opts=$('qOptions');opts.innerHTML='';
+  optOrder=shuffle(q.opts.map(function(_,i){return i;}));
+  optOrder.forEach(function(oi){
+    var b=document.createElement('button');b.type='button';b.className='q-opt';b.textContent=q.opts[oi];b.dataset.oi=oi;
+    b.addEventListener('click',function(){selectAnswer(oi,b);});opts.appendChild(b);
+  });
+  $('qFeedback').className='q-feedback';$('qFeedback').textContent='';
+  $('qNext').style.display='none';
 }
-function selectAnswer(i,btn){
-  var q=quizQs[qIdx];
-  document.querySelectorAll('.q-opt').forEach(b=>b.disabled=true);
-  var fb=document.getElementById('qFeedback');
-  if(i===q.ans){btn.classList.add('correct');score++;fb.className='q-feedback ok show';fb.textContent='✅ Correct! '+q.explain;}
-  else{btn.classList.add('wrong');document.querySelectorAll('.q-opt')[q.ans].classList.add('correct');fb.className='q-feedback bad show';fb.textContent='❌ Not quite. '+q.explain;}
-  document.getElementById('qNext').style.display='block';
-  document.getElementById('qNext').textContent=qIdx<quizQs.length-1?'Next Question →':'See My Results 🏆';
+function selectAnswer(oi,btn){
+  var q=quizQs[order[qIdx]],fb=$('qFeedback');
+  document.querySelectorAll('.q-opt').forEach(function(b){b.disabled=true;if(+b.dataset.oi===q.ans)b.classList.add('correct');});
+  if(oi===q.ans){score++;fb.className='q-feedback ok show';fb.textContent='✅ Correct! '+q.explain;}
+  else{btn.classList.add('wrong');fb.className='q-feedback bad show';fb.textContent='❌ Not quite. '+q.explain;}
+  var nx=$('qNext');nx.style.display='block';
+  nx.textContent=qIdx<quizQs.length-1?'Next Question →':'See My Results 🏆';nx.focus();
 }
-function nextQuestion(){qIdx++;if(qIdx<quizQs.length)renderQuestion();else showResult();}
+$('qNext').addEventListener('click',function(){qIdx++;if(qIdx<quizQs.length)renderQuestion();else showResult();});
+$('retryBtn').addEventListener('click',startQuiz);
 function showResult(){
-  document.getElementById('quizContent').style.display='none';document.getElementById('quizResult').style.display='block';
-  document.getElementById('quizProgBar').style.width='100%';quizScore=score;updateDash();
-  var pct=score/quizQs.length;
-  var badge=pct===1?'🏆':pct>=.8?'🥇':pct>=.6?'🥈':'📘';
-  var title=pct===1?'Perfect Score!':pct>=.8?'CMI Tech Champion!':pct>=.6?'Almost There!':'Keep Learning!';
-  var sub=pct===1?'Outstanding — you are fully CMI Tech Ready!':pct>=.8?'Excellent work — you really know your CMI systems!':pct>=.6?'Good effort! Review the guide above and try again.':'No worries — read through the guide and give it another shot!';
-  document.getElementById('resultBadge').textContent=badge;
-  document.getElementById('resultTitle').textContent=title;
-  document.getElementById('resultSub').textContent=sub;
-  document.getElementById('resultScore').textContent=score+' / '+quizQs.length+' Correct';
-  logActivity('🧠 Quiz: '+score+'/'+quizQs.length+' '+badge);saveProgress();
+  $('quizContent').style.display='none';$('quizResult').style.display='block';$('quizProgBar').style.width='100%';
+  state.quizLast=score;if(state.quizBest===null||score>state.quizBest)state.quizBest=score;
+  var n=quizQs.length,pct=score/n;
+  var badge=pct===1?'🏆':pct>=PASS_PCT?'🥇':pct>=.6?'🥈':'📘';
+  var title=pct===1?'Perfect Score!':pct>=PASS_PCT?'CMI Tech Champion!':pct>=.6?'Almost There!':'Keep Learning!';
+  var sub=pct===1?'Outstanding — you are fully CMI Tech Ready!':pct>=PASS_PCT?'Excellent work — you passed! You really know your CMI systems.':pct>=.6?'Good effort! You need 80% to pass — review the guide above and try again.':'No worries — read through the guide and give it another shot!';
+  $('resultBadge').textContent=badge;$('resultTitle').textContent=title;$('resultSub').textContent=sub;
+  $('resultScore').textContent=score+' / '+n+' Correct';
+  logActivity('🧠 Quiz: '+score+'/'+n+' '+badge);save();renderDash();
+  $('retryBtn').focus();
 }
-startQuiz();
 
-var chatOpen=false;
-var CMI_PROMPT='You are the friendly CMI IT Assistant for the College of the Marshall Islands. Help first-year students with IT questions. Be warm, concise, encouraging. Max 3 sentences.\n\nKey info:\n- Student email domain: @cmistudent.com\n- Help Desk: https://helpdesk.cmi.edu\n- SSO Portal: https://myportal.cmi.edu\n- Moodle: https://elearning.cmi.edu (also via MyPortal)\n- SONIS: https://sonis.cmi.edu — login: Student ID + PIN (also via MyPortal)\n- SONIS guide: https://helpdesk.cmi.edu/hc/en-us/articles/21147987045657-SONIS-Student-Portal-User-Guide\n- Google Workspace @cmistudent.com via MyPortal\n- Microsoft 365 via MyPortal\n- Wi-Fi: UniFi voucher from IT Help Desk\n- Personal devices: IT assists students with personal laptops/phones — troubleshooting, fixing issues, installing free college-licensed software (Microsoft 365, antivirus). Submit a ticket.\n- Labs Uliga: TH 209, TH 105, WH 201-204, RH 204, RH 119, BS Lab, EDU Lab, ABE Lab\n- Outer: Arrak, Jaluit, Wotje, Kwaj, Likiep Labs\n- eBooks: Cengage, contact instructor\n- Password issues: myportal.cmi.edu or helpdesk.cmi.edu';
+/* ───────── PRINT RECORD & RESET ───────── */
+$('printBtn').addEventListener('click',function(){
+  if(!allComplete())return;
+  var d=new Date().toLocaleDateString([],{year:'numeric',month:'long',day:'numeric'});
+  $('printRecord').innerHTML=
+    '<h1>College of the Marshall Islands</h1><p>CMI 101 · IT Services Orientation — Completion Record</p>'+
+    '<table><tr><td><b>Student</b></td><td>'+esc(state.name)+'</td></tr>'+
+    '<tr><td><b>Student ID</b></td><td>'+esc(state.id||'—')+'</td></tr>'+
+    '<tr><td><b>Setup checklist</b></td><td>'+doneCount()+' of '+TOTAL+' steps complete</td></tr>'+
+    '<tr><td><b>IT Acceptable Use Policy</b></td><td>Acknowledged</td></tr>'+
+    '<tr><td><b>IT Readiness Quiz (best)</b></td><td>'+state.quizBest+' / '+quizQs.length+'</td></tr>'+
+    '<tr><td><b>Date printed</b></td><td>'+esc(d)+'</td></tr></table>'+
+    '<div class="sig"><div>Student signature</div><div>Instructor signature</div></div>'+
+    '<p style="margin-top:24px;font-size:9pt;color:#555;">Self-reported via the CMI 101 IT Services Guide. Information Technology Department · helpdesk.cmi.edu</p>';
+  window.print();
+});
+var resetArmed=null;
+$('resetBtn').addEventListener('click',function(){
+  var b=this;
+  if(!resetArmed){b.textContent='⚠️ Click again to confirm reset';resetArmed=setTimeout(function(){resetArmed=null;b.textContent='↺ Reset My Progress';},4000);return;}
+  clearTimeout(resetArmed);resetArmed=null;b.textContent='↺ Reset My Progress';
+  state={name:'',id:'',steps:steps.map(function(){return false;}),quizBest:null,quizLast:null,aup:false,log:[]};
+  try{localStorage.removeItem(STORE_KEY);}catch(e){}
+  try{if(window.storage&&window.storage.delete)window.storage.delete(STORE_KEY);}catch(e){}
+  $('regName').value='';$('regId').value='';
+  renderAll();startQuiz();
+});
 
-function toggleChat(){chatOpen=!chatOpen;document.getElementById('chatWindow').classList.toggle('open',chatOpen);document.getElementById('chatToggle').textContent=chatOpen?'✕':'🤖';}
-function addMsg(text,role){var msgs=document.getElementById('chatMessages');var d=document.createElement('div');d.className='msg '+role;d.textContent=text;msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;return d;}
-function addTyping(){var msgs=document.getElementById('chatMessages');var d=document.createElement('div');d.className='msg bot typing';d.innerHTML='<div class="dot"></div><div class="dot"></div><div class="dot"></div>';msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;return d;}
-async function sendMsg(){
-  var inp=document.getElementById('chatInput');var text=inp.value.trim();if(!text)return;
-  inp.value='';document.getElementById('chatSugs').style.display='none';
-  addMsg(text,'user');chatHistory.push({role:'user',content:text});
-  var typing=addTyping();document.getElementById('chatSend').disabled=true;
+/* ───────── SUPPORT HOURS (RMI = UTC+12) ───────── */
+(function(){
+  var now=new Date(),rmi=new Date(now.getTime()+12*3600*1000);
+  var day=rmi.getUTCDay(),mins=rmi.getUTCHours()*60+rmi.getUTCMinutes();
+  var open=day>=1&&day<=5&&mins>=480&&mins<1020;
+  var el=$('openNow');el.className='open-now '+(open?'yes':'no');
+  el.textContent=open?'● Open now':'● Closed now — submit a ticket online';
+})();
 
-  // Decide endpoint & headers
-  var endpoint, headers={'Content-Type':'application/json'}, body;
-  if(CHAT_API){
-    // ── Server proxy (GitHub Pages / external hosting) ──
-    endpoint=CHAT_API;
-    body=JSON.stringify({system:CMI_PROMPT,messages:chatHistory});
-  } else {
-    // ── Direct (Claude.ai artifact — API key auto-injected) ──
-    endpoint='https://api.anthropic.com/v1/messages';
-    headers['anthropic-version']='2023-06-01';
-    headers['anthropic-dangerous-direct-browser-access']='true';
-    body=JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:500,system:CMI_PROMPT,messages:chatHistory});
-  }
+/* ───────── SCROLL SPY & BACK TO TOP ───────── */
+var navLinks=Array.prototype.slice.call(document.querySelectorAll('.quickbar a'));
+if('IntersectionObserver' in window){
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if(!en.isIntersecting)return;
+      navLinks.forEach(function(a){
+        var on=a.getAttribute('href')==='#'+en.target.id;
+        a.classList.toggle('active',on);
+        if(on){a.setAttribute('aria-current','true');a.scrollIntoView({block:'nearest',inline:'center'});}else a.removeAttribute('aria-current');
+      });
+    });
+  },{rootMargin:'-45% 0px -50% 0px'});
+  navLinks.forEach(function(a){var s=document.querySelector(a.getAttribute('href'));if(s)io.observe(s);});
+}
+var toTop=$('toTop');
+window.addEventListener('scroll',function(){toTop.classList.toggle('show',window.scrollY>700);},{passive:true});
+toTop.addEventListener('click',function(){window.scrollTo({top:0});});
 
+/* ───────── IT ASSISTANT ─────────
+   Works offline with built-in answers. If CHAT_API is set, it asks the AI proxy first
+   and falls back to built-in answers on any error. */
+var CMI_PROMPT='You are the friendly CMI IT Assistant for the College of the Marshall Islands. Help first-year students with IT questions. Be warm, concise, encouraging. Max 3 sentences. Never ask for passwords.\n\nKey info:\n- Student email domain: @cmistudent.com\n- Help Desk: https://helpdesk.cmi.edu, email helpdesk@cmi.edu, Mon–Fri 8:00 AM–5:00 PM RMI time, Uliga Campus\n- SSO Portal: https://myportal.cmi.edu\n- Moodle: https://elearning.cmi.edu (also via MyPortal)\n- SONIS: https://sonis.cmi.edu — login: Student ID + PIN (also via MyPortal)\n- SONIS guide: https://helpdesk.cmi.edu/hc/en-us/articles/21147987045657-SONIS-Student-Portal-User-Guide\n- Google Workspace @cmistudent.com via MyPortal; Microsoft 365 via MyPortal\n- Wi-Fi: UniFi voucher from IT Help Desk\n- Personal devices: IT helps with personal laptops/phones — troubleshooting, fixes, free college-licensed software (Microsoft 365, antivirus). Submit a ticket.\n- Labs Uliga: TH 209, TH 105, WH 201-204, RH 204, RH 119, BS Lab, EDU Lab, ABE Lab\n- Outer campuses: Arrak, Jaluit, Wotje, Kwajalein, Likiep labs — contact campus coordinator\n- eBooks: Cengage, access code from instructor\n- Password issues: myportal.cmi.edu Forgot Password or helpdesk.cmi.edu\n- Phishing: IT never asks for passwords by email; report to Help Desk';
+
+var KB=[
+  {k:['sonis','pin','grade','schedule','register','registration','transcript','billing','financial aid'],
+   a:'SONIS is at https://sonis.cmi.edu (or via MyPortal). Click Login → Student, then enter your Student ID and PIN. Forgot your PIN? Visit the IT Help Desk with your Student ID and they can reset it.'},
+  {k:['email','gmail','cmistudent','mail','inbox'],
+   a:'Your official student email ends in @cmistudent.com. Open it from MyPortal (https://myportal.cmi.edu) → Gmail, and check it every day for class and college announcements.'},
+  {k:['wifi','wi-fi','wireless','internet','voucher','unifi','connect'],
+   a:'Campus Wi-Fi uses UniFi vouchers. Get a voucher from the IT Help Desk or your campus coordinator, connect to the CMI network, and enter the code. Still stuck? Submit a ticket at https://helpdesk.cmi.edu.'},
+  {k:['laptop','phone','tablet','device','computer broken','fix','repair','virus','slow'],
+   a:'Yes — IT helps students with personal laptops, phones, and tablets: troubleshooting, fixing issues, and installing free college-licensed software. Submit a ticket at https://helpdesk.cmi.edu to get started.'},
+  {k:['software','office','microsoft','m365','365','word','excel','powerpoint','teams','onedrive','antivirus'],
+   a:'Microsoft 365 (Word, Excel, PowerPoint, Teams, OneDrive) is available with your CMI login through https://myportal.cmi.edu. IT can also install Microsoft 365 and antivirus on your own device — just submit a Help Desk ticket.'},
+  {k:['moodle','elearning','course','assignment','class','quiz','syllabus'],
+   a:'Your courses are in Moodle at https://elearning.cmi.edu (or via MyPortal). If a course is missing, first confirm your enrollment in SONIS, then contact your instructor.'},
+  {k:['password','forgot','reset','locked','login','log in','sso','myportal','portal','sign in'],
+   a:'MyPortal (https://myportal.cmi.edu) is your single login for Gmail, M365, Moodle, and SONIS. Use "Forgot Password" there, or submit a ticket at https://helpdesk.cmi.edu. Never share your password with anyone — not even IT.'},
+  {k:['lab','labs','room','print','printer','building'],
+   a:'Uliga labs: TH 209, TH 105, WH 201–204, RH 204, RH 119, plus the BS, EDU, and ABE labs. Outer campuses (Arrak, Jaluit, Wotje, Kwajalein, Likiep) have their own labs — ask your campus coordinator for hours. Always save work to Drive or OneDrive!'},
+  {k:['cengage','ebook','e-book','textbook','book','access code'],
+   a:'Cengage eBook access comes from your instructor. Check the course syllabus in Moodle or email your instructor at their @cmi.edu address for the access code.'},
+  {k:['phish','scam','suspicious','hacked','spam','fake'],
+   a:'That sounds like phishing. Don\'t click links or reply — CMI IT will never ask for your password by email. Report it at https://helpdesk.cmi.edu, and if you already entered your password, change it right away in MyPortal.'},
+  {k:['help desk','helpdesk','ticket','contact','support','hours','office','call'],
+   a:'Submit a ticket anytime at https://helpdesk.cmi.edu or email helpdesk@cmi.edu. Support hours are Monday–Friday, 8:00 AM–5:00 PM (RMI time), at the IT office on Uliga Campus.'},
+  {k:['drive','backup','back up','save','usb','lost file'],
+   a:'Save your work to Google Drive (via Gmail/MyPortal) or OneDrive (via Microsoft 365). Lab computers may be wiped after sessions, so never keep your only copy there or on a USB drive.'},
+  {k:['iakwe','hello','hi ','hey','good morning','good afternoon'],
+   a:'Iakwe! 😊 What can I help you with — email, Moodle, SONIS, Wi-Fi, or your own device?'},
+  {k:['thank','kommol','thanks'],
+   a:'Kommol tata for asking! Good luck this semester — you can always reach IT at https://helpdesk.cmi.edu.'}
+];
+function localAnswer(text){
+  var t=' '+text.toLowerCase()+' ',best=null,bestScore=0;
+  KB.forEach(function(e){var s=0;e.k.forEach(function(k){if(t.indexOf(k)>-1)s+=k.length>4?2:1;});if(s>bestScore){bestScore=s;best=e;}});
+  return best?best.a:'I\'m not sure about that one. Try asking about email, MyPortal, Moodle, SONIS, Wi-Fi, labs, or personal device help — or submit a ticket at https://helpdesk.cmi.edu and the IT team will assist you.';
+}
+
+var chatOpen=false,chatHistory=[],busy=false;
+function toggleChat(force){
+  chatOpen=typeof force==='boolean'?force:!chatOpen;
+  $('chatWindow').classList.toggle('open',chatOpen);
+  $('chatToggle').textContent=chatOpen?'✕':'🤖';
+  $('chatToggle').setAttribute('aria-expanded',chatOpen);
+  $('chatToggle').setAttribute('aria-label',chatOpen?'Close CMI IT Assistant':'Open CMI IT Assistant');
+  if(chatOpen)$('chatInput').focus();
+}
+$('chatToggle').addEventListener('click',function(){toggleChat();});
+$('chatClose').addEventListener('click',function(){toggleChat(false);$('chatToggle').focus();});
+document.addEventListener('keydown',function(ev){if(ev.key==='Escape'&&chatOpen){toggleChat(false);$('chatToggle').focus();}});
+
+function linkify(s){
+  return esc(s).replace(/(https?:\/\/[^\s<)]+[^\s<).,])/g,'<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>')
+               .replace(/\b([\w.+-]+@cmi\.edu)\b/g,'<a href="mailto:$1">$1</a>');
+}
+function addMsg(text,role){
+  var msgs=$('chatMessages'),d=document.createElement('div');
+  d.className='msg '+role;
+  if(role==='bot')d.innerHTML=linkify(text);else d.textContent=text;
+  msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;return d;
+}
+function addTyping(){var msgs=$('chatMessages'),d=document.createElement('div');d.className='msg bot typing';d.setAttribute('aria-label','Assistant is typing');d.innerHTML='<div class="dot"></div><div class="dot"></div><div class="dot"></div>';msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;return d;}
+
+async function askProxy(){
+  var ctrl=('AbortController' in window)?new AbortController():null;
+  var timer=ctrl?setTimeout(function(){ctrl.abort();},15000):null;
   try{
-    var res=await fetch(endpoint,{method:'POST',headers:headers,body:body});
+    var res=await fetch(CHAT_API,{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({system:CMI_PROMPT,messages:chatHistory.slice(-10)}),signal:ctrl?ctrl.signal:undefined});
+    if(!res.ok)throw new Error('HTTP '+res.status);
     var data=await res.json();
-    if(!res.ok){
-      typing.remove();
-      addMsg('⚠️ '+(data.error&&data.error.message?data.error.message:'Error '+res.status),'bot');
-      chatHistory.pop();
-    } else {
-      var reply=data.content&&data.content[0]?data.content[0].text:'I had trouble. Please try again.';
-      typing.remove();addMsg(reply,'bot');chatHistory.push({role:'assistant',content:reply});
-    }
-  }catch(e){
-    typing.remove();addMsg('⚠️ Network error: '+e.message,'bot');chatHistory.pop();
-  }
-  document.getElementById('chatSend').disabled=false;
+    var reply=data&&data.content&&data.content[0]&&data.content[0].text;
+    if(!reply)throw new Error('Empty reply');
+    return reply;
+  }finally{if(timer)clearTimeout(timer);}
 }
-function sendSug(btn){document.getElementById('chatInput').value=btn.textContent;sendMsg();}
+async function sendMsg(){
+  var inp=$('chatInput'),text=inp.value.trim();
+  if(!text||busy)return;
+  busy=true;inp.value='';$('chatSugs').style.display='none';$('chatSend').disabled=true;
+  addMsg(text,'user');chatHistory.push({role:'user',content:text});
+  var typing=addTyping(),reply;
+  if(CHAT_API){
+    try{reply=await askProxy();}catch(e){reply=localAnswer(text);}
+  }else{
+    await new Promise(function(r){setTimeout(r,450);});
+    reply=localAnswer(text);
+  }
+  typing.remove();addMsg(reply,'bot');chatHistory.push({role:'assistant',content:reply});
+  busy=false;$('chatSend').disabled=false;inp.focus();
+}
+$('chatSend').addEventListener('click',sendMsg);
+$('chatInput').addEventListener('keydown',function(ev){if(ev.key==='Enter'&&!ev.shiftKey){ev.preventDefault();sendMsg();}});
+document.querySelectorAll('.sug').forEach(function(b){b.addEventListener('click',function(){$('chatInput').value=b.textContent;sendMsg();});});
+
+/* ───────── INIT ───────── */
+startQuiz();
+load();
+})();
 </script>
 </body>
 </html>
