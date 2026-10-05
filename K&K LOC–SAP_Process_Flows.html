@@ -1,0 +1,234 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>K&amp;K LOC–SAP Process Flows</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: header + legend, then two swimlane diagrams (Flow A, Flow B), each with presenter notes */
+:root{
+  --bg:#f5f7f8; --panel:#ffffff; --fg:#17232b; --muted:#56656f; --line:#3b4a54; --rule:#d9e0e4;
+  --sap:#1f5f9e; --sap-t:#e7f0f9;
+  --loc:#0f7a6c; --loc-t:#e3f4f1;
+  --pos:#a2620f; --pos-t:#fbf0e0;
+  --b1:#6a4aa8; --b1-t:#efeafa;
+  --exc:#b2382f; --exc-t:#fbe9e7;
+  --lane-a:#eef2f4; --lane-b:#f7f9fa;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#11181d; --panel:#172128; --fg:#e4ecf0; --muted:#97a7b1; --line:#a9b8c1; --rule:#2a3740;
+  --sap:#6ea8e6; --sap-t:#16283a; --loc:#4cc2b0; --loc-t:#112c29; --pos:#e3a54e; --pos-t:#2e2414;
+  --b1:#a98ee6; --b1-t:#241d36; --exc:#ef7d72; --exc-t:#341a18; --lane-a:#151f25; --lane-b:#18232a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#11181d; --panel:#172128; --fg:#e4ecf0; --muted:#97a7b1; --line:#a9b8c1; --rule:#2a3740;
+  --sap:#6ea8e6; --sap-t:#16283a; --loc:#4cc2b0; --loc-t:#112c29; --pos:#e3a54e; --pos-t:#2e2414;
+  --b1:#a98ee6; --b1-t:#241d36; --exc:#ef7d72; --exc-t:#341a18; --lane-a:#151f25; --lane-b:#18232a; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:15px;line-height:1.5;padding:0 20px}
+.wrap{max-width:1500px;margin:0 auto;padding-block:28px 48px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0}
+h1{font-size:clamp(24px,3.2vw,34px);line-height:1.15;margin:6px 0 8px;text-wrap:balance;font-weight:700}
+.lede{color:var(--muted);max-width:70ch;margin:0}
+.bar{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;justify-content:space-between;margin:22px 0 10px;padding:12px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.sw{width:22px;height:14px;border:1.5px solid var(--line);border-radius:3px;background:var(--panel)}
+.sw.d{transform:rotate(45deg);width:12px;height:12px;border-radius:1px}
+.sw.o{border-radius:999px}
+.sw.x{border-color:var(--exc);background:var(--exc-t)}
+.sw.p{border-style:dashed}
+.ctrl{display:flex;gap:6px}
+button{font:500 13px var(--sans);color:var(--fg);background:var(--panel);border:1px solid var(--rule);border-radius:6px;padding:6px 12px;cursor:pointer}
+button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+button:focus-visible{outline:2px solid var(--sap);outline-offset:2px}
+section{margin-top:30px}
+.sh{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px;margin-bottom:10px}
+.sh h2{margin:0;font-size:21px}
+.sh .route{font-family:var(--mono);font-size:13px;color:var(--muted)}
+.scroller{overflow-x:auto;background:var(--panel);border:1px solid var(--rule);border-radius:10px}
+.scroller svg{display:block}
+.fit .scroller svg{width:100%;height:auto}
+.notes{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px 28px;margin-top:14px;font-size:14px;color:var(--muted)}
+.notes p{margin:0;min-width:0}
+.notes b{color:var(--fg);font-weight:600}
+footer{margin-top:36px;font-size:13px;color:var(--muted)}
+svg text{font-family:var(--sans)}
+.lane-name{font-weight:700;font-size:13px;fill:var(--fg)}
+.lane-role{font-size:11px;fill:var(--muted)}
+.n-t{font-weight:600;font-size:12.5px;fill:var(--fg)}
+.n-s{font-size:11px;fill:var(--muted)}
+.edge{fill:none;stroke:var(--line);stroke-width:1.5}
+.edge.p{stroke-dasharray:5 4}
+.edge.x{stroke:var(--exc)}
+.elbl{font-family:var(--mono);font-size:11px;fill:var(--fg);paint-order:stroke;stroke:var(--panel);stroke-width:5px;stroke-linejoin:round}
+.tag{font-family:var(--mono);font-size:10px;fill:var(--muted)}
+</style>
+
+<div class="wrap" id="app">
+  <p class="eyebrow">K&amp;K Island Pride · LOC SMS POS ↔ SAP Business One</p>
+  <h1>Integration process flows</h1>
+  <p class="lede">The full business process for both directions, drawn from the Updated Integration Process (v2.2). Each lane is one system. Dashed shapes are steps that depend on a decision still open in Section 9.</p>
+
+  <div class="bar">
+    <div class="legend">
+      <span><i class="sw o"></i>Start / end</span>
+      <span><i class="sw"></i>Process step</span>
+      <span><i class="sw d"></i>Decision</span>
+      <span><i class="sw x"></i>Exception handling</span>
+      <span><i class="sw p"></i>Pending decision</span>
+    </div>
+    <div class="ctrl" role="group" aria-label="Diagram size">
+      <button id="b-actual" aria-pressed="true">Actual size</button>
+      <button id="b-fit" aria-pressed="false">Fit to width</button>
+    </div>
+  </div>
+
+  <section id="flow-a">
+    <div class="sh"><h2>Flow A · Downstream master data</h2><span class="route">SAP B1 → LOC HOST SMS → LOC POS</span></div>
+    <div class="scroller"><svg id="svgA" role="img" aria-label="Flow A swimlane: item master data from SAP Business One through LOC HOST SMS to LOC POS terminals"></svg></div>
+    <div class="notes">
+      <p><b>SAP owns the item.</b> Item code, UPC, description, category, UOM and tax are maintained only in SAP. LOC reads them and never writes back.</p>
+      <p><b>LOC owns the retail layer.</b> Selling price, effective dates, discounts, promotions and tenders are set in LOC HOST SMS before going to the stores.</p>
+      <p><b>Rejects go back to the source.</b> A record that fails validation is logged and corrected in SAP. Only failed records are resent.</p>
+    </div>
+  </section>
+
+  <section id="flow-b">
+    <div class="sh"><h2>Flow B · Upstream sales posting</h2><span class="route">LOC POS → LOC HOST SMS → B1iF → SAP B1</span></div>
+    <div class="scroller"><svg id="svgB" role="img" aria-label="Flow B swimlane: store sales from LOC POS through LOC HOST SMS and B1iF into SAP Business One, with reconciliation"></svg></div>
+    <div class="notes">
+      <p><b>Full detail leaves the store.</b> Every receipt carries store, terminal, UPC lines, gross, discount, net and tender, even when SAP posts it in summary.</p>
+      <p><b>Hybrid posting.</b> Walk-in sales are consolidated per store, terminal and day. Charge sales post one by one against the customer account.</p>
+      <p><b>Nothing posts twice.</b> Receipt number plus store, terminal and business date blocks duplicates. Daily totals are reconciled by store and tender.</p>
+    </div>
+  </section>
+
+  <footer>Source: KK_LOC_SAP Updated Integration Process v2.2 · Sections 5, 6, 8 and 12 · Prepared for the LOC SMS / Bridge Retail walkthrough</footer>
+</div>
+
+<script>
+const NS="http://www.w3.org/2000/svg", LABEL=128, COLW=172, NW=148;
+const LANE_C={sap:["--sap","--sap-t"],loc:["--loc","--loc-t"],pos:["--pos","--pos-t"],b1:["--b1","--b1-t"]};
+
+function el(tag,attrs,parent){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e}
+function wrap(t,max){if(!t)return[];const out=[];let cur="";for(const w of t.split(" ")){if((cur+" "+w).trim().length>max&&cur){out.push(cur);cur=w}else cur=(cur+" "+w).trim()}if(cur)out.push(cur);return out}
+
+function draw(svg,cfg){
+  // lane geometry
+  let y=0;const lanes=cfg.lanes.map((l,i)=>{const h=l.rows===2?262:150;const o={...l,top:y,h,i};y+=h;return o});
+  const W=LABEL+cfg.cols*COLW+16,H=y;
+  svg.setAttribute("viewBox",`0 0 ${W} ${H}`);svg.setAttribute("width",W);svg.setAttribute("height",H);
+  const defs=el("defs",{},svg);
+  [["ar","var(--line)"],["arx","var(--exc)"]].forEach(([id,c])=>{const m=el("marker",{id:cfg.id+id,viewBox:"0 0 10 10",refX:"9",refY:"5",markerWidth:"8",markerHeight:"8",orient:"auto-start-reverse"},defs);el("path",{d:"M0,0 L10,5 L0,10 z",style:`fill:${c}`},m)});
+  lanes.forEach(l=>{
+    el("rect",{x:0,y:l.top,width:W,height:l.h,style:`fill:var(${l.i%2?"--lane-b":"--lane-a"})`},svg);
+    el("rect",{x:0,y:l.top,width:6,height:l.h,style:`fill:var(${LANE_C[l.key][0]})`},svg);
+    if(l.i)el("line",{x1:0,x2:W,y1:l.top,y2:l.top,style:"stroke:var(--rule)"},svg);
+    const t=el("text",{x:18,y:l.top+l.h/2-4,class:"lane-name"},svg);t.textContent=l.name;
+    const r=el("text",{x:18,y:l.top+l.h/2+13,class:"lane-role"},svg);r.textContent=l.role;
+  });
+  el("line",{x1:LABEL-6,x2:LABEL-6,y1:0,y2:H,style:"stroke:var(--rule)"},svg);
+  const laneBy=Object.fromEntries(lanes.map(l=>[l.key,l]));
+  // nodes
+  const N={};
+  cfg.nodes.forEach(n=>{
+    const l=laneBy[n.lane],cx=LABEL+n.col*COLW+COLW/2,cy=l.top+(n.row?190:74);
+    const tl=n.title.split("\n").flatMap(s=>wrap(s,n.shape==="dia"?14:21));
+    const sl=n.shape==="dia"?[]:wrap(n.sub,25);
+    let w=NW,h=Math.max(56,18+tl.length*15+sl.length*13.5+(n.tag?13:0));
+    if(n.shape==="oval"){w=134;h=46}
+    if(n.shape==="dia"){w=112;h=84}
+    const [stroke,fill]=n.exc?["--exc","--exc-t"]:LANE_C[l.key];
+    const st=`fill:var(${fill});stroke:var(${stroke});stroke-width:1.6${n.pending?";stroke-dasharray:6 4":""}`;
+    if(n.shape==="dia")el("polygon",{points:`${cx},${cy-h/2} ${cx+w/2},${cy} ${cx},${cy+h/2} ${cx-w/2},${cy}`,style:st},svg);
+    else el("rect",{x:cx-w/2,y:cy-h/2,width:w,height:h,rx:n.shape==="oval"?h/2:7,style:st},svg);
+    let ty=cy-h/2+(n.shape==="dia"?h/2-(tl.length-1)*7.5+4:(n.shape==="oval"?h/2-(tl.length-1)*7.5+4:17));
+    tl.forEach(s=>{const t=el("text",{x:cx,y:ty,class:"n-t","text-anchor":"middle"},svg);t.textContent=s;ty+=15});
+    ty+=1;sl.forEach(s=>{const t=el("text",{x:cx,y:ty,class:"n-s","text-anchor":"middle"},svg);t.textContent=s;ty+=13.5});
+    if(n.tag){const t=el("text",{x:cx,y:ty+1,class:"tag","text-anchor":"middle"},svg);t.textContent=n.tag}
+    N[n.id]={cx,cy,w,h};
+  });
+  const port=(n,s)=>s==="r"?[n.cx+n.w/2,n.cy]:s==="l"?[n.cx-n.w/2,n.cy]:s==="t"?[n.cx,n.cy-n.h/2]:[n.cx,n.cy+n.h/2];
+  cfg.edges.forEach(e=>{
+    const [a,as]=e.from.split("."),[b,bs]=e.to.split(".");
+    const p1=port(N[a],as),p2=port(N[b],bs);let pts=[p1];
+    if(e.via)pts.push(...e.via.map(v=>[v[0]==="a"?p1[0]:v[0]==="b"?p2[0]:v[0],v[1]==="a"?p1[1]:v[1]==="b"?p2[1]:v[1]]));
+    else if((as==="r"||as==="l")&&(bs==="l"||bs==="r")){if(p1[1]!==p2[1]){const mx=(p1[0]+p2[0])/2;pts.push([mx,p1[1]],[mx,p2[1]])}}
+    else if((as==="t"||as==="b")&&(bs==="t"||bs==="b")){if(p1[0]!==p2[0]){const my=(p1[1]+p2[1])/2;pts.push([p1[0],my],[p2[0],my])}}
+    else if(as==="r"||as==="l")pts.push([p2[0],p1[1]]);
+    else pts.push([p1[0],p2[1]]);
+    pts.push(p2);
+    const cls="edge"+(e.pending?" p":"")+(e.exc?" x":"");
+    el("polyline",{points:pts.map(p=>p.join(",")).join(" "),class:cls,"marker-end":`url(#${cfg.id}${e.exc?"arx":"ar"})`},svg);
+    if(e.label){
+      const [q1,q2]=[pts[0],pts[1]],dx=Math.sign(q2[0]-q1[0]),dy=Math.sign(q2[1]-q1[1]);
+      const lx=dx<0?q1[0]-8:q1[0]+dx*20+(dy?8:0),ly=q1[1]+dy*20+(dx?-7:4);
+      const t=el("text",{x:lx,y:ly,class:"elbl","text-anchor":dx<0?"end":dy?"start":"middle"},svg);t.textContent=e.label;
+    }
+  });
+}
+
+draw(document.getElementById("svgA"),{id:"A",cols:8,
+  lanes:[{key:"sap",name:"SAP B1",role:"Back-office ERP"},{key:"loc",name:"LOC HOST SMS",role:"Retail control hub",rows:2},{key:"pos",name:"LOC POS",role:"Store terminals"}],
+  nodes:[
+    {id:"s",lane:"sap",col:0,shape:"oval",title:"New or changed item"},
+    {id:"a1",lane:"sap",col:1,title:"Maintain item master",sub:"UPC, description, category, UOM, tax, active status"},
+    {id:"a2",lane:"sap",col:2,title:"Read-only SAP views",sub:"Access scope provisioned by ANSI"},
+    {id:"inv",lane:"sap",col:5,pending:true,title:"Stock-on-hand update",sub:"After GRPO, adjustment, transfer or count",tag:"DECISION #5"},
+    {id:"a3",lane:"loc",col:2,title:"Retrieve new and changed items",sub:"DB retrieval or B1iF push",tag:"DECISION #4"},
+    {id:"d1",lane:"loc",col:3,shape:"dia",title:"Valid, UPC\nunique?"},
+    {id:"ea",lane:"loc",col:3,row:1,exc:true,title:"Reject and log record",sub:"Status returned for correction"},
+    {id:"a4",lane:"loc",col:4,title:"Retail maintenance",sub:"Selling price, effective dates, discounts, promos, tenders"},
+    {id:"a5",lane:"loc",col:5,title:"Approve and distribute",sub:"Item, price and promo data to each store"},
+    {id:"a8",lane:"loc",col:6,title:"Log load status",sub:"Resend failed records only"},
+    {id:"a6",lane:"pos",col:5,title:"Terminals load updates",sub:"New prices take effect on their date"},
+    {id:"a7",lane:"pos",col:6,title:"Confirm load to HO",sub:"Per terminal acknowledgment"},
+    {id:"e",lane:"pos",col:7,shape:"oval",title:"Ready to sell by UPC"}
+  ],
+  edges:[
+    {from:"s.r",to:"a1.l"},{from:"a1.r",to:"a2.l"},{from:"a2.b",to:"a3.t"},{from:"a3.r",to:"d1.l"},
+    {from:"d1.r",to:"a4.l",label:"Yes"},{from:"d1.b",to:"ea.t",label:"No",exc:true},
+    {from:"ea.l",to:"a1.b",via:[[ "b","a"]],label:"Correct in SAP",exc:true},
+    {from:"a4.r",to:"a5.l"},{from:"inv.b",to:"a5.t",pending:true,label:"On-hand qty"},
+    {from:"a5.b",to:"a6.t"},{from:"a6.r",to:"a7.l"},{from:"a7.r",to:"e.l"},{from:"a7.t",to:"a8.b",label:"Ack"}
+  ]});
+
+draw(document.getElementById("svgB"),{id:"B",cols:12,
+  lanes:[{key:"pos",name:"LOC POS",role:"Store terminals"},{key:"loc",name:"LOC HOST SMS",role:"Retail control hub",rows:2},{key:"b1",name:"B1iF",role:"SAP integration layer"},{key:"sap",name:"SAP B1",role:"Back-office ERP"}],
+  nodes:[
+    {id:"s",lane:"pos",col:0,shape:"oval",title:"Customer checkout"},
+    {id:"b1",lane:"pos",col:1,title:"Scan items by UPC",sub:"Price, discount and promo applied"},
+    {id:"b2",lane:"pos",col:2,title:"Take payment",sub:"Tender, or A/R customer for a charge sale"},
+    {id:"b3",lane:"pos",col:3,title:"Complete receipt",sub:"Receipt no., lines, gross, discount, net, tender"},
+    {id:"b4",lane:"loc",col:3,title:"Collect transactions",sub:"From all store terminals"},
+    {id:"dv",lane:"loc",col:4,shape:"dia",title:"Complete\nand valid?"},
+    {id:"eb",lane:"loc",col:4,row:1,exc:true,title:"Quarantine record",sub:"Correct and resubmit, never post silently"},
+    {id:"dc",lane:"loc",col:5,shape:"dia",title:"Charge\nsale?"},
+    {id:"bi",lane:"loc",col:6,title:"Individual A/R sale",sub:"One per receipt, on the customer account"},
+    {id:"bw",lane:"loc",col:6,row:1,title:"Consolidated walk-in",sub:"Per store, terminal and day, tender detail kept",tag:"DECISION #6"},
+    {id:"bm",lane:"loc",col:7,title:"Map and build batch",sub:"Tenders to SAP accounts, gross + discount, batch ID and totals"},
+    {id:"bf",lane:"b1",col:7,title:"Transform and de-duplicate",sub:"Receipt + store + terminal + date"},
+    {id:"sa",lane:"sap",col:8,title:"Post A/R invoice",sub:"With payment or cash/bank clearing entry"},
+    {id:"sb",lane:"sap",col:9,title:"Update inventory and GL",sub:"Return SAP document number"},
+    {id:"rc",lane:"loc",col:9,title:"Daily reconciliation",sub:"LOC vs SAP by store, tender and date"},
+    {id:"dm",lane:"loc",col:10,shape:"dia",title:"Totals\nmatch?"},
+    {id:"ex",lane:"loc",col:10,row:1,exc:true,title:"Investigate and reprocess",sub:"Without duplicate posting"},
+    {id:"e",lane:"loc",col:11,shape:"oval",title:"Batch closed"}
+  ],
+  edges:[
+    {from:"s.r",to:"b1.l"},{from:"b1.r",to:"b2.l"},{from:"b2.r",to:"b3.l"},{from:"b3.b",to:"b4.t"},
+    {from:"b4.r",to:"dv.l"},{from:"dv.r",to:"dc.l",label:"Yes"},{from:"dv.b",to:"eb.t",label:"No",exc:true},
+    {from:"eb.l",to:"b4.b",via:[["b","a"]],label:"Resubmit",exc:true},
+    {from:"dc.r",to:"bi.l",label:"Yes"},{from:"dc.b",to:"bw.l",label:"No"},
+    {from:"bi.r",to:"bm.l"},{from:"bw.r",to:"bm.l"},{from:"bm.b",to:"bf.t"},
+    {from:"bf.r",to:"sa.t"},{from:"sa.r",to:"sb.l"},{from:"sb.t",to:"rc.b",label:"Ack"},
+    {from:"rc.r",to:"dm.l"},{from:"dm.r",to:"e.l",label:"Yes"},{from:"dm.b",to:"ex.t",label:"No",exc:true}
+  ]});
+
+const app=document.getElementById("app"),ba=document.getElementById("b-actual"),bf=document.getElementById("b-fit");
+function setFit(f){app.classList.toggle("fit",f);ba.setAttribute("aria-pressed",!f);bf.setAttribute("aria-pressed",f);try{localStorage.setItem("kkfit",f?"1":"0")}catch(e){}}
+ba.onclick=()=>setFit(false);bf.onclick=()=>setFit(true);
+try{if(localStorage.getItem("kkfit")==="1")setFit(true)}catch(e){}
+</script>
+
+</body></html>
