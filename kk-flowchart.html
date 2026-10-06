@@ -211,7 +211,7 @@ function renderMain(){
   const p=state.page;
   app.innerHTML=`<p class="eyebrow">${esc(p.eyebrow)}</p><h1>${esc(p.title)}</h1><p class="lede">${esc(p.lede)}</p>
   <div class="bar"><div class="legend"><span><i class="sw o"></i>Start / end</span><span><i class="sw"></i>Process step</span><span><i class="sw d"></i>Decision</span><span><i class="sw x"></i>Exception handling</span><span><i class="sw p"></i>Pending decision</span><span><i class="sw c"></i>Connector to another flow</span></div>
-  <div class="ctrl">${dirty&&!editing?`<button class="primary" data-act="save" ${saving?"disabled":""}>${saving?"Saving…":"Save changes"}</button>`:""}
+  <div class="ctrl">
   ${readOnly?"":`<button data-act="edit" aria-pressed="${editing}">${editing?"Done editing":"Edit flowchart"}</button>`}
   <span class="seg" role="group" aria-label="Diagram size"><button data-act="actual" aria-pressed="${!fit}">Actual size</button><button data-act="fit" aria-pressed="${fit}">Fit to width</button></span></div></div>
   ${pendingDraft?`<div class="banner"><span>You have edits from earlier that were not saved.</span><button class="sm" data-act="restore">Restore my edits</button><button class="sm" data-act="dropdraft">Dismiss</button></div>`:""}
@@ -232,7 +232,7 @@ function renderPanel(){
   panel.hidden=!editing;if(!editing){panel.innerHTML="";return}
   const head=`<div class="ph"><h3>Edit flowchart</h3><button class="sm" data-act="edit">Done</button></div>
   <p class="status ${dirty?"dirty":""}">${saving?"Saving…":dirty?"Unsaved changes":"No unsaved changes"}</p>
-  <div class="acts"><button class="primary" data-act="save" ${!dirty||saving?"disabled":""}>Save changes</button><button data-act="discard" ${!dirty||saving?"disabled":""}>Discard changes</button></div>`;
+  <div class="acts"><button data-act="discard" ${!dirty||saving?"disabled":""}>Discard changes</button></div>`;
   let body="";
   const f=sel&&flowBy(sel.f),n=f&&f.nodes.find(x=>x.id===sel.n);
   if(n){
