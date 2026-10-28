@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Student Completion Dashboard — AY 2024–25</title>
+<title>CMI Student Completion Dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -253,7 +253,7 @@ td.mono{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);font-
       <div class="header-eyebrow">College of the Marshall Islands</div>
       <h1>Student Completion <em>Report</em></h1>
       <div class="subtitle">
-        <span>Academic Year <strong>2024–25</strong></span>
+        <span>Academic Year <strong id="hdr-ay">—</strong></span>
         <span id="hdr-rec">—</span>
         <span id="hdr-file">—</span>
       </div>
@@ -447,7 +447,7 @@ td.mono{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);font-
     <!-- ══ INSIGHTS ══ -->
     <section class="section" id="insights">
       <div class="section-title">Executive Insights</div>
-      <div class="section-desc">Auto-identified patterns and key metrics across AY 2024–25</div>
+      <div class="section-desc" id="insights-desc">Auto-identified patterns and key metrics</div>
       <div id="insights-content"></div>
     </section>
 
@@ -470,7 +470,7 @@ td.mono{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);font-
 
 <script>
 /* ═══════════════════════════════════════════════════════════════
-   CMI COMPLETION DASHBOARD — AY 2024-25
+   CMI COMPLETION DASHBOARD${AY_LABEL?' — AY '+AY_LABEL:''}
    Data: any CMI student completion report workbook (Cleaned Data sheet required)
    ═══════════════════════════════════════════════════════════════ */
 
@@ -631,7 +631,23 @@ function switchTab(tabsId, panelsId, idx) {
 }
 
 // ── STATE ──────────────────────────────────────────────────────
-let RAW = [], BY_SEM = {}, FILE_NAME = '';
+let RAW = [], BY_SEM = {}, FILE_NAME = '', AY_LABEL = '';
+
+function deriveAYLabel(){
+  // Collect all non-empty Year values from data
+  const years=[...new Set(RAW.map(r=>(r['Year']||'').trim()).filter(Boolean))]
+    .map(y=>parseInt(y)).filter(y=>!isNaN(y)).sort();
+  if(!years.length){
+    // Fall back to source file name hints (e.g. "ay2425" → "2024–25")
+    const m=(FILE_NAME||'').match(/(\d{2})(\d{2})/);
+    if(m) return `20${m[1]}–${m[2]}`;
+    return '';
+  }
+  const first=years[0], last=years[years.length-1];
+  if(first===last) return String(first);
+  // AY style: first full year – last 2 digits (e.g. 2024–25)
+  return `${first}–${String(last).slice(-2)}`;
+}
 
 // ── UPLOAD ─────────────────────────────────────────────────────
 const uzone = document.getElementById('uzone');
@@ -679,11 +695,15 @@ function parse(wb) {
   SEM_LABELS = SEM_KEYS.map(sl);
   BY_SEM = {};
   SEM_KEYS.forEach(k=>{ BY_SEM[k]=RAW.filter(r=>r['Source File']===k); });
+  // Derive academic year label from Year column values (e.g. "2024", "2025" → "2024–25")
+  AY_LABEL = deriveAYLabel();
   renderDash();
   document.getElementById('upload-screen').style.display='none';
   document.getElementById('dash').style.display='block';
   document.getElementById('hdr-rec').innerHTML=`<strong>${fmt(RAW.length)}</strong> records`;
   document.getElementById('hdr-file').innerHTML=`<strong>${FILE_NAME}</strong>`;
+  const ayHdr=document.getElementById('hdr-ay');
+  if(ayHdr) ayHdr.textContent=AY_LABEL||'—';
   document.getElementById('hdr-date').textContent=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
   setLoad(false);
   initNavSpy();
@@ -693,7 +713,8 @@ function resetApp(){
   if(confirm('Upload a new file?')){
     document.getElementById('upload-screen').style.display='flex';
     document.getElementById('dash').style.display='none';
-    finp.value=''; RAW=[]; BY_SEM={}; SEM_KEYS=[]; SEM_LABELS=[];
+    finp.value=''; RAW=[]; BY_SEM={}; SEM_KEYS=[]; SEM_LABELS=[]; AY_LABEL='';
+    const ayHdr=document.getElementById('hdr-ay'); if(ayHdr) ayHdr.textContent='—';
     Chart.instances.forEach?.(c=>c.destroy());
   }
 }
@@ -713,6 +734,11 @@ function initNavSpy(){
 //  RENDER ALL SECTIONS
 // ══════════════════════════════════════════════════════════════
 function renderDash(){
+  // Push dynamic academic year into header + section labels
+  const ayEl=document.getElementById('hdr-ay');
+  if(ayEl) ayEl.textContent=AY_LABEL||'—';
+  const insEl=document.getElementById('insights-desc');
+  if(insEl) insEl.textContent=`Auto-identified patterns and key metrics${AY_LABEL?' across AY '+AY_LABEL:''}`;
   renderKPIs();
   renderTrends();
   renderDepts();
@@ -1130,7 +1156,7 @@ function renderCourses(){
 // ══ FACULTY ════════════════════════════════════════════════════
 function renderFaculty(){
   const fg=grpCalc(RAW,r=>r['Faculty']).filter(g=>g.n>=10);
-  document.getElementById('faculty-desc').textContent=`${fg.length} faculty with ≥10 completed student records across AY 2024–25 (Lastname, Firstname).`;
+  document.getElementById('faculty-desc').textContent=`${fg.length} faculty with ≥10 completed student records${AY_LABEL?' across AY '+AY_LABEL:''} (Lastname, Firstname).`;
   const top=[...fg].sort((a,b)=>b.passRate-a.passRate).slice(0,15);
   const bot=[...fg].sort((a,b)=>a.passRate-b.passRate).slice(0,15);
 
@@ -1371,7 +1397,7 @@ function renderInsights(){
   document.getElementById('insights-content').innerHTML=`
     <div class="dept-grid">
       <div class="dept-stat-card" style="border-top-color:var(--pass);">
-        <div class="dept-code">Overall Completion</div><div class="dept-name">AY 2024-25</div>
+        <div class="dept-code">Overall Completion</div><div class="dept-name">${AY_LABEL?'AY '+AY_LABEL:'All Semesters'}</div>
         <div class="dept-rate" style="color:var(--pass)">${pct(m.compRate)}</div>
         <div class="dept-meta">${fmt(m.completed)} / ${fmt(m.n)} completed</div>
       </div>
@@ -1406,7 +1432,7 @@ function renderInsights(){
         <div class="dept-meta">${fmt(bestSem?.n||0)} total records</div>
       </div>
       <div class="dept-stat-card" style="border-top-color:var(--inc);">
-        <div class="dept-code">Cohort</div><div class="dept-name">AY 2024-25 Total</div>
+        <div class="dept-code">Cohort</div><div class="dept-name">${AY_LABEL?'AY '+AY_LABEL+' Total':'All Semesters'}</div>
         <div class="dept-rate" style="color:var(--inc);font-size:24px">${fmt(m.students)}</div>
         <div class="dept-meta">${fmt(m.courses)} courses · ${fmt(m.faculty)} faculty · 3 semesters</div>
       </div>
@@ -1449,7 +1475,7 @@ function dlReport(){
   const reportHTML=`<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><title>Student Completion Dashboard — AY 2024–25</title>
+<meta charset="UTF-8"><title>Student Completion Dashboard${AY_LABEL?' — AY '+AY_LABEL:''}</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0d1117;--surface:#161b22;--surface2:#1c2330;--border:#30363d;--text:#e6edf3;--muted:#7d8590;--accent:#58a6ff;--pass:#3fb950;--fail:#f85149;--warn:#e3b341;--inc:#a371f7;--pass-bg:rgba(63,185,80,0.12);--fail-bg:rgba(248,81,73,0.12);--warn-bg:rgba(227,179,65,0.12);--accent-bg:rgba(88,166,255,0.12);}
@@ -1509,7 +1535,7 @@ td.mono{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);font-
   <div class="header-left">
     <div class="header-eyebrow">College of the Marshall Islands</div>
     <h1>Student Completion <em>Report</em></h1>
-    <div class="subtitle">Academic Year <strong>2024–25</strong> · Generated ${new Date().toLocaleString()} · ${fmt(RAW.length)} records from ${esc(FILE_NAME)}</div>
+    <div class="subtitle">Academic Year <strong>${esc(AY_LABEL||'—')}</strong> · Generated ${new Date().toLocaleString()} · ${fmt(RAW.length)} records from ${esc(FILE_NAME)}</div>
   </div>
   <div class="header-right">
     <div class="badge">STATIC REPORT · FOR INTERNAL USE ONLY</div>
@@ -1545,7 +1571,8 @@ td.mono{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);font-
   const blob=new Blob([reportHTML],{type:'text/html'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
-  a.download=`CMI_Completion_Report_AY2425_${new Date().toISOString().slice(0,10)}.html`;
+  const aySlug=(AY_LABEL||'').replace(/[^0-9]/g,'');
+  a.download=`CMI_Completion_Report_${aySlug?'AY'+aySlug:''}${new Date().toISOString().slice(0,10)}.html`;
   document.body.appendChild(a);a.click();document.body.removeChild(a);
 }
 </script>
