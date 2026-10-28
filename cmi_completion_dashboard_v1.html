@@ -8,13 +8,53 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{
+/* ── THEMES ── */
+:root,[data-theme="dark"]{
   --bg:#0d1117;--surface:#161b22;--surface2:#1c2330;--border:#30363d;
   --text:#e6edf3;--muted:#7d8590;
   --accent:#58a6ff;--pass:#3fb950;--fail:#f85149;--warn:#e3b341;--inc:#a371f7;
   --pass-bg:rgba(63,185,80,0.12);--fail-bg:rgba(248,81,73,0.12);--warn-bg:rgba(227,179,65,0.12);--accent-bg:rgba(88,166,255,0.12);
   --pass-dim:rgba(63,185,80,0.6);--fail-dim:rgba(248,81,73,0.5);
+  --header-grad:linear-gradient(135deg,#0d1117 0%,#161b22 50%,#1a2235 100%);
+  --chart-grid:rgba(48,54,61,0.6);--chart-text:#7d8590;--chart-border:#161b22;
 }
+[data-theme="light"]{
+  --bg:#f4f6f9;--surface:#ffffff;--surface2:#f0f2f5;--border:#dde1e7;
+  --text:#1a1f2e;--muted:#6b7280;
+  --accent:#1a6cc9;--pass:#16803a;--fail:#c0392b;--warn:#b45309;--inc:#6d28d9;
+  --pass-bg:rgba(22,128,58,0.10);--fail-bg:rgba(192,57,43,0.10);--warn-bg:rgba(180,83,9,0.10);--accent-bg:rgba(26,108,201,0.10);
+  --pass-dim:rgba(22,128,58,0.65);--fail-dim:rgba(192,57,43,0.55);
+  --header-grad:linear-gradient(135deg,#1a3561 0%,#1e4d8c 60%,#1a6cc9 100%);
+  --chart-grid:rgba(180,190,210,0.55);--chart-text:#6b7280;--chart-border:#ffffff;
+}
+[data-theme="cmi"]{
+  --bg:#0a1628;--surface:#0f2040;--surface2:#152850;--border:#1e3a6e;
+  --text:#e8eef8;--muted:#7b93bb;
+  --accent:#f4b400;--pass:#34c97a;--fail:#e84040;--warn:#f4b400;--inc:#8b9cf4;
+  --pass-bg:rgba(52,201,122,0.12);--fail-bg:rgba(232,64,64,0.12);--warn-bg:rgba(244,180,0,0.12);--accent-bg:rgba(244,180,0,0.12);
+  --pass-dim:rgba(52,201,122,0.65);--fail-dim:rgba(232,64,64,0.55);
+  --header-grad:linear-gradient(135deg,#05101f 0%,#0a1e3d 60%,#0f2a55 100%);
+  --chart-grid:rgba(30,58,110,0.7);--chart-text:#7b93bb;--chart-border:#0f2040;
+}
+[data-theme="slate"]{
+  --bg:#1e2433;--surface:#252d3e;--surface2:#2d3650;--border:#3a445c;
+  --text:#dde4f0;--muted:#8896b3;
+  --accent:#7cb8ff;--pass:#4ecb71;--fail:#ff6b6b;--warn:#ffc947;--inc:#b48ead;
+  --pass-bg:rgba(78,203,113,0.12);--fail-bg:rgba(255,107,107,0.12);--warn-bg:rgba(255,201,71,0.12);--accent-bg:rgba(124,184,255,0.12);
+  --pass-dim:rgba(78,203,113,0.65);--fail-dim:rgba(255,107,107,0.55);
+  --header-grad:linear-gradient(135deg,#141928 0%,#1e2433 50%,#252d3e 100%);
+  --chart-grid:rgba(58,68,92,0.7);--chart-text:#8896b3;--chart-border:#252d3e;
+}
+/* THEME SWITCHER */
+.theme-switcher{display:flex;align-items:center;gap:6px;margin-top:8px;}
+.theme-btn{width:22px;height:22px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:all .2s;position:relative;}
+.theme-btn:hover{transform:scale(1.15);}
+.theme-btn.active{border-color:var(--text);box-shadow:0 0 0 2px var(--accent);}
+.theme-btn[data-t="dark"]{background:linear-gradient(135deg,#0d1117 50%,#161b22);}
+.theme-btn[data-t="light"]{background:linear-gradient(135deg,#f4f6f9 50%,#dde1e7);}
+.theme-btn[data-t="cmi"]{background:linear-gradient(135deg,#0a1628 50%,#f4b400);}
+.theme-btn[data-t="slate"]{background:linear-gradient(135deg,#1e2433 50%,#7cb8ff);}
+.theme-label{font-size:10px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.6;}
@@ -39,29 +79,19 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 @keyframes spin{to{transform:rotate(360deg);}}
 .load-msg{margin-top:1.2rem;color:var(--muted);font-size:.9rem;}
 /* HEADER */
-.header{background:linear-gradient(135deg,#0d1117 0%,#161b22 50%,#1a2235 100%);padding:28px 48px 24px;display:flex;align-items:flex-end;justify-content:space-between;border-bottom:1px solid var(--border);position:relative;overflow:visible;z-index:300;}
+.header{background:var(--header-grad);padding:28px 48px 24px;display:flex;align-items:flex-end;justify-content:space-between;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
 .header::before{content:'';position:absolute;top:-60px;right:-80px;width:320px;height:320px;background:radial-gradient(circle,rgba(88,166,255,.07) 0%,transparent 70%);pointer-events:none;}
 .header-eyebrow{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;}
 .header-left h1{font-family:'DM Serif Display',Georgia,serif;font-size:clamp(22px,3vw,32px);font-weight:400;color:var(--text);line-height:1.2;}
 .header-left h1 em{color:var(--accent);font-style:italic;}
 .header-left .subtitle{font-size:12px;color:var(--muted);margin-top:8px;display:flex;gap:20px;flex-wrap:wrap;}
 .header-left .subtitle strong{color:var(--text);}
-.ay-input{background:transparent;border:0;border-bottom:1px solid transparent;color:var(--text);font:inherit;font-weight:700;width:82px;padding:0 2px;outline:none;}
-.ay-input:hover,.ay-input:focus{border-bottom-color:var(--accent);background:rgba(88,166,255,.08);border-radius:3px;}
-.upload-ay{margin-top:1rem;color:var(--muted);font-size:.9rem;display:flex;gap:8px;align-items:center;justify-content:center;}
-.upload-ay input{background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:6px 10px;width:110px;font:inherit;font-weight:600;text-align:center;}
-.header-right{text-align:right;font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;position:relative;z-index:10000;}
+.header-right{text-align:right;font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;}
 .badge{display:inline-block;background:var(--accent-bg);border:1px solid rgba(88,166,255,.3);color:var(--accent);padding:4px 14px;border-radius:20px;font-size:11px;font-weight:500;letter-spacing:.04em;margin-bottom:6px;}
 .header-actions{display:flex;gap:8px;margin-top:8px;justify-content:flex-end;}
 .btn{padding:7px 16px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:11px;font-weight:500;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;white-space:nowrap;}
 .btn:hover{background:var(--accent);color:#0d1117;border-color:var(--accent);}
 .btn-ghost:hover{background:var(--fail-bg);border-color:var(--fail);color:var(--fail);}
-.export-menu-wrap{position:relative;display:inline-block;z-index:10001;}
-.export-menu{display:none;position:absolute;right:0;top:calc(100% + 6px);min-width:165px;background:var(--surface);border:1px solid var(--border);border-radius:8px;box-shadow:0 10px 30px rgba(0,0,0,.35);overflow:hidden;z-index:10002;text-align:left;}
-.export-menu.open{display:block;}
-.export-menu button{display:block;width:100%;padding:10px 14px;background:transparent;border:0;border-bottom:1px solid rgba(48,54,61,.55);color:var(--text);font:600 11px 'DM Sans',sans-serif;text-align:left;cursor:pointer;white-space:nowrap;}
-.export-menu button:last-child{border-bottom:0;}
-.export-menu button:hover{background:var(--accent-bg);color:var(--accent);}
 /* NAV */
 .nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 48px;display:flex;overflow-x:auto;position:sticky;top:0;z-index:100;}
 .nav a{display:block;padding:14px 18px;font-size:13px;font-weight:500;color:var(--muted);text-decoration:none;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s;}
@@ -160,60 +190,36 @@ td.mono{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);font-
 .alert-card.blue .alert-title{color:var(--accent);}
 .alert-body{font-size:12px;color:var(--muted);line-height:1.65;}
 .alert-body strong{color:var(--text);}
-/* HEATMAP */
-.heatmap-table{width:100%;border-collapse:collapse;font-size:12px;}
-.heatmap-table th{background:var(--surface2);color:var(--muted);padding:10px 14px;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;border-bottom:1px solid var(--border);border-right:1px solid var(--border);white-space:nowrap;}
-.heatmap-table td{padding:8px 12px;border-bottom:1px solid rgba(48,54,61,.4);border-right:1px solid rgba(48,54,61,.4);vertical-align:middle;}
-.hm-cell{display:inline-block;padding:4px 10px;border-radius:4px;font-family:'DM Mono',monospace;font-size:11px;font-weight:600;min-width:58px;text-align:center;}
-.hm-critical{background:rgba(248,81,73,.18);color:#f85149;}
-.hm-watch{background:rgba(227,179,65,.18);color:#e3b341;}
-.hm-good{background:rgba(63,185,80,.18);color:#3fb950;}
-.hm-na{background:rgba(48,54,61,.3);color:var(--muted);}
-/* RECOMMENDATIONS */
-.rec-list{display:flex;flex-direction:column;gap:14px;}
-.rec-item{background:var(--surface);border:1px solid var(--border);border-left:4px solid;border-radius:0 10px 10px 0;padding:18px 22px;display:flex;gap:18px;align-items:flex-start;}
-.rec-num{font-family:'DM Serif Display',Georgia,serif;font-size:32px;color:rgba(88,166,255,.15);line-height:1;flex-shrink:0;width:32px;margin-top:2px;}
-.rec-body-wrap{flex:1;}
-.rec-tag{display:inline-block;padding:2px 10px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;}
-.rec-tag-red{background:var(--fail-bg);color:var(--fail);}
-.rec-tag-amber{background:var(--warn-bg);color:var(--warn);}
-.rec-tag-blue{background:var(--accent-bg);color:var(--accent);}
-.rec-tag-green{background:var(--pass-bg);color:var(--pass);}
-.rec-tag-purple{background:rgba(163,113,247,.15);color:var(--inc);}
-.rec-title{font-weight:600;font-size:13px;margin-bottom:6px;color:var(--text);}
-.rec-desc{font-size:12px;color:var(--muted);line-height:1.7;}
-.rec-desc strong{color:var(--text);}
-/* SEM CARDS */
+/* RESPONSIVE */
+@media(max-width:1200px){.kpi-grid-6{grid-template-columns:repeat(3,1fr);}.kpi-grid-7{grid-template-columns:repeat(4,1fr);}}
+@media(max-width:900px){.g2,.g3,.g21,.g12{grid-template-columns:1fr;}.kpi-grid-6,.kpi-grid-7{grid-template-columns:repeat(2,1fr);}.dept-grid{grid-template-columns:1fr 1fr;}.alerts-grid{grid-template-columns:1fr;}.sem-row{grid-template-columns:1fr;}}
+/* SEM SUMMARY CARDS */
+.sem-row{display:grid;gap:16px;}
 .sem-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;text-align:center;transition:border-color .2s;}
 .sem-card:hover{border-color:rgba(88,166,255,.25);}
 .sem-name{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:8px;}
 .sem-rate{font-family:'DM Serif Display',Georgia,serif;font-size:36px;line-height:1;}
 .sem-detail{font-size:11px;color:var(--muted);margin-top:6px;font-family:'DM Mono',monospace;}
-/* INSIGHT CARDS */
-.insights-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
-.insight-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 20px;}
-.insight-num{font-family:'DM Serif Display',Georgia,serif;font-size:36px;color:var(--accent);line-height:1;margin-bottom:6px;}
-.insight-title{font-weight:600;font-size:13px;margin-bottom:6px;color:var(--text);}
-.insight-body{font-size:12px;color:var(--muted);line-height:1.6;}
-.insight-body strong{color:var(--text);}
-
-/* GRADE NOTES + ANALYSIS REPORT */
-.note-type-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-bottom:20px;}
-.note-type-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;border-top:3px solid var(--accent);}
-.note-type-title{font-weight:700;font-size:12px;color:var(--text);margin-bottom:6px;line-height:1.35;}
-.note-type-meta{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;}
-.note-chip{display:inline-block;padding:3px 8px;border-radius:4px;background:var(--surface2);color:var(--muted);font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;}
-.analysis-report{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
-.analysis-panel{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;}
-.analysis-panel h3{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:10px;}
-.analysis-panel p,.analysis-panel li{font-size:12px;color:var(--muted);line-height:1.75;}
-.analysis-panel strong{color:var(--text);}
-.analysis-panel ul{padding-left:18px;display:flex;flex-direction:column;gap:8px;}
-@media(max-width:900px){.analysis-report{grid-template-columns:1fr;}.note-type-grid{grid-template-columns:1fr;}}
-
-@media(max-width:900px){.insights-grid{grid-template-columns:1fr 1fr;}}
-@media(max-width:1200px){.kpi-grid-6{grid-template-columns:repeat(3,1fr);}.kpi-grid-7{grid-template-columns:repeat(4,1fr);}}
-@media(max-width:900px){.g2,.g3,.g21,.g12{grid-template-columns:1fr;}.kpi-grid-6,.kpi-grid-7{grid-template-columns:repeat(2,1fr);}.dept-grid{grid-template-columns:1fr 1fr;}.alerts-grid{grid-template-columns:1fr;}}
+/* HEATMAP */
+.heatmap-wrap{overflow-x:auto;}
+.heatmap-table{width:100%;border-collapse:collapse;font-size:12px;}
+.heatmap-table th{background:var(--surface2);color:var(--muted);padding:10px 14px;text-align:center;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--border);}
+.heatmap-table th.dept-col{text-align:left;}
+.heatmap-table td{padding:12px 10px;border:1px solid var(--border);text-align:center;font-family:'DM Mono',monospace;font-size:12px;font-weight:600;transition:opacity .2s;}
+.hm-critical{background:rgba(248,81,73,0.22);color:#f85149;}
+.hm-watch{background:rgba(227,179,65,0.22);color:#e3b341;}
+.hm-good{background:rgba(63,185,80,0.22);color:#3fb950;}
+.hm-na{background:transparent;color:var(--muted);}
+.heatmap-table td.dept-label{text-align:left;font-family:'DM Sans',sans-serif;font-weight:600;color:var(--text);font-size:12px;}
+/* RECOMMENDATIONS */
+.rec-list{display:flex;flex-direction:column;gap:14px;}
+.rec-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px 22px;display:flex;gap:16px;align-items:flex-start;transition:border-color .2s;}
+.rec-item:hover{border-color:rgba(88,166,255,.2);}
+.rec-num{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:16px;flex-shrink:0;font-weight:700;}
+.rec-body{flex:1;}
+.rec-tag{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;}
+.rec-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:6px;}
+.rec-desc{font-size:12px;color:var(--muted);line-height:1.65;}
 </style>
 </head>
 <body>
@@ -231,7 +237,6 @@ td.mono{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);font-
     <p>Drag &amp; drop your student completion report <strong>.xlsx</strong> or <strong>.xls</strong> workbook here, or click to browse. Any filename is accepted.</p>
     <span class="upload-cta">Choose File</span>
   </div>
-  <label class="upload-ay">Academic Year <input id="ay-input" type="text" placeholder="Auto" title="Optional: enter academic year such as 2024–25"></label>
   <div id="upload-msg"></div>
 </div>
 
@@ -248,7 +253,7 @@ td.mono{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);font-
       <div class="header-eyebrow">College of the Marshall Islands</div>
       <h1>Student Completion <em>Report</em></h1>
       <div class="subtitle">
-        <span>Academic Year <input id="hdr-ay" class="ay-input" type="text" value="2024–25" title="Edit academic year"></span>
+        <span>Academic Year <strong>2024–25</strong></span>
         <span id="hdr-rec">—</span>
         <span id="hdr-file">—</span>
       </div>
@@ -257,14 +262,15 @@ td.mono{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);font-
       <div class="badge">EXECUTIVE DASHBOARD · FOR INTERNAL USE ONLY</div>
       <div id="hdr-date"></div>
       <div class="header-actions">
-        <div class="export-menu-wrap">
-          <button class="btn" onclick="toggleExportMenu(event)">↓ Export ▾</button>
-          <div class="export-menu" id="export-menu">
-            <button type="button" onclick="dlReportPDF(); closeExportMenu();">PDF report</button>
-            <button type="button" onclick="dlReportHTML(); closeExportMenu();">HTML dashboard</button>
-          </div>
-        </div>
+        <button class="btn" onclick="dlReport()">↓ Download Report</button>
         <button class="btn btn-ghost" onclick="resetApp()">↑ New File</button>
+      </div>
+      <div class="theme-switcher">
+        <span class="theme-label">Theme:</span>
+        <button class="theme-btn active" data-t="dark" onclick="setTheme('dark')" title="Dark"></button>
+        <button class="theme-btn" data-t="light" onclick="setTheme('light')" title="Light"></button>
+        <button class="theme-btn" data-t="cmi" onclick="setTheme('cmi')" title="CMI Navy"></button>
+        <button class="theme-btn" data-t="slate" onclick="setTheme('slate')" title="Slate Blue"></button>
       </div>
     </div>
   </header>
@@ -278,10 +284,8 @@ td.mono{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);font-
     <a href="#faculty">Faculty</a>
     <a href="#programs">Programs</a>
     <a href="#gender">Gender</a>
-    <a href="#grade-notes">Grade Notes</a>
     <a href="#heatmap">Heatmap</a>
     <a href="#insights">Insights</a>
-    <a href="#analysis-report">Analysis Report</a>
     <a href="#alerts">Alerts</a>
     <a href="#recommendations">Recommendations</a>
   </nav>
@@ -291,9 +295,9 @@ td.mono{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);font-
     <!-- ══ KPIs ══ -->
     <section class="section" id="kpis">
       <div class="section-title">Key Performance Indicators</div>
-      <div class="section-desc">Aggregate metrics across all semesters. Pass grades: A, B, B+, C, C+, P. Fail grades: D, D+, F, NP. Completion rate = (Passed + Failed) / Total.</div>
+      <div class="section-desc">Aggregate metrics across all semesters. Pass grades: A, B, B+, C, C+, P · Fail grades: D, D+, F, NP · Incomplete: W, I</div>
       <div class="kpi-grid-6" id="overview-kpis" style="margin-bottom:20px;"></div>
-      <div class="g3" id="sem-cards"></div>
+      <div class="sem-row" id="sem-cards"></div>
     </section>
 
     <!-- ══ TRENDS ══ -->
@@ -433,59 +437,23 @@ td.mono{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);font-
       </div>
     </section>
 
-
-
-    <!-- ══ GRADE NOTES ══ -->
-    <section class="section" id="grade-notes">
-      <div class="section-title">Grade Notes</div>
-      <div class="section-desc">Focused review of records with a Grade Note / Grade Notes field. This section highlights note volume, note patterns, affected students, courses, faculty, and outcomes.</div>
-      <div class="kpi-grid-6" id="grade-note-kpis" style="margin-bottom:24px;"></div>
-      <div class="g2" style="margin-bottom:20px;">
-        <div class="chart-card"><div class="chart-title"><span class="dot" style="--dt:var(--accent)"></span>GRADE NOTES BY CATEGORY</div><div class="chart-wrap" style="height:280px;"><canvas id="ch-note-category"></canvas></div></div>
-        <div class="chart-card"><div class="chart-title"><span class="dot" style="--dt:var(--warn)"></span>OUTCOMES FOR RECORDS WITH NOTES</div><div class="chart-wrap" style="height:280px;"><canvas id="ch-note-result"></canvas></div></div>
-      </div>
-      <div class="note-type-grid" id="grade-note-type-cards"></div>
-      <div class="chart-card" style="margin-bottom:20px;">
-        <div class="chart-title"><span class="dot" style="--dt:var(--accent)"></span>GRADE NOTES SUMMARY TABLES</div>
-        <div class="tabs" id="grade-note-tabs"></div>
-        <div id="grade-note-panels"></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title"><span class="dot" style="--dt:var(--accent)"></span>GRADE NOTE DETAIL RECORDS</div>
-        <div id="grade-note-detail"></div>
-      </div>
-    </section>
-
     <!-- ══ HEATMAP ══ -->
     <section class="section" id="heatmap">
       <div class="section-title">Department × Semester Heatmap</div>
-      <div class="section-desc">Pass rate matrix across all departments and semesters. Color key: <span style="color:var(--fail)">■ Critical &lt;60%</span> · <span style="color:var(--warn)">■ Watch 60–70%</span> · <span style="color:var(--pass)">■ Good ≥70%</span></div>
+      <div class="section-desc">Pass rate heatmap — color intensity shows performance level. Critical &lt;60% · Watch 60–70% · Good ≥70%</div>
       <div id="heatmap-content"></div>
-      <div class="chart-card" style="margin-top:20px;">
-        <div class="chart-title"><span class="dot" style="--dt:var(--warn)"></span>COURSE × DEPARTMENT RISK SUMMARY</div>
-        <div id="course-risk-content"></div>
-      </div>
     </section>
 
     <!-- ══ INSIGHTS ══ -->
     <section class="section" id="insights">
       <div class="section-title">Executive Insights</div>
-      <div class="section-desc">Auto-identified patterns and key metrics</div>
+      <div class="section-desc">Auto-identified patterns and key metrics across AY 2024–25</div>
       <div id="insights-content"></div>
-    </section>
-
-
-
-    <!-- ══ ANALYSIS REPORT ══ -->
-    <section class="section" id="analysis-report">
-      <div class="section-title">Analysis Report</div>
-      <div class="section-desc">Narrative interpretation for leadership review, combining completion outcomes, course risk, department patterns, equity signals, developmental-course performance, and grade-note trends.</div>
-      <div id="analysis-report-content"></div>
     </section>
 
     <!-- ══ ALERTS ══ -->
     <section class="section" id="alerts">
-      <div class="section-title">Alerts</div>
+      <div class="section-title">Alerts &amp; Risk Flags</div>
       <div class="section-desc">Risk flags based on pass rate thresholds</div>
       <div class="alerts-grid" id="alerts-content"></div>
     </section>
@@ -493,7 +461,7 @@ td.mono{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);font-
     <!-- ══ RECOMMENDATIONS ══ -->
     <section class="section" id="recommendations">
       <div class="section-title">Recommendations</div>
-      <div class="section-desc">Data-driven action items prioritized by risk level and impact</div>
+      <div class="section-desc">Prioritized action items based on data analysis</div>
       <div id="rec-content"></div>
     </section>
 
@@ -557,15 +525,34 @@ const PASS_G = new Set(['A','B','B+','C','C+','P']);
 const FAIL_G = new Set(['D','D+','F','NP']);
 const INC_G  = new Set(['W','I']);
 const GRADE_ORDER = ['A','B+','B','C+','C','D+','D','F','NP','P','W','I','RPL'];
-const GRID_COLOR = 'rgba(48,54,61,0.6)';
+// GRID_COLOR is dynamic — read from CSS variable at runtime
+let GRID_COLOR = 'rgba(48,54,61,0.6)';
+function updateChartDefaults(){
+  const s = getComputedStyle(document.documentElement);
+  GRID_COLOR = s.getPropertyValue('--chart-grid').trim()||'rgba(48,54,61,0.6)';
+  Chart.defaults.color = s.getPropertyValue('--chart-text').trim()||'#7d8590';
+}
 // Semester colors — works for any number of semesters
 const SEM_COLORS = ['rgba(88,166,255,.7)','rgba(210,168,20,.7)','rgba(63,185,80,.7)','rgba(163,113,247,.7)','rgba(246,135,179,.7)','rgba(237,137,54,.7)'];
 const semColor = i => SEM_COLORS[i % SEM_COLORS.length];
 
+// THEME SWITCHER
+function setTheme(t){
+  document.documentElement.setAttribute('data-theme',t);
+  document.querySelectorAll('.theme-btn').forEach(b=>b.classList.toggle('active',b.dataset.t===t));
+  try{localStorage.setItem('cmi-theme',t);}catch(e){}
+  updateChartDefaults();
+  if(RAW.length) renderDash();
+}
+(function initTheme(){
+  let saved='dark';try{saved=localStorage.getItem('cmi-theme')||'dark';}catch(e){}
+  document.documentElement.setAttribute('data-theme',saved);
+  document.querySelectorAll('.theme-btn').forEach(b=>b.classList.toggle('active',b.dataset.t===saved));
+})();
 
 // Chart defaults
 Chart.defaults.font.family = "'DM Sans'";
-Chart.defaults.color = '#7d8590';
+updateChartDefaults();
 
 // ── HELPERS ───────────────────────────────────────────────────
 const fmt = n => (+n).toLocaleString();
@@ -631,21 +618,6 @@ function destroyChart(id) {
   const c = Chart.getChart(id);
   if(c) c.destroy();
 }
-function resizeAllCharts(){
-  try{
-    Object.values(Chart.instances || {}).forEach(ch=>{
-      if(ch && typeof ch.resize === 'function'){
-        ch.resize();
-        ch.update('none');
-      }
-    });
-  }catch(e){ console.warn('Chart resize skipped', e); }
-}
-function chartCanvas(id){
-  const el = document.getElementById(id);
-  if(!el){ console.warn('Missing chart canvas:', id); return null; }
-  return el.getContext('2d');
-}
 function mkTabs(tabsId, panelsId, labels, renderFn) {
   const tabsEl = document.getElementById(tabsId);
   const panelsEl = document.getElementById(panelsId);
@@ -659,40 +631,7 @@ function switchTab(tabsId, panelsId, idx) {
 }
 
 // ── STATE ──────────────────────────────────────────────────────
-let RAW = [], BY_SEM = {}, FILE_NAME = '', ACADEMIC_YEAR = '';
-
-function formatAcademicYear(startYear, endYear){
-  return `${startYear}–${String(endYear).slice(-2)}`;
-}
-function getManualAcademicYear(){
-  return (document.getElementById('ay-input')?.value || document.getElementById('hdr-ay')?.value || '').trim();
-}
-function detectAcademicYear(rows){
-  const manual = getManualAcademicYear();
-  if(manual) return manual;
-  const years = [...new Set(rows.map(r=>parseInt(r['Year'],10)).filter(y=>Number.isFinite(y)))].sort((a,b)=>a-b);
-  const sems = rows.map(r=>(r['Semester']||'').toString().toLowerCase());
-  if(years.length>=2) return formatAcademicYear(years[0], years[years.length-1]);
-  if(years.length===1){
-    const y = years[0];
-    const hasFall = sems.some(s=>s.includes('fall'));
-    const hasSpringOrSummer = sems.some(s=>s.includes('spring')||s.includes('summer'));
-    if(hasFall && !hasSpringOrSummer) return formatAcademicYear(y, y+1);
-    if(!hasFall && hasSpringOrSummer) return formatAcademicYear(y-1, y);
-    return formatAcademicYear(y, y+1);
-  }
-  return '2024–25';
-}
-function setAcademicYearLabel(label){
-  ACADEMIC_YEAR = label || detectAcademicYear(RAW);
-  const hdr = document.getElementById('hdr-ay');
-  if(hdr) hdr.value = ACADEMIC_YEAR;
-  const up = document.getElementById('ay-input');
-  if(up && !up.value.trim()) up.placeholder = ACADEMIC_YEAR;
-}
-function getAcademicYearLabel(){
-  return (document.getElementById('hdr-ay')?.value || ACADEMIC_YEAR || detectAcademicYear(RAW)).trim();
-}
+let RAW = [], BY_SEM = {}, FILE_NAME = '';
 
 // ── UPLOAD ─────────────────────────────────────────────────────
 const uzone = document.getElementById('uzone');
@@ -701,8 +640,6 @@ uzone.addEventListener('dragover', e=>{e.preventDefault();uzone.classList.add('d
 uzone.addEventListener('dragleave', ()=>uzone.classList.remove('drag'));
 uzone.addEventListener('drop', e=>{e.preventDefault();uzone.classList.remove('drag');if(e.dataTransfer.files[0])go(e.dataTransfer.files[0]);});
 finp.addEventListener('change', e=>{if(e.target.files[0])go(e.target.files[0]);});
-document.getElementById('ay-input')?.addEventListener('input', e=>{ ACADEMIC_YEAR = e.target.value.trim(); const h=document.getElementById('hdr-ay'); if(h && ACADEMIC_YEAR) h.value=ACADEMIC_YEAR; });
-document.getElementById('hdr-ay')?.addEventListener('input', e=>{ ACADEMIC_YEAR = e.target.value.trim(); const u=document.getElementById('ay-input'); if(u) u.value=ACADEMIC_YEAR; });
 
 function setMsg(t,c=''){const el=document.getElementById('upload-msg');el.textContent=t;el.className=c;}
 function setLoad(on,t='Parsing workbook…'){document.getElementById('loading').classList.toggle('on',on);document.getElementById('lmsg').textContent=t;}
@@ -742,32 +679,21 @@ function parse(wb) {
   SEM_LABELS = SEM_KEYS.map(sl);
   BY_SEM = {};
   SEM_KEYS.forEach(k=>{ BY_SEM[k]=RAW.filter(r=>r['Source File']===k); });
-  setAcademicYearLabel(detectAcademicYear(RAW));
-
-  // Show the dashboard before creating Chart.js charts.
-  // Chart.js measures the canvas parent at creation time; if the dashboard is still
-  // display:none, some charts intermittently render as blank cards.
+  renderDash();
   document.getElementById('upload-screen').style.display='none';
   document.getElementById('dash').style.display='block';
   document.getElementById('hdr-rec').innerHTML=`<strong>${fmt(RAW.length)}</strong> records`;
   document.getElementById('hdr-file').innerHTML=`<strong>${FILE_NAME}</strong>`;
   document.getElementById('hdr-date').textContent=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-
-  requestAnimationFrame(()=>{
-    renderDash();
-    resizeAllCharts();
-    setTimeout(resizeAllCharts, 150);
-    setTimeout(resizeAllCharts, 500);
-    setLoad(false);
-    initNavSpy();
-  });
+  setLoad(false);
+  initNavSpy();
 }
 
 function resetApp(){
   if(confirm('Upload a new file?')){
     document.getElementById('upload-screen').style.display='flex';
     document.getElementById('dash').style.display='none';
-    finp.value=''; RAW=[]; BY_SEM={}; SEM_KEYS=[]; SEM_LABELS=[]; ACADEMIC_YEAR=''; document.getElementById('ay-input').value=''; setAcademicYearLabel('2024–25');
+    finp.value=''; RAW=[]; BY_SEM={}; SEM_KEYS=[]; SEM_LABELS=[];
     Chart.instances.forEach?.(c=>c.destroy());
   }
 }
@@ -795,40 +721,106 @@ function renderDash(){
   renderFaculty();
   renderPrograms();
   renderGender();
-  renderGradeNotes();
   renderHeatmap();
   renderInsights();
-  renderAnalysisReport();
   renderAlerts();
   renderRecommendations();
-  requestAnimationFrame(resizeAllCharts);
 }
 
 // ══ KPIs ══════════════════════════════════════════════════════
 function renderKPIs(){
-  const m = calc(RAW);
-  const cg = grpCalc(RAW,r=>r['Course']).filter(g=>g.completed>=10);
-  const critCourses = cg.filter(g=>g.passRate<60).length;
-
+  const m=calc(RAW);
   document.getElementById('overview-kpis').innerHTML=`
-    <div class="kpi-card blue"><div class="kpi-label">Total Records</div><div class="kpi-value">${fmt(m.n)}</div><div class="kpi-sub">Student-course records</div></div>
-    <div class="kpi-card green"><div class="kpi-label">Completion Rate</div><div class="kpi-value">${pct(m.compRate)}</div><div class="kpi-sub">${fmt(m.completed)} completed</div></div>
-    <div class="kpi-card green"><div class="kpi-label">Pass Rate</div><div class="kpi-value">${pct(m.passRate)}</div><div class="kpi-sub">Among completed</div></div>
-    <div class="kpi-card red"><div class="kpi-label">Fail Rate</div><div class="kpi-value">${pct(m.failRate)}</div><div class="kpi-sub">${fmt(m.failed)} failed</div></div>
-    <div class="kpi-card gold"><div class="kpi-label">Distinct Students</div><div class="kpi-value">${fmt(m.students)}</div><div class="kpi-sub">Unique student IDs</div></div>
-    <div class="kpi-card purple"><div class="kpi-label">Faculty Members</div><div class="kpi-value">${fmt(m.faculty)}</div><div class="kpi-sub">${fmt(m.courses)} courses · ${critCourses} critical</div></div>`;
-
-  // Semester summary cards
-  const semData = SEM_KEYS.map(k=>({key:k,...calc(BY_SEM[k]||[])}));
-  document.getElementById('sem-cards').innerHTML = semData.map(s=>{
-    const cls = s.passRate>=70?'var(--pass)':s.passRate>=60?'var(--warn)':'var(--fail)';
-    return `<div class="sem-card">
-      <div class="sem-name">${sl(s.key)}</div>
-      <div class="sem-rate" style="color:${cls}">${pct(s.passRate)}</div>
-      <div class="sem-detail">${fmt(s.passed)} / ${fmt(s.completed)} passed</div>
-      <div class="sem-detail">${fmt(s.n)} total · ${fmt(s.students)} students · ${pct(s.compRate)} completion</div>
+    <div class="kpi-card blue"><div class="kpi-label">Total Records</div><div class="kpi-value" style="color:var(--accent)">${fmt(m.n)}</div><div class="kpi-sub">Student-course records</div></div>
+    <div class="kpi-card green"><div class="kpi-label">Completion Rate</div><div class="kpi-value" style="color:var(--pass)">${pct(m.compRate)}</div><div class="kpi-sub">${fmt(m.completed)} completed</div></div>
+    <div class="kpi-card green"><div class="kpi-label">Pass Rate</div><div class="kpi-value" style="color:var(--pass)">${pct(m.passRate)}</div><div class="kpi-sub">Among completed</div></div>
+    <div class="kpi-card red"><div class="kpi-label">Fail Rate</div><div class="kpi-value" style="color:var(--fail)">${pct(m.failRate)}</div><div class="kpi-sub">Among completed</div></div>
+    <div class="kpi-card gold"><div class="kpi-label">Distinct Students</div><div class="kpi-value" style="color:var(--warn)">${fmt(m.students)}</div><div class="kpi-sub">Unique IDs</div></div>
+    <div class="kpi-card purple"><div class="kpi-label">Faculty Members</div><div class="kpi-value" style="color:var(--inc)">${fmt(m.faculty)}</div><div class="kpi-sub">Instructors</div></div>`;
+  const semCards=document.getElementById('sem-cards');
+  semCards.style.gridTemplateColumns=`repeat(${Math.max(1,SEM_KEYS.length)},1fr)`;
+  semCards.innerHTML=SEM_KEYS.map((k,i)=>{
+    const s=calc(BY_SEM[k]||[]);
+    const c=riskColor(s.passRate);
+    return `<div class="sem-card" style="border-top:3px solid ${c};">
+      <div class="sem-name">${esc(sl(k))}</div>
+      <div class="sem-rate" style="color:${c}">${pct(s.passRate)}</div>
+      <div class="sem-detail">${fmt(s.n)} enrolled · ${fmt(s.passed)} passed · ${fmt(s.failed)} failed</div>
     </div>`;
   }).join('');
+}
+
+// ══ HEATMAP ═══════════════════════════════════════════════════
+function renderHeatmap(){
+  const depts=[...new Set(RAW.map(r=>r['Department Code']).filter(Boolean))].sort();
+  const rows=depts.map(d=>{
+    const all=calc(RAW.filter(r=>r['Department Code']===d));
+    const semRates=SEM_KEYS.map(k=>{
+      const s=calc((BY_SEM[k]||[]).filter(r=>r['Department Code']===d));
+      return s.completed>0?s.passRate:null;
+    });
+    return {dept:d,all,semRates};
+  });
+  function hmCell(rate){
+    if(rate===null||rate===undefined)return`<td class="hm-na">—</td>`;
+    const cls=rate<60?'hm-critical':rate<70?'hm-watch':'hm-good';
+    return`<td class="${cls}">${rate.toFixed(1)}%</td>`;
+  }
+  document.getElementById('heatmap-content').innerHTML=`
+    <div class="heatmap-wrap"><table class="heatmap-table">
+      <thead><tr>
+        <th class="dept-col">Department</th>
+        ${SEM_LABELS.map(l=>`<th>${esc(l)}</th>`).join('')}
+        <th>All Year</th>
+      </tr></thead>
+      <tbody>${rows.map(r=>`<tr>
+        <td class="dept-label">${esc(DEPT_NAMES[r.dept]||r.dept)} <span style="opacity:.5;font-size:10px">${esc(r.dept)}</span></td>
+        ${r.semRates.map(rate=>hmCell(rate)).join('')}
+        ${hmCell(r.all.completed>0?r.all.passRate:null)}
+      </tr>`).join('')}</tbody>
+    </table></div>`;
+}
+
+// ══ RECOMMENDATIONS ═══════════════════════════════════════════
+function renderRecommendations(){
+  const devAll=calc(RAW.filter(r=>(r['Developmental Course']||'').trim()==='Yes'));
+  const dg=grpCalc(RAW,r=>r['Department Code']).sort((a,b)=>a.passRate-b.passRate);
+  const cg=grpCalc(RAW,r=>r['Course']).filter(g=>g.completed>=10).sort((a,b)=>a.passRate-b.passRate);
+  const gF=calc(RAW.filter(r=>r['Gender']==='F'));
+  const gM=calc(RAW.filter(r=>r['Gender']==='M'));
+  const worstDept=dg[0]||{};
+  const worstCourse=cg[0]||{};
+  const gap=Math.abs(gF.passRate-gM.passRate);
+  const recs=[
+    {priority:'Critical',color:'var(--fail)',bg:'rgba(248,81,73,.1)',
+     title:'Strengthen Developmental Course Support',
+     desc:`Developmental courses show a ${pct(devAll.passRate)} pass rate — significantly below standard courses. Implement mandatory tutoring, early-alert systems, and bridge programs. Consider reducing developmental course loads and pairing with supplemental instruction.`},
+    {priority:'High',color:'var(--warn)',bg:'rgba(227,179,65,.1)',
+     title:`Review ${esc(DEPT_NAMES[worstDept.key]||worstDept.key||'Lowest-Performing')} Department`,
+     desc:`${esc(DEPT_NAMES[worstDept.key]||worstDept.key||'This department')} has the lowest pass rate at ${pct(worstDept.passRate||0)} (${fmt(worstDept.n||0)} enrolled). Conduct a curriculum audit, evaluate faculty support needs, and consider peer-mentoring programs.`},
+    {priority:'High',color:'var(--warn)',bg:'rgba(227,179,65,.1)',
+     title:`Targeted Intervention for ${esc(worstCourse.key||'At-Risk Courses')}`,
+     desc:`${esc(worstCourse.key||'The lowest-performing course')} has a pass rate of ${pct(worstCourse.passRate||0)}. Assign additional faculty support, redesign assessments, and schedule drop-in tutoring sessions specifically for high-enrollment failing courses.`},
+    {priority:'Medium',color:'var(--accent)',bg:'rgba(88,166,255,.08)',
+     title:'Close Gender Performance Gap',
+     desc:`A ${gap.toFixed(1)}pp gap exists between female (${pct(gF.passRate)}) and male (${pct(gM.passRate)}) students. Introduce gender-responsive support strategies, targeted male engagement programs, and peer-learning communities.`},
+    {priority:'Medium',color:'var(--accent)',bg:'rgba(88,166,255,.08)',
+     title:'Establish Semester-Over-Semester Tracking',
+     desc:`Use this dashboard at the start of each semester to set department-level pass rate targets and monitor progress. Share results with department chairs and schedule mid-semester check-ins to allow early intervention before grades are finalized.`},
+    {priority:'Good',color:'var(--pass)',bg:'rgba(63,185,80,.08)',
+     title:'Recognize and Scale High-Performing Practices',
+     desc:`Identify faculty and courses with consistently high pass rates (≥80%). Document their pedagogy, office-hour practices, and assessment strategies. Share these as models in faculty development sessions to elevate college-wide outcomes.`},
+  ];
+  const nums=['①','②','③','④','⑤','⑥'];
+  document.getElementById('rec-content').innerHTML=`<div class="rec-list">${recs.map((r,i)=>`
+    <div class="rec-item" style="border-left:4px solid ${r.color};background:${r.bg};">
+      <div class="rec-num" style="background:${r.bg};color:${r.color};">${nums[i]}</div>
+      <div class="rec-body">
+        <div class="rec-tag" style="color:${r.color}">${esc(r.priority)} Priority</div>
+        <div class="rec-title">${r.title}</div>
+        <div class="rec-desc">${r.desc}</div>
+      </div>
+    </div>`).join('')}</div>`;
 }
 
 // ══ TRENDS ════════════════════════════════════════════════════
@@ -838,7 +830,7 @@ function renderTrends(){
 
   // Line chart: pass rate by semester
   destroyChart('ch-trend-line');
-  new Chart(chartCanvas('ch-trend-line'),{
+  new Chart(document.getElementById('ch-trend-line').getContext('2d'),{
     type:'line',
     data:{labels:SEM_LABELS,datasets:[{
       data:semData.map(s=>+s.passRate.toFixed(1)),
@@ -852,7 +844,7 @@ function renderTrends(){
 
   // Donut: pass vs fail vs incomplete
   destroyChart('ch-donut');
-  new Chart(chartCanvas('ch-donut'),{
+  new Chart(document.getElementById('ch-donut').getContext('2d'),{
     type:'doughnut',
     data:{labels:['Passed','Failed','Incomplete/W'],datasets:[{data:[all.passed,all.failed,all.incomplete],backgroundColor:['rgba(63,185,80,.7)','rgba(248,81,73,.7)','rgba(227,179,65,.7)'],borderColor:'#161b22',borderWidth:3}]},
     options:{responsive:true,maintainAspectRatio:false,cutout:'58%',plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:12,color:'#7d8590'}},tooltip:{callbacks:{label:c=>`${c.label}: ${fmt(c.raw)}`}}}}
@@ -863,7 +855,7 @@ function renderTrends(){
   RAW.forEach(r=>{const g=(r['Grade']||'blank').trim()||'blank';grades[g]=(grades[g]||0)+1;});
   const gSorted=Object.entries(grades).sort((a,b)=>{const ai=GRADE_ORDER.indexOf(a[0]),bi=GRADE_ORDER.indexOf(b[0]);if(ai===-1&&bi===-1)return 0;if(ai===-1)return 1;if(bi===-1)return -1;return ai-bi;});
   destroyChart('ch-grade');
-  new Chart(chartCanvas('ch-grade'),{
+  new Chart(document.getElementById('ch-grade').getContext('2d'),{
     type:'bar',
     data:{labels:gSorted.map(([g])=>g),datasets:[{data:gSorted.map(([,c])=>c),backgroundColor:gSorted.map(([g])=>barColor(PASS_G.has(g.toUpperCase())?80:FAIL_G.has(g.toUpperCase())?30:65)),borderRadius:3}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{grid:{color:GRID_COLOR},border:{color:GRID_COLOR}},x:{grid:{display:false},border:{color:GRID_COLOR}}}}
@@ -871,7 +863,7 @@ function renderTrends(){
 
   // Enrollment vs passed
   destroyChart('ch-enroll');
-  new Chart(chartCanvas('ch-enroll'),{
+  new Chart(document.getElementById('ch-enroll').getContext('2d'),{
     type:'bar',
     data:{labels:SEM_LABELS,datasets:[
       {label:'Enrolled',data:semData.map(s=>s.n),backgroundColor:'rgba(88,166,255,0.3)',borderRadius:4},
@@ -883,7 +875,7 @@ function renderTrends(){
 
   // Completion rate by semester
   destroyChart('ch-comp');
-  new Chart(chartCanvas('ch-comp'),{
+  new Chart(document.getElementById('ch-comp').getContext('2d'),{
     type:'bar',
     data:{labels:SEM_LABELS,datasets:[{data:semData.map(s=>+s.compRate.toFixed(1)),backgroundColor:semData.map(s=>s.compRate>99?'rgba(63,185,80,.7)':'rgba(88,166,255,.6)'),borderRadius:4}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.raw}%`}}},
@@ -1293,13 +1285,11 @@ function renderGender(){
   const all=calc(RAW);
   const gap=Math.abs(gF.passRate-gM.passRate);
   const higher=gF.passRate>=gM.passRate?'Female':'Male';
-  const uniqueF = new Set(RAW.filter(r=>r['Gender']==='F').map(r=>(r['Stud. ID']||'').trim()).filter(Boolean)).size;
-  const uniqueM = new Set(RAW.filter(r=>r['Gender']==='M').map(r=>(r['Stud. ID']||'').trim()).filter(Boolean)).size;
 
   document.getElementById('gender-kpis').innerHTML=`
-    <div class="kpi-card blue"><div class="kpi-label">Total Enrolled</div><div class="kpi-value">${fmt(all.n)}</div><div class="kpi-sub">All genders · ${fmt(uniqueF + uniqueM)} unique students</div></div>
-    <div class="kpi-card green"><div class="kpi-label">Female Pass Rate</div><div class="kpi-value" style="color:var(--pass)">${pct(gF.passRate)}</div><div class="kpi-sub">${fmt(gF.n)} enrolled · ${fmt(uniqueF)} unique · ${fmt(gF.passed)} passed</div></div>
-    <div class="kpi-card blue"><div class="kpi-label">Male Pass Rate</div><div class="kpi-value" style="color:var(--accent)">${pct(gM.passRate)}</div><div class="kpi-sub">${fmt(gM.n)} enrolled · ${fmt(uniqueM)} unique · ${fmt(gM.passed)} passed</div></div>
+    <div class="kpi-card blue"><div class="kpi-label">Total Enrolled</div><div class="kpi-value">${fmt(all.n)}</div><div class="kpi-sub">All genders, all semesters</div></div>
+    <div class="kpi-card green"><div class="kpi-label">Female Pass Rate</div><div class="kpi-value" style="color:var(--pass)">${pct(gF.passRate)}</div><div class="kpi-sub">${fmt(gF.n)} enrolled · ${fmt(gF.passed)} passed</div></div>
+    <div class="kpi-card blue"><div class="kpi-label">Male Pass Rate</div><div class="kpi-value" style="color:var(--accent)">${pct(gM.passRate)}</div><div class="kpi-sub">${fmt(gM.n)} enrolled · ${fmt(gM.passed)} passed</div></div>
     <div class="kpi-card gold"><div class="kpi-label">Gender Gap</div><div class="kpi-value" style="color:var(--warn)">${gap.toFixed(1)}pp</div><div class="kpi-sub">${higher} students outperform</div></div>
     <div class="kpi-card red"><div class="kpi-label">Female Failed</div><div class="kpi-value" style="color:var(--fail)">${fmt(gF.failed)}</div><div class="kpi-sub">${pct(gF.failRate)} fail rate</div></div>
     <div class="kpi-card red"><div class="kpi-label">Male Failed</div><div class="kpi-value" style="color:var(--fail)">${fmt(gM.failed)}</div><div class="kpi-sub">${pct(gM.failRate)} fail rate</div></div>`;
@@ -1348,14 +1338,12 @@ function renderGender(){
   mkTabs('gender-tbl-tabs','gender-tbl-panels',tblLabels,(si)=>{
     const rows=si===0?RAW:(BY_SEM[SEM_KEYS[si-1]]||[]);
     const td=grpCalc(rows,r=>r['Gender']).filter(g=>g.key==='F'||g.key==='M').sort((a,b)=>a.key.localeCompare(b.key));
-    const uniqueByGender = g => new Set(rows.filter(r=>r['Gender']===g.key).map(r=>(r['Stud. ID']||'').trim()).filter(Boolean)).size;
     const genderLabel=g=>g.key==='F'?'<span style="color:#f687b3">♀ Female</span>':'<span style="color:#58a6ff">♂ Male</span>';
     return `<div class="tbl-wrap"><table>
-      <thead><tr><th>Gender</th><th class="r">Enrolled</th><th class="r">Unique Students</th><th class="r">Passed</th><th class="r">Failed</th><th class="r">Incomplete</th><th class="r">Completed</th><th class="r">Pass Rate</th><th class="r">Fail Rate</th><th>Pass Bar</th></tr></thead>
+      <thead><tr><th>Gender</th><th class="r">Enrolled</th><th class="r">Passed</th><th class="r">Failed</th><th class="r">Incomplete</th><th class="r">Completed</th><th class="r">Pass Rate</th><th class="r">Fail Rate</th><th>Pass Bar</th></tr></thead>
       <tbody>${td.map(g=>`<tr>
         <td>${genderLabel(g)}</td>
         <td class="r">${fmt(g.n)}</td>
-        <td class="r">${fmt(uniqueByGender(g))}</td>
         <td class="r" style="color:var(--pass)">${fmt(g.passed)}</td>
         <td class="r" style="color:var(--fail)">${fmt(g.failed)}</td>
         <td class="r">${fmt(g.incomplete)}</td>
@@ -1368,260 +1356,62 @@ function renderGender(){
   });
 }
 
-// ══ HEATMAP ═══════════════════════════════════════════════════
-function renderHeatmap(){
-  const depts = grpCalc(RAW,r=>r['Department Code']).sort((a,b)=>a.passRate-b.passRate);
-  const semByDept = SEM_KEYS.map(k=>grpCalc(BY_SEM[k]||[],r=>r['Department Code']));
-
-  function hmCell(rate,completed){
-    if(completed<1) return '<span class="hm-cell hm-na">—</span>';
-    const cls=rate<60?'hm-critical':rate<70?'hm-watch':'hm-good';
-    return `<span class="hm-cell ${cls}">${pct(rate)}</span>`;
-  }
-
-  let html=`<div class="tbl-wrap"><table class="heatmap-table">
-    <thead><tr>
-      <th>Code</th><th>Department</th>
-      ${SEM_LABELS.map(l=>`<th>${l}</th>`).join('')}
-      <th>All Year</th><th>Risk</th>
-    </tr></thead><tbody>`;
-  depts.forEach(g=>{
-    html+=`<tr>
-      <td class="mono">${esc(g.key)}</td>
-      <td style="font-weight:600;font-size:12px">${esc(DEPT_NAMES[g.key]||g.key)}</td>
-      ${SEM_KEYS.map((_,si)=>{
-        const sd=semByDept[si].find(d=>d.key===g.key);
-        return`<td>${hmCell(sd?sd.passRate:0,sd?sd.completed:0)}</td>`;
-      }).join('')}
-      <td>${hmCell(g.passRate,g.completed)}</td>
-      <td>${riskBadge(g.passRate)}</td>
-    </tr>`;
-  });
-  html+=`</tbody></table></div>`;
-  document.getElementById('heatmap-content').innerHTML=html;
-
-  // Course risk summary — courses by department with risk badges
-  const cg=grpCalc(RAW,r=>r['Course']).filter(g=>g.completed>=10).sort((a,b)=>a.passRate-b.passRate);
-  const critC=cg.filter(g=>g.passRate<60);
-  const watchC=cg.filter(g=>g.passRate>=60&&g.passRate<70);
-  let crHtml=`<p style="font-size:12px;color:var(--muted);margin-bottom:14px;">
-    <span style="color:var(--fail);font-weight:600">${critC.length} Critical</span> courses below 60% · 
-    <span style="color:var(--warn);font-weight:600">${watchC.length} Watch</span> courses 60–70% · 
-    <span style="color:var(--pass);font-weight:600">${cg.filter(g=>g.passRate>=70).length} Good</span> courses at or above 70%
-  </p>`;
-  crHtml+=`<div class="tbl-wrap"><div class="tbl-scroll"><table>
-    <thead><tr><th>Course</th><th class="r">Enrolled</th><th class="r">Passed</th><th class="r">Failed</th><th class="r">Pass Rate</th><th>Risk</th><th>Pass Bar</th></tr></thead>
-    <tbody>${critC.concat(watchC).slice(0,20).map(g=>`<tr>
-      <td class="mono">${esc(g.key)}</td>
-      <td class="r">${fmt(g.n)}</td>
-      <td class="r" style="color:var(--pass)">${fmt(g.passed)}</td>
-      <td class="r" style="color:var(--fail)">${fmt(g.failed)}</td>
-      <td class="r" style="color:${riskColor(g.passRate)};font-weight:600">${pct(g.passRate)}</td>
-      <td>${riskBadge(g.passRate)}</td>
-      <td>${passBarHTML(g.passRate)}</td>
-    </tr>`).join('')}</tbody>
-  </table></div></div>`;
-  document.getElementById('course-risk-content').innerHTML=crHtml;
-}
-
 // ══ INSIGHTS ══════════════════════════════════════════════════
 function renderInsights(){
   const m=calc(RAW);
   const dg=grpCalc(RAW,r=>r['Department Code']).sort((a,b)=>b.passRate-a.passRate);
+  const bestDept=dg[0]||{};const worstDept=dg[dg.length-1]||{};
   const devAll=calc(RAW.filter(r=>(r['Developmental Course']||'').trim()==='Yes'));
   const stdAll=calc(RAW.filter(r=>(r['Developmental Course']||'').trim()==='No'));
   const gF=calc(RAW.filter(r=>r['Gender']==='F'));
   const gM=calc(RAW.filter(r=>r['Gender']==='M'));
-  const cg=grpCalc(RAW,r=>r['Course']).filter(g=>g.completed>=10);
-  const critCourses=cg.filter(g=>g.passRate<60).length;
   const semData=SEM_KEYS.map(k=>({lbl:sl(k),...calc(BY_SEM[k]||[])}));
-  const bestSem=semData.length?[...semData].sort((a,b)=>b.passRate-a.passRate)[0]:{lbl:'—',passRate:0};
-  const bestDept=dg[0]||{key:'—',passRate:0,n:0};
-  const worstDept=dg[dg.length-1]||{key:'—',passRate:0,n:0};
+  const bestSem=[...semData].sort((a,b)=>b.passRate-a.passRate)[0];
 
-  const cards=[
-    {num:pct(m.compRate),  title:'Completion Rate',     body:`<strong>${fmt(m.completed)}</strong> of <strong>${fmt(m.n)}</strong> student-course records reached a graded outcome across all semesters.`},
-    {num:pct(m.passRate),  title:'Overall Pass Rate',   body:`<strong>${fmt(m.passed)}</strong> passed · <strong>${fmt(m.failed)}</strong> failed among completed records. Fail rate: <strong>${pct(m.failRate)}</strong>.`},
-    {num:fmt(m.students),  title:'Distinct Students',   body:`<strong>${fmt(m.courses)}</strong> unique courses taught by <strong>${fmt(m.faculty)}</strong> faculty across <strong>${SEM_KEYS.length}</strong> semester(s).`},
-    {num:pct(devAll.passRate),title:'Dev Course Pass Rate',body:`Developmental courses pass at <strong>${pct(devAll.passRate)}</strong> vs <strong>${pct(stdAll.passRate)}</strong> for standard — a <strong>${(stdAll.passRate-devAll.passRate).toFixed(1)}pp</strong> gap.`},
-    {num:pct(bestDept.passRate),title:`Best Dept: ${DEPT_NAMES[bestDept.key]||bestDept.key}`,body:`<strong>${esc(bestDept.key)}</strong> leads all departments with <strong>${pct(bestDept.passRate)}</strong> pass rate across <strong>${fmt(bestDept.n)}</strong> records.`},
-    {num:`${critCourses}`,  title:'Critical Courses',    body:`<strong>${critCourses}</strong> course(s) with ≥10 completions have pass rates below 60%, flagged as Critical risk requiring intervention.`},
-    {num:pct(gF.passRate), title:'Female Pass Rate',    body:`Female students: <strong>${pct(gF.passRate)}</strong> vs Male: <strong>${pct(gM.passRate)}</strong> — a gender gap of <strong>${Math.abs(gF.passRate-gM.passRate).toFixed(1)}pp</strong>.`},
-    {num:pct(bestSem.passRate),title:`Best Semester: ${bestSem.lbl}`,body:`<strong>${bestSem.lbl}</strong> achieved the highest pass rate at <strong>${pct(bestSem.passRate)}</strong> among all semesters in the dataset.`},
-    {num:pct(worstDept.passRate),title:`Lowest Dept: ${DEPT_NAMES[worstDept.key]||worstDept.key}`,body:`<strong>${esc(worstDept.key)}</strong> has the lowest pass rate at <strong>${pct(worstDept.passRate)}</strong>. Targeted support is recommended.`},
-  ];
-
-  document.getElementById('insights-content').innerHTML=`<div class="insights-grid">${cards.map(c=>`
-    <div class="insight-card">
-      <div class="insight-num">${c.num}</div>
-      <div class="insight-title">${c.title}</div>
-      <div class="insight-body">${c.body}</div>
-    </div>`).join('')}</div>`;
-}
-
-
-
-// ══ GRADE NOTES ═══════════════════════════════════════════════
-function gradeNoteValue(r){
-  const keys = ['Grade Note','Grade Notes','GradeNote','GradeNotes','Notes','Note'];
-  for(const k of keys){
-    if(r[k] !== undefined && String(r[k]).trim()) return String(r[k]).trim();
-  }
-  return '';
-}
-function rowsWithGradeNotes(){ return RAW.filter(r=>gradeNoteValue(r)); }
-function noteCategory(note){
-  const n = (note||'').toLowerCase();
-  if(/never|no show|noshow|did not attend|attendance|absen/.test(n)) return 'Attendance / No Show';
-  if(/withdraw|\bw\b|dropped|drop/.test(n)) return 'Withdrawn / Dropped';
-  if(/incomplete|\bi\b|missing|not submit|no final|pending/.test(n)) return 'Incomplete / Missing Work';
-  if(/transfer|credit|rpl|prior learning|equivalen/.test(n)) return 'Transfer / Prior Credit';
-  if(/change|correct|correction|updated|override|manual/.test(n)) return 'Grade Change / Correction';
-  if(/medical|health|family|emergency|military|excused/.test(n)) return 'Documented Exception';
-  if(/fail|failed|poor|low|deficien|unsatisf/.test(n)) return 'Academic Performance Concern';
-  if(/pass|passed|complete|satisf/.test(n)) return 'Completion Note';
-  return 'Other Notes';
-}
-function noteRowsEnriched(){
-  return rowsWithGradeNotes().map(r=>({...r, __note:gradeNoteValue(r), __noteCat:noteCategory(gradeNoteValue(r)), __result:getR(r)}));
-}
-function groupByCount(rows, keyFn){
-  const m = new Map();
-  rows.forEach(r=>{const k=keyFn(r)||'Unknown'; m.set(k,(m.get(k)||0)+1);});
-  return [...m.entries()].map(([key,count])=>({key,count})).sort((a,b)=>b.count-a.count || String(a.key).localeCompare(String(b.key)));
-}
-function noteTable(rows, columns){
-  if(!rows.length) return '<div class="alert-card blue"><div class="alert-title">No grade notes found</div><div class="alert-body">The uploaded workbook does not contain populated Grade Note records, or the note column is not named Grade Note / Grade Notes / Notes.</div></div>';
-  return `<div class="tbl-wrap"><div class="tbl-scroll"><table><thead><tr>${columns.map(c=>`<th${c.r?' class="r"':''}>${c.label}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${columns.map(c=>`<td${c.r?' class="r"':''}${c.mono?' class="mono"':''}>${c.render?c.render(r):esc(r[c.key]||'')}</td>`).join('')}</tr>`).join('')}</tbody></table></div></div>`;
-}
-function renderGradeNotes(){
-  const noteRows = noteRowsEnriched();
-  const all = calc(RAW);
-  const noted = calc(noteRows);
-  const noteRate = RAW.length ? noteRows.length / RAW.length * 100 : 0;
-  const categories = groupByCount(noteRows, r=>r.__noteCat);
-  const courses = groupByCount(noteRows, r=>r['Course']).slice(0,10);
-  const faculty = groupByCount(noteRows, r=>r['Faculty']).slice(0,10);
-  const students = new Set(noteRows.map(r=>(r['Stud. ID']||'').trim()).filter(Boolean)).size;
-  const topCat = categories[0] || {key:'None',count:0};
-
-  const kpiEl = document.getElementById('grade-note-kpis');
-  if(kpiEl) kpiEl.innerHTML = `
-    <div class="kpi-card blue"><div class="kpi-label">Records With Notes</div><div class="kpi-value">${fmt(noteRows.length)}</div><div class="kpi-sub">${pct(noteRate)} of all records</div></div>
-    <div class="kpi-card gold"><div class="kpi-label">Students With Notes</div><div class="kpi-value">${fmt(students)}</div><div class="kpi-sub">Unique student IDs</div></div>
-    <div class="kpi-card green"><div class="kpi-label">Pass Rate With Notes</div><div class="kpi-value">${pct(noted.passRate)}</div><div class="kpi-sub">Overall: ${pct(all.passRate)}</div></div>
-    <div class="kpi-card red"><div class="kpi-label">Fail Rate With Notes</div><div class="kpi-value">${pct(noted.failRate)}</div><div class="kpi-sub">${fmt(noted.failed)} failed with notes</div></div>
-    <div class="kpi-card purple"><div class="kpi-label">Note Categories</div><div class="kpi-value">${fmt(categories.length)}</div><div class="kpi-sub">Top: ${esc(topCat.key)}</div></div>
-    <div class="kpi-card blue"><div class="kpi-label">Courses With Notes</div><div class="kpi-value">${fmt(new Set(noteRows.map(r=>r['Course']).filter(Boolean)).size)}</div><div class="kpi-sub">Faculty: ${fmt(new Set(noteRows.map(r=>r['Faculty']).filter(Boolean)).size)}</div></div>`;
-
-  destroyChart('ch-note-category');
-  const catCanvas = document.getElementById('ch-note-category');
-  if(catCanvas){
-    new Chart(catCanvas.getContext('2d'),{
-      type:'bar', indexAxis:'y',
-      data:{labels:categories.map(g=>g.key),datasets:[{data:categories.map(g=>g.count),backgroundColor:'rgba(88,166,255,.65)',borderRadius:4}]},
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:GRID_COLOR}},y:{grid:{display:false}}}}
-    });
-  }
-  const resultGroups = ['Pass','Fail','Incomplete','Other'].map(k=>({key:k,count:noteRows.filter(r=>r.__result===k).length})).filter(g=>g.count>0);
-  destroyChart('ch-note-result');
-  const resCanvas = document.getElementById('ch-note-result');
-  if(resCanvas){
-    new Chart(resCanvas.getContext('2d'),{
-      type:'doughnut',
-      data:{labels:resultGroups.map(g=>g.key),datasets:[{data:resultGroups.map(g=>g.count),backgroundColor:['rgba(63,185,80,.75)','rgba(248,81,73,.75)','rgba(227,179,65,.75)','rgba(163,113,247,.75)'],borderColor:'#161b22',borderWidth:3}]},
-      options:{responsive:true,maintainAspectRatio:false,cutout:'58%',plugins:{legend:{position:'bottom',labels:{boxWidth:10}}}}
-    });
-  }
-  const cards = document.getElementById('grade-note-type-cards');
-  if(cards){
-    cards.innerHTML = categories.slice(0,8).map(g=>{
-      const rows = noteRows.filter(r=>r.__noteCat===g.key);
-      const m = calc(rows);
-      return `<div class="note-type-card"><div class="note-type-title">${esc(g.key)}</div><div class="note-type-meta">${fmt(g.count)} records · ${pct(m.passRate)} pass · ${fmt(m.failed)} failed</div></div>`;
-    }).join('') || '<div class="alert-card blue"><div class="alert-title">No populated grade-note records</div><div class="alert-body">No populated notes were detected in the uploaded workbook.</div></div>';
-  }
-
-  const labels = ['By Category','By Course','By Faculty','By Semester'];
-  mkTabs('grade-note-tabs','grade-note-panels',labels,(idx)=>{
-    if(idx===0){
-      const rows = categories.map(g=>{const rws=noteRows.filter(r=>r.__noteCat===g.key);return {key:g.key,count:g.count,...calc(rws)};});
-      return noteTable(rows,[
-        {label:'Category',render:r=>esc(r.key)}, {label:'Records',r:true,render:r=>fmt(r.count)}, {label:'Passed',r:true,render:r=>fmt(r.passed)}, {label:'Failed',r:true,render:r=>fmt(r.failed)}, {label:'Incomplete',r:true,render:r=>fmt(r.incomplete)}, {label:'Pass Rate',r:true,render:r=>pct(r.passRate)}, {label:'Fail Rate',r:true,render:r=>pct(r.failRate)}
-      ]);
-    }
-    if(idx===1){
-      const rows = courses.map(g=>{const rws=noteRows.filter(r=>r['Course']===g.key);return {key:g.key,count:g.count,...calc(rws)};});
-      return noteTable(rows,[
-        {label:'Course',render:r=>`<span class="mono">${esc(r.key)}</span>`}, {label:'Note Records',r:true,render:r=>fmt(r.count)}, {label:'Passed',r:true,render:r=>fmt(r.passed)}, {label:'Failed',r:true,render:r=>fmt(r.failed)}, {label:'Pass Rate',r:true,render:r=>pct(r.passRate)}, {label:'Risk',render:r=>riskBadge(r.passRate)}
-      ]);
-    }
-    if(idx===2){
-      const rows = faculty.map(g=>{const rws=noteRows.filter(r=>r['Faculty']===g.key);return {key:g.key,count:g.count,...calc(rws)};});
-      return noteTable(rows,[
-        {label:'Faculty',render:r=>esc(r.key)}, {label:'Note Records',r:true,render:r=>fmt(r.count)}, {label:'Passed',r:true,render:r=>fmt(r.passed)}, {label:'Failed',r:true,render:r=>fmt(r.failed)}, {label:'Pass Rate',r:true,render:r=>pct(r.passRate)}, {label:'Risk',render:r=>riskBadge(r.passRate)}
-      ]);
-    }
-    const rows = SEM_KEYS.map((k,i)=>{const rws=noteRows.filter(r=>r['Source File']===k);return {key:SEM_LABELS[i],count:rws.length,...calc(rws)};}).filter(r=>r.count>0);
-    return noteTable(rows,[
-      {label:'Semester / Source',render:r=>esc(r.key)}, {label:'Note Records',r:true,render:r=>fmt(r.count)}, {label:'Passed',r:true,render:r=>fmt(r.passed)}, {label:'Failed',r:true,render:r=>fmt(r.failed)}, {label:'Incomplete',r:true,render:r=>fmt(r.incomplete)}, {label:'Pass Rate',r:true,render:r=>pct(r.passRate)}
-    ]);
-  });
-
-  const detail = document.getElementById('grade-note-detail');
-  if(detail){
-    const rows = noteRows.slice().sort((a,b)=>String(a.__noteCat).localeCompare(String(b.__noteCat)) || String(a['Course']).localeCompare(String(b['Course']))).slice(0,300);
-    detail.innerHTML = noteTable(rows,[
-      {label:'Category',render:r=>`<span class="note-chip">${esc(r.__noteCat)}</span>`},
-      {label:'Student ID',render:r=>esc(r['Stud. ID'])},
-      {label:'Student',render:r=>esc(r['Student Name']||'')},
-      {label:'Course',render:r=>`<span class="mono">${esc(r['Course'])}</span>`},
-      {label:'Faculty',render:r=>esc(r['Faculty'])},
-      {label:'Grade',render:r=>esc(r['Grade'])},
-      {label:'Result',render:r=>esc(r.__result)},
-      {label:'Grade Note',render:r=>esc(r.__note)}
-    ]);
-  }
-}
-
-// ══ ANALYSIS REPORT ═══════════════════════════════════════════
-function renderAnalysisReport(){
-  const m = calc(RAW);
-  const devAll = calc(RAW.filter(r=>(r['Developmental Course']||'').trim()==='Yes'));
-  const stdAll = calc(RAW.filter(r=>(r['Developmental Course']||'').trim()==='No'));
-  const deptGroups = grpCalc(RAW,r=>r['Department Code']).filter(g=>g.completed>=5).sort((a,b)=>a.passRate-b.passRate);
-  const courseGroups = grpCalc(RAW,r=>r['Course']).filter(g=>g.completed>=10).sort((a,b)=>a.passRate-b.passRate);
-  const facultyGroups = grpCalc(RAW,r=>r['Faculty']).filter(g=>g.n>=10).sort((a,b)=>a.passRate-b.passRate);
-  const noteRows = noteRowsEnriched();
-  const noteCalc = calc(noteRows);
-  const noteRate = RAW.length ? noteRows.length / RAW.length * 100 : 0;
-  const noteCats = groupByCount(noteRows,r=>r.__noteCat);
-  const worstDept = deptGroups[0] || {key:'—',passRate:0,n:0,failed:0};
-  const bestDept = [...deptGroups].sort((a,b)=>b.passRate-a.passRate)[0] || {key:'—',passRate:0,n:0};
-  const worstCourse = courseGroups[0] || {key:'—',passRate:0,n:0,failed:0};
-  const bestSem = SEM_KEYS.map((k,i)=>({label:SEM_LABELS[i],...calc(BY_SEM[k]||[])})).sort((a,b)=>b.passRate-a.passRate)[0] || {label:'—',passRate:0};
-  const criticalCourses = courseGroups.filter(g=>g.passRate<60);
-  const watchCourses = courseGroups.filter(g=>g.passRate>=60&&g.passRate<70);
-  const devGap = stdAll.completed && devAll.completed ? stdAll.passRate-devAll.passRate : 0;
-  const topNote = noteCats[0] || {key:'None',count:0};
-  const content = document.getElementById('analysis-report-content');
-  if(!content) return;
-  content.innerHTML = `
-    <div class="analysis-report">
-      <div class="analysis-panel"><h3>Executive Summary</h3><p>The uploaded dataset contains <strong>${fmt(m.n)}</strong> student-course records, with <strong>${fmt(m.completed)}</strong> completed outcomes and an overall pass rate of <strong>${pct(m.passRate)}</strong>. The completion rate is <strong>${pct(m.compRate)}</strong>, indicating that most enrolled records reached a final graded status. The strongest semester/source is <strong>${esc(bestSem.label)}</strong> at <strong>${pct(bestSem.passRate)}</strong>.</p></div>
-      <div class="analysis-panel"><h3>Academic Risk</h3><p><strong>${criticalCourses.length}</strong> qualified course(s) are in the Critical band below 60% pass rate, and <strong>${watchCourses.length}</strong> are in the Watch band between 60% and 70%. The lowest qualified course is <strong>${esc(worstCourse.key)}</strong> at <strong>${pct(worstCourse.passRate)}</strong> across <strong>${fmt(worstCourse.n)}</strong> records.</p></div>
-      <div class="analysis-panel"><h3>Department Pattern</h3><p>The lowest qualified department is <strong>${esc(DEPT_NAMES[worstDept.key]||worstDept.key)}</strong> at <strong>${pct(worstDept.passRate)}</strong>, while the strongest qualified department is <strong>${esc(DEPT_NAMES[bestDept.key]||bestDept.key)}</strong> at <strong>${pct(bestDept.passRate)}</strong>. This spread suggests that intervention planning should combine college-wide support with department-specific review.</p></div>
-      <div class="analysis-panel"><h3>Developmental Course Finding</h3><p>Developmental courses have a pass rate of <strong>${pct(devAll.passRate)}</strong> compared with <strong>${pct(stdAll.passRate)}</strong> for non-developmental courses. The developmental gap is <strong>${devGap.toFixed(1)} percentage points</strong>, making developmental-course support a high-priority retention and completion strategy.</p></div>
-      <div class="analysis-panel"><h3>Grade Notes Finding</h3><p><strong>${fmt(noteRows.length)}</strong> records contain grade notes, representing <strong>${pct(noteRate)}</strong> of all records. Among records with notes, the pass rate is <strong>${pct(noteCalc.passRate)}</strong> and the fail rate is <strong>${pct(noteCalc.failRate)}</strong>. The most common note category is <strong>${esc(topNote.key)}</strong> with <strong>${fmt(topNote.count)}</strong> record(s).</p></div>
-      <div class="analysis-panel"><h3>Recommended Actions</h3><ul>
-        <li>Prioritize the Critical and Watch course lists for faculty consultation, tutoring alignment, and early-alert follow-up.</li>
-        <li>Review developmental courses separately from standard courses because their pass-rate gap may mask readiness barriers.</li>
-        <li>Use the Grade Notes tab to identify whether attendance, missing work, withdrawals, or grade corrections are driving outcomes.</li>
-        <li>Track the same metrics each semester to evaluate whether interventions improve pass rates and reduce failure concentration.</li>
-      </ul></div>
+  document.getElementById('insights-content').innerHTML=`
+    <div class="dept-grid">
+      <div class="dept-stat-card" style="border-top-color:var(--pass);">
+        <div class="dept-code">Overall Completion</div><div class="dept-name">AY 2024-25</div>
+        <div class="dept-rate" style="color:var(--pass)">${pct(m.compRate)}</div>
+        <div class="dept-meta">${fmt(m.completed)} / ${fmt(m.n)} completed</div>
+      </div>
+      <div class="dept-stat-card" style="border-top-color:var(--warn);">
+        <div class="dept-code">Pass / Fail Split</div><div class="dept-name">All records</div>
+        <div class="dept-rate" style="color:var(--warn)">${pct(m.passRate)}</div>
+        <div class="dept-meta">${fmt(m.passed)} passed · ${fmt(m.failed)} failed</div>
+      </div>
+      <div class="dept-stat-card" style="border-top-color:var(--pass);">
+        <div class="dept-code">Best Department</div><div class="dept-name">${esc(DEPT_NAMES[bestDept.key]||bestDept.key||'')}</div>
+        <div class="dept-rate" style="color:var(--pass)">${pct(bestDept.passRate||0)}</div>
+        <div class="dept-meta">${esc(bestDept.key||'')} · ${fmt(bestDept.n||0)} enrolled</div>
+      </div>
+      <div class="dept-stat-card" style="border-top-color:var(--fail);">
+        <div class="dept-code">Lowest Department</div><div class="dept-name">${esc(DEPT_NAMES[worstDept.key]||worstDept.key||'')}</div>
+        <div class="dept-rate" style="color:var(--fail)">${pct(worstDept.passRate||0)}</div>
+        <div class="dept-meta">${esc(worstDept.key||'')} · ${fmt(worstDept.n||0)} enrolled</div>
+      </div>
+      <div class="dept-stat-card" style="border-top-color:var(--warn);">
+        <div class="dept-code">Developmental Gap</div><div class="dept-name">Dev vs Standard</div>
+        <div class="dept-rate" style="color:var(--warn)">${(stdAll.passRate-devAll.passRate).toFixed(1)}pp</div>
+        <div class="dept-meta">Dev: ${pct(devAll.passRate)} · Std: ${pct(stdAll.passRate)}</div>
+      </div>
+      <div class="dept-stat-card" style="border-top-color:var(--pass);">
+        <div class="dept-code">Gender Gap</div><div class="dept-name">F vs M Pass Rate</div>
+        <div class="dept-rate" style="color:var(--pass)">${Math.abs(gF.passRate-gM.passRate).toFixed(1)}pp</div>
+        <div class="dept-meta">F: ${pct(gF.passRate)} · M: ${pct(gM.passRate)}</div>
+      </div>
+      <div class="dept-stat-card" style="border-top-color:var(--accent);">
+        <div class="dept-code">Best Semester</div><div class="dept-name">${esc(bestSem?.lbl||'')}</div>
+        <div class="dept-rate" style="color:var(--accent)">${pct(bestSem?.passRate||0)}</div>
+        <div class="dept-meta">${fmt(bestSem?.n||0)} total records</div>
+      </div>
+      <div class="dept-stat-card" style="border-top-color:var(--inc);">
+        <div class="dept-code">Cohort</div><div class="dept-name">AY 2024-25 Total</div>
+        <div class="dept-rate" style="color:var(--inc);font-size:24px">${fmt(m.students)}</div>
+        <div class="dept-meta">${fmt(m.courses)} courses · ${fmt(m.faculty)} faculty · 3 semesters</div>
+      </div>
     </div>`;
 }
-
 
 // ══ ALERTS ════════════════════════════════════════════════════
 function renderAlerts(){
@@ -1649,346 +1439,115 @@ function renderAlerts(){
   ).join('');
 }
 
+// ══ DOWNLOAD REPORT ═══════════════════════════════════════════
+function dlReport(){
+  // Capture current rendered dashboard HTML (inline clone)
+  const m=calc(RAW);
+  const dg=grpCalc(RAW,r=>r['Department Code']).sort((a,b)=>a.passRate-b.passRate);
 
-// ══ RECOMMENDATIONS ═══════════════════════════════════════════
-function renderRecommendations(){
-  const m = calc(RAW);
-  const devRows = RAW.filter(r=>(r['Developmental Course']||'').trim()==='Yes');
-  const devAll = calc(devRows);
-  const stdAll = calc(RAW.filter(r=>(r['Developmental Course']||'').trim()==='No'));
-  const courseGroups = grpCalc(RAW,r=>r['Course']).filter(g=>g.completed>=10).sort((a,b)=>a.passRate-b.passRate);
-  const deptGroups = grpCalc(RAW,r=>r['Department Code']).filter(g=>g.completed>=5).sort((a,b)=>a.passRate-b.passRate);
-  const progGroups = grpCalc(RAW,r=>r['Program Code']).filter(g=>g.completed>=10).sort((a,b)=>a.passRate-b.passRate);
-  const worstCourse = courseGroups[0] || {key:'—',passRate:0,failed:0,n:0};
-  const worstDept = deptGroups[0] || {key:'—',passRate:0,failed:0,n:0};
-  const worstProg = progGroups[0] || {key:'—',passRate:0,failed:0,n:0};
-  const criticalCourses = courseGroups.filter(g=>g.passRate<60).slice(0,5);
-  const devGap = stdAll.completed && devAll.completed ? (stdAll.passRate - devAll.passRate) : 0;
-
-  const recs = [
-    {
-      tag:'Priority 1', cls:'rec-tag-red', color:'var(--fail)',
-      title:'Launch targeted support for developmental courses',
-      desc:`Developmental courses are passing at <strong>${pct(devAll.passRate)}</strong>${devGap ? `, about <strong>${devGap.toFixed(1)} percentage points</strong> below standard courses` : ''}. Prioritize tutoring, attendance outreach, and early alerts for the highest-enrollment developmental sections.`
-    },
-    {
-      tag:'Course Risk', cls:'rec-tag-amber', color:'var(--warn)',
-      title:`Review lowest-performing course: ${esc(worstCourse.key)}`,
-      desc:`${esc(worstCourse.key)} has a pass rate of <strong>${pct(worstCourse.passRate)}</strong> across <strong>${fmt(worstCourse.n)}</strong> records. Review assessment alignment, prerequisite readiness, and section-level patterns.`
-    },
-    {
-      tag:'Department', cls:'rec-tag-blue', color:'var(--accent)',
-      title:`Allocate support to ${esc(DEPT_NAMES[worstDept.key]||worstDept.key)}`,
-      desc:`This department has the lowest qualified department pass rate at <strong>${pct(worstDept.passRate)}</strong>. Pair faculty consultation with student success interventions for gateway courses.`
-    },
-    {
-      tag:'Program', cls:'rec-tag-purple', color:'var(--inc)',
-      title:`Monitor program code ${esc(worstProg.key)}`,
-      desc:`${esc(PROG_NAMES[worstProg.key]||worstProg.key)} shows a pass rate of <strong>${pct(worstProg.passRate)}</strong> among programs with at least 10 completions. Check whether failures cluster in a few required courses.`
-    },
-    {
-      tag:'Data Practice', cls:'rec-tag-green', color:'var(--pass)',
-      title:'Keep using completion and pass-rate thresholds in monthly reviews',
-      desc:`Overall completion is <strong>${pct(m.compRate)}</strong>. Maintain a recurring dashboard review using the Critical &lt;60%, Watch 60–70%, and Good ≥70% categories to track intervention impact.`
-    }
-  ];
-
-  if(criticalCourses.length){
-    recs.splice(1,0,{
-      tag:'Critical List', cls:'rec-tag-red', color:'var(--fail)',
-      title:'Create action plans for critical courses',
-      desc:`Critical courses with ≥10 completions include <strong>${criticalCourses.map(g=>esc(g.key)+' ('+pct(g.passRate)+')').join(', ')}</strong>. Assign owners and timelines for follow-up.`
-    });
-  }
-
-  document.getElementById('rec-content').innerHTML = `<div class="rec-list">${recs.map((r,i)=>`
-    <div class="rec-item" style="border-left-color:${r.color};">
-      <div class="rec-num">${String(i+1).padStart(2,'0')}</div>
-      <div class="rec-body-wrap">
-        <span class="rec-tag ${r.cls}">${r.tag}</span>
-        <div class="rec-title">${r.title}</div>
-        <div class="rec-desc">${r.desc}</div>
-      </div>
-    </div>`).join('')}</div>`;
-}
-
-
-
-// ══ EXPORT MENU + CLEAN HTML DASHBOARD EXPORT ═════════════════
-function toggleExportMenu(e){
-  e?.stopPropagation?.();
-  document.getElementById('export-menu')?.classList.toggle('open');
-}
-function closeExportMenu(){
-  document.getElementById('export-menu')?.classList.remove('open');
-}
-document.addEventListener('click', e=>{
-  if(!e.target.closest?.('.export-menu-wrap')) closeExportMenu();
-});
-
-function safeScriptJSON(obj){
-  return JSON.stringify(obj).replace(/</g,'\\u003c').replace(/>/g,'\\u003e').replace(/&/g,'\\u0026');
-}
-
-function chartSnapshot(canvasId){
-  const canvas = document.getElementById(canvasId);
-  if(!canvas) return '';
-  try{
-    const chart = Chart.getChart(canvas);
-    if(chart){ chart.resize(); chart.update('none'); return chart.toBase64Image('image/png', 1); }
-    return canvas.toDataURL('image/png');
-  }catch(e){
-    console.warn('Could not snapshot chart', canvasId, e);
-    return '';
-  }
-}
-
-function buildCleanDashboardHTML(){
-  if(!RAW || !RAW.length) throw new Error('Upload a workbook first.');
-
-  // Update visible academic year value before cloning.
-  setAcademicYearLabel(getAcademicYearLabel());
-
-  const dash = document.getElementById('dash').cloneNode(true);
-  dash.removeAttribute('style');
-  dash.classList.add('export-clean-dashboard');
-
-  // Clean exported header: show academic year as text and remove app controls.
-  const ayInput = dash.querySelector('#hdr-ay');
-  if(ayInput){
-    const strong = document.createElement('strong');
-    strong.textContent = getAcademicYearLabel();
-    ayInput.replaceWith(strong);
-  }
-  dash.querySelectorAll('.header-actions').forEach(el=>el.remove());
-  dash.querySelectorAll('[id]').forEach(el=>{
-    // Avoid duplicate IDs if the exported file is embedded elsewhere.
-    if(el.tagName.toLowerCase() !== 'canvas') el.setAttribute('data-export-id', el.id);
-  });
-
-  // Convert visible Chart.js canvases to durable PNG images so charts do not disappear.
-  dash.querySelectorAll('canvas').forEach(canvas=>{
-    const src = chartSnapshot(canvas.id);
-    const img = document.createElement('img');
-    img.className = 'chart-img';
-    img.alt = canvas.id || 'Dashboard chart';
-    img.src = src;
-    img.style.width = '100%';
-    img.style.height = '100%';
-    img.style.objectFit = 'contain';
-    img.style.display = 'block';
-    canvas.replaceWith(img);
-  });
-
-  // Embed all parsed report data and state for audit/reuse without needing the original workbook.
-  const embedded = {
-    exportedAt: new Date().toISOString(),
-    academicYear: getAcademicYearLabel(),
-    sourceFile: FILE_NAME,
-    totalRecords: RAW.length,
-    semesterKeys: SEM_KEYS,
-    semesterLabels: SEM_LABELS,
-    rows: RAW
-  };
-
-  const styleHTML = [...document.querySelectorAll('style')].map(s=>s.outerHTML).join('\n');
-  const fontLink = `<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">`;
-  const exportCSS = `<style>
-    body{background:#0d1117;color:#e6edf3;margin:0;}
-    .export-clean-dashboard{display:block!important;}
-    .export-clean-dashboard .nav{position:static;}
-    .export-clean-dashboard .chart-img{max-width:100%;border:0;}
-    .export-clean-dashboard .tbl-scroll{max-height:none;overflow:visible;}
-    .export-note{max-width:1440px;margin:0 auto 28px;padding:0 48px 28px;color:#7d8590;font:12px 'DM Sans',sans-serif;}
-    @media print{.nav{position:static!important}.section{break-inside:avoid-page}.chart-card,.kpi-card,.dept-stat-card,.alert-card,.rec-item{break-inside:avoid-page}.tbl-scroll{max-height:none!important;overflow:visible!important}}
-  </style>`;
-
-  return `<!DOCTYPE html>
+  // Build the downloaded static HTML report
+  const reportHTML=`<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CMI Student Completion Dashboard — AY ${esc(getAcademicYearLabel())}</title>
-${fontLink}
-${styleHTML}
-${exportCSS}
+<meta charset="UTF-8"><title>Student Completion Dashboard — AY 2024–25</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--surface2:#1c2330;--border:#30363d;--text:#e6edf3;--muted:#7d8590;--accent:#58a6ff;--pass:#3fb950;--fail:#f85149;--warn:#e3b341;--inc:#a371f7;--pass-bg:rgba(63,185,80,0.12);--fail-bg:rgba(248,81,73,0.12);--warn-bg:rgba(227,179,65,0.12);--accent-bg:rgba(88,166,255,0.12);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;}
+.header{background:var(--header-grad);padding:28px 48px 24px;display:flex;align-items:flex-end;justify-content:space-between;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+.header::before{content:'';position:absolute;top:-60px;right:-80px;width:320px;height:320px;background:radial-gradient(circle,rgba(88,166,255,.07) 0%,transparent 70%);pointer-events:none;}
+.header-eyebrow{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;}
+.header-left h1{font-family:'DM Serif Display',Georgia,serif;font-size:28px;font-weight:400;color:var(--text);}
+.header-left h1 em{color:var(--accent);font-style:italic;}
+.header-left .subtitle{font-size:12px;color:var(--muted);margin-top:8px;}
+.header-right{text-align:right;font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;}
+.badge{display:inline-block;background:var(--accent-bg);border:1px solid rgba(88,166,255,.3);color:var(--accent);padding:4px 14px;border-radius:20px;font-size:11px;font-weight:500;letter-spacing:.04em;margin-bottom:6px;}
+.nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 48px;display:flex;overflow-x:auto;}
+.nav a{display:block;padding:14px 18px;font-size:13px;font-weight:500;color:var(--muted);text-decoration:none;border-bottom:2px solid transparent;white-space:nowrap;}
+.nav a:hover{color:var(--text);}
+.main{padding:36px 48px;max-width:1440px;margin:0 auto;}
+.section{margin-bottom:52px;}
+.section-title{font-family:'DM Serif Display',Georgia,serif;font-size:20px;font-weight:400;color:var(--text);padding-bottom:10px;border-bottom:1px solid var(--border);}
+.section-desc{font-size:12px;color:var(--muted);margin-top:6px;margin-bottom:20px;}
+.kpi-grid-6{display:grid;grid-template-columns:repeat(6,1fr);gap:16px;}
+.kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px 18px;position:relative;overflow:hidden;}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:10px 10px 0 0;}
+.kpi-card.blue::before{background:var(--accent);}.kpi-card.green::before{background:var(--pass);}.kpi-card.red::before{background:var(--fail);}.kpi-card.gold::before{background:var(--warn);}.kpi-card.purple::before{background:var(--inc);}
+.kpi-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:8px;}
+.kpi-value{font-family:'DM Serif Display',Georgia,serif;font-size:30px;line-height:1;margin-bottom:4px;}
+.kpi-sub{font-size:11px;color:var(--muted);}
+.dept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-bottom:24px;}
+.dept-stat-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px;border-top:3px solid;}
+.dept-code{font-family:'DM Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+.dept-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px;}
+.dept-rate{font-family:'DM Serif Display',Georgia,serif;font-size:28px;line-height:1;margin-bottom:4px;}
+.dept-bar{height:3px;border-radius:2px;margin:6px 0;}
+.dept-meta{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;}
+.tbl-wrap{border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+table{width:100%;border-collapse:collapse;font-size:12px;}
+thead th{background:var(--surface2);color:var(--muted);padding:10px 14px;text-align:left;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;border-bottom:1px solid var(--border);}
+th.r{text-align:right;}
+tbody tr{border-bottom:1px solid rgba(48,54,61,.5);}
+tbody td{padding:10px 14px;color:var(--text);}
+td.r{text-align:right;font-family:'DM Mono',monospace;font-size:11px;}
+td.mono{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);font-weight:600;}
+.risk-badge{padding:3px 10px;border-radius:4px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;display:inline-block;}
+.risk-critical{background:rgba(248,81,73,.15);color:var(--fail);}
+.risk-watch{background:rgba(227,179,65,.15);color:var(--warn);}
+.risk-good{background:rgba(63,185,80,.15);color:var(--pass);}
+.pass-bar-wrap{display:flex;align-items:center;gap:8px;min-width:100px;}
+.pass-bar-track{flex:1;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden;}
+.pass-bar-fill{height:100%;border-radius:3px;}
+.pass-bar-num{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);}
+.note{margin-top:3rem;padding:1.5rem 2rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;font-size:12px;color:var(--muted);text-align:center;}
+@media(max-width:900px){.kpi-grid-6{grid-template-columns:repeat(2,1fr);}.dept-grid{grid-template-columns:1fr 1fr;}}
+</style>
 </head>
 <body>
-${dash.outerHTML}
-<div class="export-note">Clean HTML export generated ${new Date().toLocaleString()}. Parsed report data is embedded in this file as JSON under <code>#embedded-report-data</code>.</div>
-<script type="application/json" id="embedded-report-data">${safeScriptJSON(embedded)}<\/script>
+<div class="header">
+  <div class="header-left">
+    <div class="header-eyebrow">College of the Marshall Islands</div>
+    <h1>Student Completion <em>Report</em></h1>
+    <div class="subtitle">Academic Year <strong>2024–25</strong> · Generated ${new Date().toLocaleString()} · ${fmt(RAW.length)} records from ${esc(FILE_NAME)}</div>
+  </div>
+  <div class="header-right">
+    <div class="badge">STATIC REPORT · FOR INTERNAL USE ONLY</div>
+  </div>
+</div>
+
+<div class="main">
+  <section class="section" id="kpis">
+    <div class="section-title">Key Performance Indicators</div>
+    <div class="section-desc">Aggregate metrics across all three semesters. Pass grades: A, B, B+, C, C+, P. Fail grades: D, D+, F, NP.</div>
+    <div class="kpi-grid-6">
+      <div class="kpi-card blue"><div class="kpi-label">Total Records</div><div class="kpi-value">${fmt(m.n)}</div><div class="kpi-sub">Student-course records</div></div>
+      <div class="kpi-card green"><div class="kpi-label">Completion Rate</div><div class="kpi-value">${pct(m.compRate)}</div><div class="kpi-sub">${fmt(m.completed)} completed</div></div>
+      <div class="kpi-card green"><div class="kpi-label">Pass Rate</div><div class="kpi-value">${pct(m.passRate)}</div><div class="kpi-sub">Among completed</div></div>
+      <div class="kpi-card red"><div class="kpi-label">Fail Rate</div><div class="kpi-value">${pct(m.failRate)}</div><div class="kpi-sub">Among completed</div></div>
+      <div class="kpi-card gold"><div class="kpi-label">Distinct Students</div><div class="kpi-value">${fmt(m.students)}</div><div class="kpi-sub">Unique IDs</div></div>
+      <div class="kpi-card purple"><div class="kpi-label">Faculty Members</div><div class="kpi-value">${fmt(m.faculty)}</div><div class="kpi-sub">Instructors</div></div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="section-title">Department Performance</div>
+    <div class="section-desc">Pass rates by academic department, sorted by pass rate ascending.</div>
+    <div class="dept-grid">${dg.map(g=>{const c=riskColor(g.passRate);return`<div class="dept-stat-card" style="border-top-color:${c};"><div class="dept-code">${esc(g.key)}</div><div class="dept-name">${esc(DEPT_NAMES[g.key]||g.key)}</div><div class="dept-rate" style="color:${c};">${pct(g.passRate)}</div><div class="dept-bar" style="background:${c};width:${g.passRate.toFixed(0)}%;max-width:100%;"></div><div class="dept-meta">${fmt(g.n)} enrolled · ${fmt(g.passed)} passed · ${fmt(g.failed)} failed</div></div>`;}).join('')}</div>
+    <div class="tbl-wrap"><table><thead><tr><th>Code</th><th>Department</th><th class="r">Enrolled</th><th class="r">Passed</th><th class="r">Failed</th><th class="r">Completion</th><th class="r">Pass Rate</th><th class="r">Fail Rate</th><th>Risk</th><th>Pass Bar</th></tr></thead>
+    <tbody>${dg.map(g=>`<tr><td class="mono">${esc(g.key)}</td><td style="font-weight:600">${esc(DEPT_NAMES[g.key]||g.key)}</td><td class="r">${fmt(g.n)}</td><td class="r" style="color:var(--pass)">${fmt(g.passed)}</td><td class="r" style="color:var(--fail)">${fmt(g.failed)}</td><td class="r">${pct(g.compRate)}</td><td class="r" style="color:${riskColor(g.passRate)};font-weight:600">${pct(g.passRate)}</td><td class="r">${pct(g.failRate)}</td><td>${riskBadge(g.passRate)}</td><td>${passBarHTML(g.passRate)}</td></tr>`).join('')}</tbody>
+    </table></div>
+  </section>
+  <p class="note">This is a static snapshot generated on ${new Date().toLocaleDateString()}. For the full interactive dashboard with charts, filters, and real-time calculations, upload the workbook to the live version.</p>
+</div>
 </body>
 </html>`;
+
+  const blob=new Blob([reportHTML],{type:'text/html'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`CMI_Completion_Report_AY2425_${new Date().toISOString().slice(0,10)}.html`;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
 }
-
-function dlReportHTML(){
-  try{
-    if(!RAW || !RAW.length){ setMsg('Upload a workbook first.','err'); return; }
-    const html = buildCleanDashboardHTML();
-    const blob = new Blob([html], {type:'text/html'});
-    const a = document.createElement('a');
-    const safeDate = new Date().toISOString().slice(0,10);
-    const ay = getAcademicYearLabel().replace(/[^0-9A-Za-z]+/g,'-');
-    a.href = URL.createObjectURL(blob);
-    a.download = `CMI_Student_Completion_Dashboard_AY_${ay}_${safeDate}.html`;
-    document.body.appendChild(a);
-    a.click();
-    URL.revokeObjectURL(a.href);
-    document.body.removeChild(a);
-    setMsg('HTML dashboard downloaded.','ok');
-  }catch(err){
-    console.error(err);
-    setMsg('HTML export error: '+err.message,'err');
-  }
-}
-
-// ══ DOWNLOAD PDF REPORT ═══════════════════════════════════════
-function loadPdfExportScript(src, checkFn){
-  return new Promise((resolve, reject)=>{
-    try{ if(checkFn && checkFn()){ resolve(); return; } }catch(e){}
-    const existing = [...document.scripts].find(s=>s.src===src);
-    if(existing){ existing.addEventListener('load', resolve, {once:true}); existing.addEventListener('error', reject, {once:true}); return; }
-    const s = document.createElement('script');
-    s.src = src;
-    s.onload = resolve;
-    s.onerror = () => reject(new Error('Could not load '+src));
-    document.head.appendChild(s);
-  });
-}
-
-async function ensurePdfExportLibraries(){
-  await loadPdfExportScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js', ()=>window.html2canvas);
-  await loadPdfExportScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js', ()=>window.jspdf && window.jspdf.jsPDF);
-}
-
-function waitForDashboardCharts(){
-  return new Promise(resolve => setTimeout(resolve, 350));
-}
-
-function visibleReportElements(){
-  const elements = [];
-  const header = document.querySelector('#dash .header');
-  const nav = document.querySelector('#dash .nav');
-  if(header) elements.push(header);
-  if(nav) elements.push(nav);
-  document.querySelectorAll('#dash .section').forEach(sec=>elements.push(sec));
-  return elements;
-}
-
-async function addElementToPdf(pdf, el, opts={}){
-  const margin = opts.margin || 24;
-  const pageW = pdf.internal.pageSize.getWidth();
-  const pageH = pdf.internal.pageSize.getHeight();
-  const usableW = pageW - margin*2;
-  const usableH = pageH - margin*2;
-
-  // Temporarily make sticky elements render in normal flow for clean PDF capture.
-  const oldPosition = el.style.position;
-  if(getComputedStyle(el).position === 'sticky') el.style.position = 'static';
-
-  const canvas = await html2canvas(el, {
-    scale: opts.scale || 2,
-    backgroundColor: '#0d1117',
-    useCORS: true,
-    allowTaint: true,
-    logging: false,
-    windowWidth: Math.max(document.documentElement.scrollWidth, el.scrollWidth, 1440)
-  });
-
-  el.style.position = oldPosition;
-
-  if(!canvas.width || !canvas.height) return;
-
-  const sliceHpx = Math.floor(canvas.width * usableH / usableW);
-  let y = 0;
-  let firstSlice = true;
-
-  while(y < canvas.height){
-    const h = Math.min(sliceHpx, canvas.height - y);
-    const slice = document.createElement('canvas');
-    slice.width = canvas.width;
-    slice.height = h;
-    const ctx = slice.getContext('2d');
-    ctx.fillStyle = '#0d1117';
-    ctx.fillRect(0,0,slice.width,slice.height);
-    ctx.drawImage(canvas, 0, y, canvas.width, h, 0, 0, canvas.width, h);
-
-    const img = slice.toDataURL('image/png');
-    const imgHpt = h * usableW / canvas.width;
-    if(!(opts.isFirstPage && firstSlice && pdf.getNumberOfPages()===1 && opts.pageIsBlank)){
-      pdf.addPage();
-    }
-    pdf.addImage(img, 'PNG', margin, margin, usableW, imgHpt, undefined, 'FAST');
-
-    firstSlice = false;
-    y += h;
-  }
-}
-
-async function dlReportPDF(){
-  if(!RAW || !RAW.length){ setMsg('Upload a workbook first.','err'); return; }
-
-  const oldMsg = document.getElementById('upload-msg')?.textContent || '';
-  const buttons = document.querySelectorAll('.header-actions .btn');
-  buttons.forEach(b=>{ b.disabled=true; b.dataset.oldText=b.textContent; });
-
-  try{
-    setLoad(true, 'Preparing PDF export...');
-    await ensurePdfExportLibraries();
-    await waitForDashboardCharts();
-
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({orientation:'portrait', unit:'pt', format:'letter', compress:true});
-    const elements = visibleReportElements();
-
-    // Start with a blank first page and fill it with the first captured element.
-    let pageIsBlank = true;
-    for(let i=0;i<elements.length;i++){
-      setLoad(true, `Capturing report section ${i+1} of ${elements.length}...`);
-      await addElementToPdf(pdf, elements[i], {isFirstPage:i===0, pageIsBlank, margin:24, scale:2});
-      pageIsBlank = false;
-    }
-
-    // If the initial blank page survived for any reason, remove it.
-    if(pdf.getNumberOfPages() > 1){
-      const firstPageTextless = true;
-      // The first page is used by addElementToPdf only when pageIsBlank is true.
-      // Because addElementToPdf adds a page before every slice except the first blank-use case,
-      // delete page 1 only if no content was placed there. In normal flow, page 1 is filled.
-    }
-
-    const pageCount = pdf.getNumberOfPages();
-    pdf.setProperties({
-      title: `CMI Student Completion Dashboard - AY ${getAcademicYearLabel()}`,
-      subject: 'Dashboard export with charts',
-      author: 'College of the Marshall Islands',
-      creator: 'CMI Student Completion Dashboard'
-    });
-
-    for(let p=1;p<=pageCount;p++){
-      pdf.setPage(p);
-      pdf.setFontSize(8);
-      pdf.setTextColor(125,133,144);
-      pdf.text(`CMI Student Completion Report - AY ${getAcademicYearLabel()} - ${new Date().toLocaleDateString()} - Page ${p} of ${pageCount}`, 24, pdf.internal.pageSize.getHeight()-10);
-    }
-
-    const safeDate = new Date().toISOString().slice(0,10);
-    pdf.save(`CMI_Student_Completion_Dashboard_AY_${getAcademicYearLabel().replace(/[^0-9A-Za-z]+/g,'-')}_${safeDate}.pdf`);
-    setLoad(false);
-    setMsg('PDF report downloaded.','ok');
-    if(oldMsg && oldMsg !== 'PDF report downloaded.') setTimeout(()=>setMsg(oldMsg,''),3000);
-  }catch(err){
-    console.error(err);
-    setLoad(false);
-    setMsg('PDF export error: '+err.message,'err');
-  }finally{
-    buttons.forEach(b=>{ b.disabled=false; if(b.dataset.oldText) b.textContent=b.dataset.oldText; });
-  }
-}
-
-
-// Backward-compatible default: PDF export.
-function dlReport(){ return dlReportPDF(); }
 </script>
 </body>
 </html>
