@@ -1,0 +1,530 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ACH Refund Reconciler</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
+<style>
+:root{
+  --navy:#01008A; --acc1:#3333A1; --acc2:#4D4DAD;
+  --bg:#F4F5FA; --card:#FFFFFF; --ink:#16163A; --muted:#5D5F7A; --line:#DFE1EC;
+  --ok:#1B6B35; --okbg:#E3F4E8; --bad:#B3261E; --badbg:#FBE2E2; --warn:#8A5A00; --warnbg:#FFF4D6;
+  --mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0E0E24; --card:#17173A; --ink:#E9E9F6; --muted:#A3A5C4; --line:#2B2C55;
+  --ok:#7FD39A; --okbg:#173A25; --bad:#FF9A92; --badbg:#46201F; --warn:#F2C46B; --warnbg:#3D3015; }}
+:root[data-theme="dark"]{ --bg:#0E0E24; --card:#17173A; --ink:#E9E9F6; --muted:#A3A5C4; --line:#2B2C55;
+  --ok:#7FD39A; --okbg:#173A25; --bad:#FF9A92; --badbg:#46201F; --warn:#F2C46B; --warnbg:#3D3015; }
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 'Source Sans 3',system-ui,sans-serif}
+header{background:var(--navy);color:#fff;position:relative;overflow:hidden}
+header::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.55;
+  background:repeating-linear-gradient(115deg,transparent 0 46px,var(--acc1) 46px 49px,transparent 49px 96px),
+             repeating-linear-gradient(65deg,transparent 0 70px,var(--acc2) 70px 72px,transparent 72px 140px);
+  -webkit-mask:linear-gradient(90deg,transparent 45%,#000);mask:linear-gradient(90deg,transparent 45%,#000)}
+.hwrap{max-width:1240px;margin:0 auto;padding:22px 16px 20px;position:relative;z-index:1}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;opacity:.8}
+h1{margin:2px 0 4px;font-size:26px}
+header p{margin:0;opacity:.85;max-width:720px}
+main{max-width:1240px;margin:0 auto;padding:20px 16px 60px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:760px){.grid2{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px}
+.drop{border:2px dashed var(--line);border-radius:10px;padding:18px;cursor:pointer;transition:.15s;display:flex;gap:14px;align-items:center;background:var(--card)}
+.drop:hover,.drop.over{border-color:var(--acc1);background:color-mix(in srgb,var(--acc1) 6%,var(--card))}
+.drop.has{border-style:solid;border-color:var(--acc2)}
+.badge{flex:none;width:46px;height:46px;border-radius:9px;display:grid;place-items:center;font-weight:700;font-size:13px;color:#fff;background:var(--navy)}
+.drop h3{margin:0;font-size:16px}.drop small{color:var(--muted)}
+.fname{font-family:var(--mono);font-size:12.5px;color:var(--acc1);word-break:break-all}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .fname{color:#A9A9F0}}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:16px 0}
+button{font:inherit;font-weight:600;border-radius:8px;border:1px solid var(--navy);background:var(--navy);color:#fff;padding:9px 16px;cursor:pointer}
+button.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+button:disabled{opacity:.45;cursor:not-allowed}
+label.chk{display:flex;gap:6px;align-items:center;color:var(--muted);font-size:14px}
+.prog{height:6px;background:var(--line);border-radius:6px;overflow:hidden;flex:1;min-width:160px}
+.prog i{display:block;height:100%;background:var(--acc1);transition:width .2s}
+.msg{color:var(--muted);font-size:14px}
+.err{background:var(--badbg);color:var(--bad);padding:10px 12px;border-radius:8px;margin:10px 0}
+.verdict{display:flex;align-items:center;gap:14px;padding:16px;border-radius:10px;margin:6px 0 14px;font-weight:700;font-size:20px}
+.verdict.ok{background:var(--okbg);color:var(--ok)}.verdict.bad{background:var(--badbg);color:var(--bad)}
+.verdict span{font-weight:400;font-size:14px;color:var(--ink);opacity:.8}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:14px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.tile b{display:block;font-size:22px;font-variant-numeric:tabular-nums}.tile small{color:var(--muted)}
+.tile.ok b{color:var(--ok)}.tile.bad b{color:var(--bad)}
+.meta{display:flex;flex-wrap:wrap;gap:6px 22px;font-size:13.5px;color:var(--muted);margin-bottom:14px}
+.meta b{color:var(--ink);font-weight:600}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:0;overflow-x:auto}
+.tabs button{background:none;border:none;color:var(--muted);border-bottom:3px solid transparent;border-radius:0;padding:9px 12px;white-space:nowrap}
+.tabs button.on{color:var(--ink);border-bottom-color:var(--navy)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .tabs button.on{border-bottom-color:#8C8CF0}}
+.tw{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-top:none;border-radius:0 0 10px 10px}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th{text-align:left;background:color-mix(in srgb,var(--navy) 8%,var(--card));font-weight:600;padding:8px 10px;white-space:nowrap;border-bottom:1px solid var(--line)}
+td{padding:7px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+tr.bad td{background:color-mix(in srgb,var(--badbg) 60%,transparent)}
+td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+td.m,.m{font-family:var(--mono);font-size:12.5px;white-space:nowrap}
+.pill{display:inline-block;padding:2px 8px;border-radius:20px;font-size:12px;font-weight:700;white-space:nowrap}
+.pill.ok{background:var(--okbg);color:var(--ok)}.pill.bad{background:var(--badbg);color:var(--bad)}.pill.warn{background:var(--warnbg);color:var(--warn)}
+.issue{color:var(--bad);font-size:12.5px}.note{color:var(--warn);font-size:12.5px}
+td input{font:inherit;font-size:13px;width:100%;min-width:70px;padding:4px 6px;border:1px solid var(--line);border-radius:5px;background:var(--bg);color:var(--ink)}
+.hint{font-size:13px;color:var(--muted);padding:10px 12px}
+details{margin-top:14px}summary{cursor:pointer;color:var(--muted);font-size:13.5px}
+pre{white-space:pre-wrap;font-family:var(--mono);font-size:12px;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px;max-height:320px;overflow:auto}
+footer{color:var(--muted);font-size:12.5px;margin-top:26px}
+</style>
+</head>
+<body>
+<header><div class="hwrap">
+  <div class="eyebrow">College of the Marshall Islands · Business Office</div>
+  <h1>ACH Refund Reconciler</h1>
+  <p>Match a Bank of Guam ACH batch report (PDF) against the MIP vendor payment export (Excel), see what reconciles and what doesn't, and download the result as an Excel workbook.</p>
+</div></header>
+<main id="root"></main>
+
+<script>
+// ===== Reconciliation core (pure functions, no DOM) =====
+const RC = (() => {
+  const digits = s => String(s ?? '').replace(/\D/g, '');
+  const normAcct = s => digits(s).replace(/^0+/, '');
+  const cents = v => {
+    if (v === null || v === undefined || v === '') return null;
+    const n = typeof v === 'number' ? v : parseFloat(String(v).replace(/[$,\s]/g, ''));
+    return isNaN(n) ? null : Math.round(n * 100);
+  };
+  const normName = s => String(s ?? '').toUpperCase().replace(/[^A-Z,\s]/g, ' ').replace(/\s+/g, ' ').trim();
+  const lastName = s => normName(s).split(',')[0].trim().split(' ')[0] || '';
+  const firstTokens = s => {
+    const n = normName(s); const i = n.indexOf(',');
+    return (i >= 0 ? n.slice(i + 1) : n.split(' ').slice(1).join(' ')).trim().split(' ').filter(Boolean);
+  };
+  // Bank truncates names, so a bank name "agrees" if last names match and each bank first-name token is a prefix of the MIP one.
+  const lastAgrees = (b, m) => !!b && !!m && lastName(b) === lastName(m);
+  function nameAgrees(bankName, mipName) {
+    if (!lastAgrees(bankName, mipName)) return false;
+    const b = firstTokens(bankName), m = firstTokens(mipName);
+    if (!b.length || !m.length) return true;
+    return m[0].startsWith(b[0]) || b[0].startsWith(m[0]);
+  }
+  function excelDate(v) {
+    if (typeof v === 'number' && v > 20000 && v < 80000) {
+      const d = new Date(Date.UTC(1899, 11, 30) + v * 86400000);
+      return `${String(d.getUTCMonth() + 1).padStart(2, '0')}/${String(d.getUTCDate()).padStart(2, '0')}/${d.getUTCFullYear()}`;
+    }
+    return v == null ? '' : String(v);
+  }
+
+  // ---- MIP: array-of-arrays per sheet -> rows ----
+  const MIP_COLS = {
+    date: /document\s*date/i, check: /check\s*(number|no)/i, name: /vendor\s*name/i, id: /^\s*id\s*$/i,
+    desc: /description/i, amount: /document\s*amount|^\s*amount\s*$/i, acct: /vendor\s*account|account\s*(number|no)/i,
+    session: /session/i,
+  };
+  function parseMIP(sheets) {
+    const rows = [];
+    for (const { name: sheetName, data } of sheets) {
+      let hdr = -1, map = {};
+      for (let r = 0; r < Math.min(data.length, 40); r++) {
+        const cells = (data[r] || []).map(c => String(c ?? ''));
+        if (cells.some(c => MIP_COLS.name.test(c)) && cells.some(c => MIP_COLS.amount.test(c))) {
+          hdr = r;
+          cells.forEach((c, i) => { for (const k in MIP_COLS) if (map[k] === undefined && MIP_COLS[k].test(c)) map[k] = i; });
+          break;
+        }
+      }
+      if (hdr < 0) continue;
+      for (let r = hdr + 1; r < data.length; r++) {
+        const row = data[r] || [];
+        const nm = String(row[map.name] ?? '').trim();
+        const joined = row.map(c => String(c ?? '')).join(' ');
+        if (/^\s*total/i.test(String(row[0] ?? '')) || (!nm && /total/i.test(joined))) break;
+        if (!nm) continue;
+        rows.push({
+          src: 'MIP', sheet: sheetName, line: r + 1,
+          date: excelDate(row[map.date]), check: String(row[map.check] ?? '').trim(),
+          name: nm, id: String(row[map.id] ?? '').trim(), desc: String(row[map.desc] ?? '').trim(),
+          amount: cents(row[map.amount]), acct: String(row[map.acct] ?? '').trim(),
+          session: String(row[map.session] ?? '').trim(),
+        });
+      }
+    }
+    return rows;
+  }
+
+  // ---- Bank of Guam ACH batch: plain text lines (OCR or text layer) -> header + rows ----
+  const ROW_RE = /^(.*?)[\s|]*(\d[\d ]{4,14}\d)[.,]?\s*[^A-Za-z0-9$]*\s*(Checking|Savings|Chk|Sav)\w*\s+(\d{9})\s+\S?\s*\$?\s*([\d,]+\.\d{2})/i;
+  const HEADER_RE = /name\s+ach\s*id|^\s*\d+\s+recipients\s*$|recipient details|^\s*addenda/i;
+  function parseBank(text) {
+    const lines = text.split(/\r?\n/).map(l => l.replace(/\s+/g, ' ').trim());
+    const hdr = {};
+    const full = lines.join('\n');
+    const m1 = full.match(/(\d+)\s+Recipients\s+\$?([\d,]+\.\d{2})/i); if (m1) { hdr.recipients = +m1[1]; hdr.total = cents(m1[2]); }
+    const grab = (re) => { const m = full.match(re); return m ? m[1].trim() : ''; };
+    hdr.trackingId = grab(/Tracking\s*ID[:\s]+(\d+)/i);
+    hdr.createdDate = grab(/Created\s*Date[:\s]+([\d/]+)/i);
+    hdr.fromAccount = grab(/((?:General Fund|[A-Z][a-z]+(?: [A-Z][a-z]+)?) Account\s*-{2,}\s*\d+)/);
+    // value lines follow their labels
+    const after = (label) => { const i = lines.findIndex(l => new RegExp('^' + label, 'i').test(l)); return i >= 0 && lines[i + 1] ? lines[i + 1] : ''; };
+    hdr.processDate = (after('Process Date').match(/\d{2}\/\d{2}\/\d{4}/) || [''])[0];
+    hdr.effective = (after('Effective').match(/\d{2}\/\d{2}\/\d{4}/) || [''])[0];
+    hdr.authorized = (after('Authorized(?! By)').match(/\d{2}\/\d{2}\/\d{4}[^A-Za-z]*(AM|PM)?/) || [''])[0];
+    hdr.createdBy = after('Created By').replace(/\s*General Fund.*$/i, '');
+    hdr.authorizedBy = after('Authorized By').replace(/\s*College of.*$/i, '');
+
+    const rows = []; let started = false, pending = '';
+    const clean = s => s.replace(/[^A-Za-z,.'\- ]/g, ' ').replace(/(\s[^A-Za-z\s]+)+$/, '').replace(/\s+/g, ' ').replace(/^[\s.,]+|[\s.,]+$/g, '').trim();
+    for (const l of lines) {
+      if (!started) { if (/recipient details/i.test(l)) started = true; continue; }
+      if (!l || HEADER_RE.test(l)) continue;
+      const m = l.match(ROW_RE);
+      if (m) {
+        let nm = clean(m[1]);
+        if (!/[A-Za-z]{2}/.test(nm)) nm = '';
+        if (pending) { nm = nm ? pending + ' ' + nm : pending; pending = ''; }
+        rows.push({ src: 'BANK', name: nm, acct: m[2].replace(/\s/g, ''), type: /^c/i.test(m[3]) ? 'Checking' : 'Savings', routing: m[4], amount: cents(m[5]) });
+        continue;
+      }
+      const frag = clean(l).split(' ').filter(t => /^[A-Z][a-z]*[.,]?$|^(Jr|Sr|II|III|IV)\.?$|^[A-Z][a-z]+[a-z'\-]*,?$/.test(t) || t.length > 2).join(' ');
+      if (!/[A-Za-z]{2}/.test(frag)) continue;
+      if (frag.includes(',') || !rows.length) pending = pending ? pending + ' ' + frag : frag; // a new "Last, First" starts the next row
+      else rows[rows.length - 1].name += ' ' + frag;                                         // wrapped tail of previous row
+    }
+    rows.forEach((r, i) => { r.name = r.name.replace(/\s+/g, ' ').trim(); r.line = i + 1; });
+    return { header: hdr, rows };
+  }
+
+  // ---- Reconcile ----
+  function reconcile(mip, bank) {
+    const used = new Set(); const out = [];
+    const take = (pred) => bank.findIndex((b, i) => !used.has(i) && pred(b));
+    // pass 1: account number
+    const pend = [];
+    for (const m of mip) {
+      const a = normAcct(m.acct);
+      let i = a ? take(b => normAcct(b.acct) === a && b.amount === m.amount) : -1;
+      if (i < 0 && a) i = take(b => normAcct(b.acct) === a);
+      if (i < 0) { pend.push(m); continue; }
+      used.add(i); out.push(pair(m, bank[i], 'acct'));
+    }
+    // pass 2: name (account differs or misread)
+    const left = [];
+    for (const m of pend) {
+      let i = take(b => nameAgrees(b.name, m.name) && b.amount === m.amount);
+      if (i < 0) i = take(b => lastAgrees(b.name, m.name) && b.amount === m.amount);
+      if (i < 0) i = take(b => nameAgrees(b.name, m.name));
+      if (i < 0) { left.push(m); continue; }
+      used.add(i); out.push(pair(m, bank[i], 'name'));
+    }
+    for (const m of left) out.push(pair(m, null));
+    bank.forEach((b, i) => { if (!used.has(i)) out.push(pair(null, b)); });
+    return out;
+  }
+  function pair(m, b, how) {
+    const r = { mip: m, bank: b, issues: [] };
+    if (m && b) {
+      const acctOk = normAcct(m.acct) === normAcct(b.acct);
+      const amtOk = m.amount === b.amount;
+      const nameOk = lastAgrees(b.name, m.name);
+      const firstOk = nameAgrees(b.name, m.name);
+      r.acctOk = acctOk; r.amtOk = amtOk; r.nameOk = nameOk;
+      r.diff = (b.amount ?? 0) - (m.amount ?? 0);
+      if (!amtOk) r.issues.push(`Amount differs (MIP ${fmt(m.amount)} vs Bank ${fmt(b.amount)})`);
+      if (!acctOk) r.issues.push(`Account differs (MIP ${m.acct} vs Bank ${b.acct})`);
+      if (!nameOk) r.issues.push(`Last name differs (MIP "${m.name}" vs Bank "${b.name}")`);
+      else if (!firstOk) r.notes = `First name differs (MIP "${m.name}" vs Bank "${b.name}") - likely bank truncation or OCR misread; verify against PDF`;
+      r.status = !amtOk ? 'Amount Mismatch' : !acctOk ? 'Account Mismatch' : !nameOk ? 'Name Mismatch' : 'Reconciled';
+      r.matchedBy = how === 'acct' ? 'Account number' : 'Name';
+    } else if (m) { r.status = 'Missing in Bank'; r.diff = -(m.amount ?? 0); r.issues.push('In MIP but not in the Bank of Guam ACH batch'); r.matchedBy = '—'; }
+    else { r.status = 'Missing in MIP'; r.diff = b.amount ?? 0; r.issues.push('In the Bank of Guam ACH batch but not in MIP'); r.matchedBy = '—'; }
+    r.ok = r.status === 'Reconciled';
+    return r;
+  }
+  const fmt = c => c == null ? '' : '$' + (c / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return { parseMIP, parseBank, reconcile, cents, fmt, normAcct };
+})();
+if (typeof module !== 'undefined') module.exports = RC;
+
+// ===== Excel output (ExcelJS) =====
+async function buildWorkbook(ExcelJS, { mip, bank, header, results, mipFile, bankFile, mask }) {
+  const NAVY = 'FF01008A', ACC = 'FF3333A1';
+  const FILL = { ok: 'FFE3F4E8', bad: 'FFFBE2E2', warn: 'FFFFF4D6' };
+  const FONT = { ok: 'FF1B6B35', bad: 'FFB3261E', warn: 'FF8A5A00' };
+  const kind = r => r.ok ? (r.notes ? 'warn' : 'ok') : 'bad';
+  const money = c => c == null ? null : c / 100;
+  const acct = a => !a ? '' : mask ? String(a).replace(/\d(?=(?:\D*\d){4})/g, '•') : String(a);
+  const wb = new ExcelJS.Workbook(); wb.creator = 'CMI ACH Reconciliation'; wb.created = new Date();
+  const hdrRow = (ws, row) => { row.eachCell(c => { c.font = { bold: true, color: { argb: 'FFFFFFFF' } }; c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: NAVY } }; c.alignment = { vertical: 'middle', wrapText: true }; c.border = { bottom: { style: 'thin', color: { argb: ACC } } }; }); row.height = 30; };
+  const sumMip = mip.reduce((a, r) => a + (r.amount || 0), 0), sumBank = bank.reduce((a, r) => a + (r.amount || 0), 0);
+  const counts = {}; results.forEach(r => counts[r.status] = (counts[r.status] || 0) + 1);
+  const notRec = results.filter(r => !r.ok);
+  const allOk = !notRec.length && sumMip === sumBank && (header.total == null || header.total === sumBank);
+
+  // Summary
+  const s = wb.addWorksheet('Summary', { views: [{ showGridLines: false }] });
+  s.columns = [{ width: 34 }, { width: 44 }];
+  s.mergeCells('A1:B1'); s.getCell('A1').value = 'College of the Marshall Islands — ACH Refund Reconciliation';
+  s.getCell('A1').font = { bold: true, size: 15, color: { argb: 'FFFFFFFF' } }; s.getCell('A1').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: NAVY } }; s.getRow(1).height = 30;
+  s.mergeCells('A2:B2'); s.getCell('A2').value = 'Bank of Guam ACH batch vs MIP vendor payments'; s.getCell('A2').font = { italic: true, color: { argb: ACC } };
+  const kv = (k, v, numFmt) => { const r = s.addRow([k, v]); r.getCell(1).font = { bold: true }; if (numFmt) r.getCell(2).numFmt = numFmt; r.getCell(2).alignment = { horizontal: 'left' }; return r; };
+  s.addRow([]);
+  const res = kv('OVERALL RESULT', allOk ? 'RECONCILED' : 'NOT RECONCILED');
+  res.getCell(2).font = { bold: true, size: 13, color: { argb: allOk ? FONT.ok : FONT.bad } }; res.getCell(2).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: allOk ? FILL.ok : FILL.bad } };
+  s.addRow([]);
+  kv('Bank file', bankFile || ''); kv('MIP file', mipFile || ''); kv('Generated', new Date().toLocaleString());
+  s.addRow([]); const h1 = s.addRow(['Bank of Guam batch', '']); hdrRow(s, h1);
+  kv('Tracking ID', header.trackingId || ''); kv('Created date', header.createdDate || ''); kv('Process date', header.processDate || '');
+  kv('Effective date', header.effective || ''); kv('From account', header.fromAccount || ''); kv('Created by', header.createdBy || ''); kv('Authorized by', header.authorizedBy || ''); kv('Authorized', header.authorized || '');
+  s.addRow([]); const h2 = s.addRow(['Totals', '']); hdrRow(s, h2);
+  const M = '"$"#,##0.00;[Red]-"$"#,##0.00';
+  kv('MIP total (' + mip.length + ' rows)', money(sumMip), M);
+  kv('Bank recipients total (' + bank.length + ' rows)', money(sumBank), M);
+  if (header.total != null) kv('Bank batch header total' + (header.recipients ? ' (' + header.recipients + ' recipients)' : ''), money(header.total), M);
+  const d = kv('Difference (Bank − MIP)', money(sumBank - sumMip), M); d.getCell(2).font = { bold: true, color: { argb: sumBank === sumMip ? FONT.ok : FONT.bad } };
+  s.addRow([]); const h3 = s.addRow(['Status', 'Count']); hdrRow(s, h3);
+  ['Reconciled', 'Amount Mismatch', 'Account Mismatch', 'Name Mismatch', 'Missing in Bank', 'Missing in MIP'].forEach(st => {
+    const r = s.addRow([st, counts[st] || 0]); r.getCell(2).alignment = { horizontal: 'left' };
+    if (counts[st]) r.getCell(1).font = { color: { argb: st === 'Reconciled' ? FONT.ok : FONT.bad }, bold: true };
+  });
+  const nw = results.filter(r => r.notes).length; if (nw) { const r = s.addRow(['Reconciled with a note to verify', nw]); r.getCell(1).font = { color: { argb: FONT.warn }, bold: true }; r.getCell(2).alignment = { horizontal: 'left' }; }
+
+  // Detail sheets
+  const COLS = [['#', 5], ['Status', 18], ['Check No.', 11], ['Student ID', 11], ['MIP Name', 30], ['MIP Account', 15], ['MIP Amount', 13], ['Bank Name', 26], ['Bank Account', 15], ['Bank Type', 10], ['Bank Amount', 13], ['Difference', 12], ['Matched By', 15], ['Issues / Notes', 70]];
+  const detail = (title, list) => {
+    const ws = wb.addWorksheet(title, { views: [{ state: 'frozen', ySplit: 1 }] });
+    ws.columns = COLS.map(([h, w]) => ({ header: h, width: w })); hdrRow(ws, ws.getRow(1));
+    if (!list.length) { ws.addRow(['', 'None — every transaction reconciled.']); return; }
+    list.forEach((r, i) => {
+      const row = ws.addRow([i + 1, r.status, r.mip?.check || '', r.mip?.id || '', r.mip?.name || '', acct(r.mip?.acct), money(r.mip?.amount), r.bank?.name || '', acct(r.bank?.acct), r.bank?.type || '', money(r.bank?.amount), money(r.diff), r.matchedBy, [...r.issues, r.notes].filter(Boolean).join('; ')]);
+      const k = kind(r);
+      [7, 11, 12].forEach(c => row.getCell(c).numFmt = M);
+      row.getCell(2).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: FILL[k] } }; row.getCell(2).font = { bold: true, color: { argb: FONT[k] } };
+      if (!r.ok) row.eachCell({ includeEmpty: true }, (c, n) => { if (n !== 2) c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: FILL.bad } }; });
+      row.getCell(14).alignment = { wrapText: true, vertical: 'top' };
+    });
+    const t = ws.addRow(['', 'TOTAL', '', '', '', '', money(list.reduce((a, r) => a + (r.mip?.amount || 0), 0)), '', '', '', money(list.reduce((a, r) => a + (r.bank?.amount || 0), 0)), money(list.reduce((a, r) => a + (r.diff || 0), 0))]);
+    t.font = { bold: true }; [7, 11, 12].forEach(c => t.getCell(c).numFmt = M); t.eachCell(c => c.border = { top: { style: 'double' } });
+    ws.autoFilter = { from: 'A1', to: 'N1' };
+  };
+  detail('Reconciliation', results);
+  detail('Not Reconciled', notRec);
+  detail('Reconciled', results.filter(r => r.ok));
+
+  const raw = (title, cols, list) => {
+    const ws = wb.addWorksheet(title, { views: [{ state: 'frozen', ySplit: 1 }] });
+    ws.columns = cols.map(([h, k, w]) => ({ header: h, key: k, width: w })); hdrRow(ws, ws.getRow(1));
+    list.forEach(r => { const row = ws.addRow(cols.map(([, k]) => k === 'amount' ? money(r[k]) : k === 'acct' ? acct(r[k]) : r[k])); cols.forEach(([, k], i) => { if (k === 'amount') row.getCell(i + 1).numFmt = M; }); });
+  };
+  raw('MIP Data', [['Document Date', 'date', 13], ['Check No.', 'check', 11], ['Vendor Name', 'name', 32], ['ID', 'id', 10], ['Description', 'desc', 22], ['Amount', 'amount', 13], ['Vendor Account', 'acct', 15], ['Session ID', 'session', 17], ['Sheet', 'sheet', 20], ['Row', 'line', 6]], mip);
+  raw('Bank Data', [['#', 'line', 5], ['Name (as printed)', 'name', 30], ['Account', 'acct', 15], ['Type', 'type', 10], ['Routing', 'routing', 12], ['Amount', 'amount', 13]], bank);
+  return wb;
+}
+if (typeof module !== 'undefined') module.exports.buildWorkbook = buildWorkbook;
+
+</script>
+
+<script type="text/babel" data-presets="react">
+const { useState, useMemo, useRef } = React;
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+// Build text lines from a PDF text layer (used when the PDF has real text)
+async function pdfTextLayer(pdf) {
+  let out = [];
+  for (let p = 1; p <= pdf.numPages; p++) {
+    const page = await pdf.getPage(p); const tc = await page.getTextContent();
+    const rows = {};
+    tc.items.forEach(it => { const y = Math.round(it.transform[5] / 3); (rows[y] ||= []).push(it); });
+    Object.keys(rows).sort((a, b) => b - a).forEach(y => out.push(rows[y].sort((a, b) => a.transform[4] - b.transform[4]).map(i => i.str).join(' ')));
+  }
+  return out.join('\n');
+}
+// OCR every page (Bank of Guam PDFs embed fonts without a text map, so the text layer is scrambled)
+async function pdfOCR(pdf, onProg) {
+  const worker = await Tesseract.createWorker('eng', 1, {
+    workerPath: 'https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/worker.min.js',
+    corePath: 'https://cdn.jsdelivr.net/npm/tesseract.js-core@5.1.1',
+    langPath: 'https://tessdata.projectnaptha.com/4.0.0',
+    logger: m => { if (m.status === 'recognizing text') onProg(m.progress); }
+  });
+  await worker.setParameters({ tessedit_pageseg_mode: '6', preserve_interword_spaces: '1' });
+  let text = '';
+  for (let p = 1; p <= pdf.numPages; p++) {
+    const page = await pdf.getPage(p); const vp = page.getViewport({ scale: 3.5 });
+    const c = document.createElement('canvas'); c.width = vp.width; c.height = vp.height;
+    const ctx = c.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
+    await page.render({ canvasContext: ctx, viewport: vp }).promise;
+    const { data } = await worker.recognize(c);
+    text += data.text + '\n';
+    onProg(null, p, pdf.numPages);
+  }
+  await worker.terminate();
+  return text;
+}
+async function readBankPDF(file, onProg, forceOCR) {
+  const pdf = await pdfjsLib.getDocument({ data: await file.arrayBuffer() }).promise;
+  if (!forceOCR) {
+    const t = await pdfTextLayer(pdf);
+    if (/recipient details/i.test(t) && RC.parseBank(t).rows.length) return { text: t, method: 'PDF text layer' };
+  }
+  return { text: await pdfOCR(pdf, onProg), method: 'OCR (' + pdf.numPages + ' pages)' };
+}
+async function readMIP(file) {
+  const wb = XLSX.read(await file.arrayBuffer(), { type: 'array' });
+  const sheets = wb.SheetNames.map(n => ({ name: n, data: XLSX.utils.sheet_to_json(wb.Sheets[n], { header: 1, raw: true, defval: '' }) }));
+  return RC.parseMIP(sheets);
+}
+
+function Drop({ label, tag, accept, file, onFile, hint }) {
+  const ref = useRef(); const [over, setOver] = useState(false);
+  return (
+    <div className={'drop' + (over ? ' over' : '') + (file ? ' has' : '')}
+      onClick={() => ref.current.click()}
+      onDragOver={e => { e.preventDefault(); setOver(true); }} onDragLeave={() => setOver(false)}
+      onDrop={e => { e.preventDefault(); setOver(false); e.dataTransfer.files[0] && onFile(e.dataTransfer.files[0]); }}>
+      <div className="badge">{tag}</div>
+      <div><h3>{label}</h3>{file ? <div className="fname">{file.name}</div> : <small>{hint}</small>}</div>
+      <input ref={ref} type="file" accept={accept} hidden onChange={e => e.target.files[0] && onFile(e.target.files[0])} />
+    </div>);
+}
+const Pill = ({ r }) => <span className={'pill ' + (r.ok ? (r.notes ? 'warn' : 'ok') : 'bad')}>{r.status}{r.ok && r.notes ? ' *' : ''}</span>;
+const $ = RC.fmt;
+
+function App() {
+  const [bankFile, setBankFile] = useState(null), [mipFile, setMipFile] = useState(null);
+  const [bank, setBank] = useState(null), [mip, setMip] = useState(null);
+  const [busy, setBusy] = useState(false), [prog, setProg] = useState(0), [msg, setMsg] = useState(''), [err, setErr] = useState('');
+  const [tab, setTab] = useState('bad'), [mask, setMask] = useState(false), [forceOCR, setForceOCR] = useState(false);
+
+  async function run() {
+    setErr(''); setBusy(true); setProg(0);
+    try {
+      setMsg('Reading MIP export…'); const m = await readMIP(mipFile);
+      if (!m.length) throw new Error('No payment rows found in the MIP file. Expected a header row with "Vendor Name" and "Document Amount".');
+      setMsg('Reading Bank of Guam PDF…');
+      const r = await readBankPDF(bankFile, (p, done, total) => {
+        if (done) { setMsg(`OCR: page ${done} of ${total} done`); setProg(done / total); }
+        else setProg(pr => Math.max(pr, p * 0.98 / 1));
+      }, forceOCR);
+      const b = RC.parseBank(r.text);
+      if (!b.rows.length) throw new Error('Could not find any recipient rows in the PDF. Open "Extracted PDF text" below to see what was read.');
+      setMip(m); setBank({ ...b, method: r.method, text: r.text });
+      setTab(RC.reconcile(m, b.rows).some(x => !x.ok) ? 'bad' : 'all');
+      setMsg(''); setProg(1);
+    } catch (e) { console.error(e); setErr(e.message || String(e)); setMsg(''); }
+    setBusy(false);
+  }
+  const results = useMemo(() => bank && mip ? RC.reconcile(mip, bank.rows) : null, [bank, mip]);
+  const editBank = (i, k, v) => setBank(b => ({ ...b, rows: b.rows.map((r, j) => j !== i ? r : { ...r, [k]: k === 'amount' ? RC.cents(v) : v }) }));
+  const addBank = () => setBank(b => ({ ...b, rows: [...b.rows, { src: 'BANK', line: b.rows.length + 1, name: '', acct: '', type: 'Checking', routing: '', amount: 0 }] }));
+  const delBank = i => setBank(b => ({ ...b, rows: b.rows.filter((_, j) => j !== i) }));
+
+  async function download() {
+    const wb = await buildWorkbook(ExcelJS, { mip, bank: bank.rows, header: bank.header, results, mipFile: mipFile.name, bankFile: bankFile.name, mask });
+    const buf = await wb.xlsx.writeBuffer();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([buf], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }));
+    a.download = `ACH_Reconciliation_${bank.header.trackingId || new Date().toISOString().slice(0, 10)}.xlsx`; a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  }
+
+  let summary = null;
+  if (results) {
+    const sm = mip.reduce((a, r) => a + (r.amount || 0), 0), sb = bank.rows.reduce((a, r) => a + (r.amount || 0), 0);
+    const bad = results.filter(r => !r.ok).length, hdrOk = bank.header.total == null || bank.header.total === sb;
+    const ok = !bad && sm === sb && hdrOk;
+    summary = { sm, sb, bad, ok, hdrOk, good: results.length - bad, notes: results.filter(r => r.notes).length };
+  }
+  const shown = !results ? [] : tab === 'bad' ? results.filter(r => !r.ok) : tab === 'ok' ? results.filter(r => r.ok) : results;
+  const showAcct = a => !a ? '' : mask ? String(a).replace(/\d(?=(?:\D*\d){4})/g, '•') : a;
+
+  return (<>
+    <div className="grid2">
+      <Drop label="Bank of Guam ACH report" tag="PDF" accept=".pdf" file={bankFile} onFile={setBankFile} hint="Drop or click — the Online Activity / ACH batch PDF" />
+      <Drop label="MIP vendor payment export" tag="XLSX" accept=".xlsx,.xls,.csv" file={mipFile} onFile={setMipFile} hint="Drop or click — Excel export from MIP" />
+    </div>
+    <div className="bar">
+      <button disabled={!bankFile || !mipFile || busy} onClick={run}>{busy ? 'Reconciling…' : 'Reconcile'}</button>
+      {results && <button className="ghost" onClick={download}>⬇ Download Excel</button>}
+      <label className="chk"><input type="checkbox" checked={mask} onChange={e => setMask(e.target.checked)} /> Mask account numbers</label>
+      <label className="chk"><input type="checkbox" checked={forceOCR} onChange={e => setForceOCR(e.target.checked)} /> Always OCR the PDF</label>
+      {busy && <><div className="prog"><i style={{ width: (prog * 100) + '%' }} /></div><span className="msg">{msg}</span></>}
+    </div>
+    {err && <div className="err">{err}</div>}
+
+    {results && <>
+      <div className={'verdict ' + (summary.ok ? 'ok' : 'bad')}>
+        {summary.ok ? '✔ RECONCILED' : '✖ NOT RECONCILED'}
+        <span>{summary.ok ? `All ${results.length} transactions match on account and amount, and totals agree.` : `${summary.bad} of ${results.length} transaction(s) need attention${summary.sm !== summary.sb ? '; totals differ by ' + $(summary.sb - summary.sm) : ''}${!summary.hdrOk ? '; recipient rows don’t add up to the batch header total' : ''}.`}</span>
+      </div>
+      <div className="tiles">
+        <div className="tile ok"><b>{summary.good}</b><small>Reconciled{summary.notes ? ` (${summary.notes} with note)` : ''}</small></div>
+        <div className={'tile ' + (summary.bad ? 'bad' : '')}><b>{summary.bad}</b><small>Not reconciled</small></div>
+        <div className="tile"><b>{$(summary.sm)}</b><small>MIP total · {mip.length} rows</small></div>
+        <div className="tile"><b>{$(summary.sb)}</b><small>Bank total · {bank.rows.length} rows{bank.header.total != null ? ` (header ${$(bank.header.total)})` : ''}</small></div>
+        <div className={'tile ' + (summary.sb === summary.sm ? 'ok' : 'bad')}><b>{$(summary.sb - summary.sm)}</b><small>Difference (Bank − MIP)</small></div>
+      </div>
+      <div className="meta">
+        {bank.header.trackingId && <span>Tracking ID <b>{bank.header.trackingId}</b></span>}
+        {bank.header.createdDate && <span>Created <b>{bank.header.createdDate}</b></span>}
+        {bank.header.effective && <span>Effective <b>{bank.header.effective}</b></span>}
+        {bank.header.fromAccount && <span>From <b>{bank.header.fromAccount}</b></span>}
+        {bank.header.authorizedBy && <span>Authorized by <b>{bank.header.authorizedBy}</b></span>}
+        <span>PDF read via <b>{bank.method}</b></span>
+      </div>
+
+      <div className="tabs">
+        <button className={tab === 'bad' ? 'on' : ''} onClick={() => setTab('bad')}>Not reconciled ({summary.bad})</button>
+        <button className={tab === 'ok' ? 'on' : ''} onClick={() => setTab('ok')}>Reconciled ({summary.good})</button>
+        <button className={tab === 'all' ? 'on' : ''} onClick={() => setTab('all')}>All ({results.length})</button>
+        <button className={tab === 'bank' ? 'on' : ''} onClick={() => setTab('bank')}>Bank rows (edit)</button>
+      </div>
+      <div className="tw">
+        {tab === 'bank' ? <>
+          <div className="hint">These rows were read from the PDF{bank.method.startsWith('OCR') ? ' by OCR' : ''}. If a value was misread, correct it here — the reconciliation and the Excel output update immediately.</div>
+          <table><thead><tr><th>#</th><th>Name (as printed)</th><th>Account</th><th>Type</th><th>Routing</th><th>Amount</th><th></th></tr></thead>
+            <tbody>{bank.rows.map((r, i) => <tr key={i}>
+              <td>{i + 1}</td>
+              <td><input value={r.name} onChange={e => editBank(i, 'name', e.target.value)} /></td>
+              <td><input className="m" value={r.acct} onChange={e => editBank(i, 'acct', e.target.value)} /></td>
+              <td><select value={r.type} onChange={e => editBank(i, 'type', e.target.value)}><option>Checking</option><option>Savings</option></select></td>
+              <td><input className="m" value={r.routing} onChange={e => editBank(i, 'routing', e.target.value)} /></td>
+              <td><input defaultValue={(r.amount ?? 0) / 100} onBlur={e => editBank(i, 'amount', e.target.value)} /></td>
+              <td><button className="ghost" onClick={() => delBank(i)} title="Remove row">✕</button></td>
+            </tr>)}</tbody></table>
+          <div className="hint"><button className="ghost" onClick={addBank}>+ Add bank row</button></div>
+        </> : shown.length === 0 ? <div className="hint">{tab === 'bad' ? 'Nothing to fix — every transaction reconciled.' : 'No rows.'}</div> :
+          <table><thead><tr><th>Status</th><th>Check #</th><th>Student ID</th><th>MIP name</th><th>MIP account</th><th>MIP amount</th><th>Bank name</th><th>Bank account</th><th>Bank amount</th><th>Diff</th><th>Issues / notes</th></tr></thead>
+            <tbody>{shown.map((r, i) => <tr key={i} className={r.ok ? '' : 'bad'}>
+              <td><Pill r={r} /></td>
+              <td className="m">{r.mip?.check}</td><td className="m">{r.mip?.id}</td>
+              <td>{r.mip?.name}</td><td className="m">{showAcct(r.mip?.acct)}</td><td className="n">{$(r.mip?.amount)}</td>
+              <td>{r.bank?.name}</td><td className="m">{showAcct(r.bank?.acct)}</td><td className="n">{$(r.bank?.amount)}</td>
+              <td className="n">{r.diff ? $(r.diff) : '—'}</td>
+              <td>{r.issues.map((t, j) => <div key={j} className="issue">{t}</div>)}{r.notes && <div className="note">* {r.notes}</div>}</td>
+            </tr>)}</tbody></table>}
+      </div>
+      <details><summary>Extracted PDF text ({bank.method})</summary><pre>{bank.text}</pre></details>
+    </>}
+
+    <footer>
+      Matching rules: each MIP line is paired with a bank recipient by account number (leading zeros and dashes ignored), falling back to last name.
+      A pair is <b>Reconciled</b> when account, amount and last name agree; the bank truncates names, so a differing first name is only flagged as a note.
+      Files are processed entirely in your browser — nothing is uploaded. An internet connection is needed to load the libraries and OCR language data.
+    </footer>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
