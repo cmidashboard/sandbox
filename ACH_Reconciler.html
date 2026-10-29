@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ACH Refund Reconciler</title>
+<title>Pell Refund Bank Reconciler</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
@@ -89,8 +89,8 @@ footer{color:var(--muted);font-size:12.5px;margin-top:26px}
 <body>
 <header><div class="hwrap">
   <div class="eyebrow">College of the Marshall Islands · Business Office</div>
-  <h1>ACH Refund Reconciler</h1>
-  <p>Match a Bank of Guam ACH batch report (PDF) against the MIP vendor payment export (Excel), see what reconciles and what doesn't, and download the result as an Excel workbook.</p>
+  <h1>Pell Refund Bank Reconciler</h1>
+  <p>Match a Bank of Guam Pell refund batch report (PDF) against the MIP student refund payments (Excel), see which refunds reconcile and which don't, and download the result as an Excel workbook.</p>
 </div></header>
 <main id="root"></main>
 
@@ -163,7 +163,7 @@ const RC = (() => {
     return rows;
   }
 
-  // ---- Bank of Guam ACH batch: plain text lines (OCR or text layer) -> header + rows ----
+  // ---- Bank of Guam Pell refund batch: plain text lines (OCR or text layer) -> header + rows ----
   const ROW_RE = /^(.*?)[\s|]*(\d[\d ]{4,14}\d)[.,]?\s*[^A-Za-z0-9$]*\s*(Checking|Savings|Chk|Sav)\w*\s+(\d{9})\s+\S?\s*\$?\s*([\d,]+\.\d{2})/i;
   const HEADER_RE = /name\s+ach\s*id|^\s*\d+\s+recipients\s*$|recipient details|^\s*addenda/i;
   function parseBank(text) {
@@ -246,8 +246,8 @@ const RC = (() => {
       else if (!firstOk) r.notes = `First name differs (MIP "${m.name}" vs Bank "${b.name}") - likely bank truncation or OCR misread; verify against PDF`;
       r.status = !amtOk ? 'Amount Mismatch' : !acctOk ? 'Account Mismatch' : !nameOk ? 'Name Mismatch' : 'Reconciled';
       r.matchedBy = how === 'acct' ? 'Account number' : 'Name';
-    } else if (m) { r.status = 'Missing in Bank'; r.diff = -(m.amount ?? 0); r.issues.push('In MIP but not in the Bank of Guam ACH batch'); r.matchedBy = '—'; }
-    else { r.status = 'Missing in MIP'; r.diff = b.amount ?? 0; r.issues.push('In the Bank of Guam ACH batch but not in MIP'); r.matchedBy = '—'; }
+    } else if (m) { r.status = 'Missing in Bank'; r.diff = -(m.amount ?? 0); r.issues.push('In MIP but not in the Bank of Guam Pell refund batch'); r.matchedBy = '—'; }
+    else { r.status = 'Missing in MIP'; r.diff = b.amount ?? 0; r.issues.push('In the Bank of Guam Pell refund batch but not in MIP'); r.matchedBy = '—'; }
     r.ok = r.status === 'Reconciled';
     return r;
   }
@@ -264,7 +264,7 @@ async function buildWorkbook(ExcelJS, { mip, bank, header, results, mipFile, ban
   const kind = r => r.ok ? (r.notes ? 'warn' : 'ok') : 'bad';
   const money = c => c == null ? null : c / 100;
   const acct = a => !a ? '' : mask ? String(a).replace(/\d(?=(?:\D*\d){4})/g, '•') : String(a);
-  const wb = new ExcelJS.Workbook(); wb.creator = 'CMI ACH Reconciliation'; wb.created = new Date();
+  const wb = new ExcelJS.Workbook(); wb.creator = 'CMI Pell Refund Bank Reconciliation'; wb.created = new Date();
   const hdrRow = (ws, row) => { row.eachCell(c => { c.font = { bold: true, color: { argb: 'FFFFFFFF' } }; c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: NAVY } }; c.alignment = { vertical: 'middle', wrapText: true }; c.border = { bottom: { style: 'thin', color: { argb: ACC } } }; }); row.height = 30; };
   const sumMip = mip.reduce((a, r) => a + (r.amount || 0), 0), sumBank = bank.reduce((a, r) => a + (r.amount || 0), 0);
   const counts = {}; results.forEach(r => counts[r.status] = (counts[r.status] || 0) + 1);
@@ -274,9 +274,9 @@ async function buildWorkbook(ExcelJS, { mip, bank, header, results, mipFile, ban
   // Summary
   const s = wb.addWorksheet('Summary', { views: [{ showGridLines: false }] });
   s.columns = [{ width: 34 }, { width: 44 }];
-  s.mergeCells('A1:B1'); s.getCell('A1').value = 'College of the Marshall Islands — ACH Refund Reconciliation';
+  s.mergeCells('A1:B1'); s.getCell('A1').value = 'College of the Marshall Islands — Pell Refund Bank Reconciliation';
   s.getCell('A1').font = { bold: true, size: 15, color: { argb: 'FFFFFFFF' } }; s.getCell('A1').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: NAVY } }; s.getRow(1).height = 30;
-  s.mergeCells('A2:B2'); s.getCell('A2').value = 'Bank of Guam ACH batch vs MIP vendor payments'; s.getCell('A2').font = { italic: true, color: { argb: ACC } };
+  s.mergeCells('A2:B2'); s.getCell('A2').value = 'Bank of Guam Pell refund batch vs MIP student refund payments'; s.getCell('A2').font = { italic: true, color: { argb: ACC } };
   const kv = (k, v, numFmt) => { const r = s.addRow([k, v]); r.getCell(1).font = { bold: true }; if (numFmt) r.getCell(2).numFmt = numFmt; r.getCell(2).alignment = { horizontal: 'left' }; return r; };
   s.addRow([]);
   const res = kv('OVERALL RESULT', allOk ? 'RECONCILED' : 'NOT RECONCILED');
@@ -300,11 +300,11 @@ async function buildWorkbook(ExcelJS, { mip, bank, header, results, mipFile, ban
   const nw = results.filter(r => r.notes).length; if (nw) { const r = s.addRow(['Reconciled with a note to verify', nw]); r.getCell(1).font = { color: { argb: FONT.warn }, bold: true }; r.getCell(2).alignment = { horizontal: 'left' }; }
 
   // Detail sheets
-  const COLS = [['#', 5], ['Status', 18], ['Check No.', 11], ['Student ID', 11], ['MIP Name', 30], ['MIP Account', 15], ['MIP Amount', 13], ['Bank Name', 26], ['Bank Account', 15], ['Bank Type', 10], ['Bank Amount', 13], ['Difference', 12], ['Matched By', 15], ['Issues / Notes', 70]];
+  const COLS = [['#', 5], ['Status', 18], ['Check No.', 11], ['Student ID', 11], ['Student (MIP)', 30], ['MIP Account', 15], ['MIP Amount', 13], ['Bank Name', 26], ['Bank Account', 15], ['Bank Type', 10], ['Bank Amount', 13], ['Difference', 12], ['Matched By', 15], ['Issues / Notes', 70]];
   const detail = (title, list) => {
     const ws = wb.addWorksheet(title, { views: [{ state: 'frozen', ySplit: 1 }] });
     ws.columns = COLS.map(([h, w]) => ({ header: h, width: w })); hdrRow(ws, ws.getRow(1));
-    if (!list.length) { ws.addRow(['', 'None — every transaction reconciled.']); return; }
+    if (!list.length) { ws.addRow(['', 'None — every Pell refund reconciled.']); return; }
     list.forEach((r, i) => {
       const row = ws.addRow([i + 1, r.status, r.mip?.check || '', r.mip?.id || '', r.mip?.name || '', acct(r.mip?.acct), money(r.mip?.amount), r.bank?.name || '', acct(r.bank?.acct), r.bank?.type || '', money(r.bank?.amount), money(r.diff), r.matchedBy, [...r.issues, r.notes].filter(Boolean).join('; ')]);
       const k = kind(r);
@@ -434,7 +434,7 @@ function App() {
     const buf = await wb.xlsx.writeBuffer();
     const a = document.createElement('a');
     a.href = URL.createObjectURL(new Blob([buf], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }));
-    a.download = `ACH_Reconciliation_${bank.header.trackingId || new Date().toISOString().slice(0, 10)}.xlsx`; a.click();
+    a.download = `Pell_Refund_Bank_Reconciliation_${bank.header.trackingId || new Date().toISOString().slice(0, 10)}.xlsx`; a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 2000);
   }
 
@@ -450,8 +450,8 @@ function App() {
 
   return (<>
     <div className="grid2">
-      <Drop label="Bank of Guam ACH report" tag="PDF" accept=".pdf" file={bankFile} onFile={setBankFile} hint="Drop or click — the Online Activity / ACH batch PDF" />
-      <Drop label="MIP vendor payment export" tag="XLSX" accept=".xlsx,.xls,.csv" file={mipFile} onFile={setMipFile} hint="Drop or click — Excel export from MIP" />
+      <Drop label="Bank of Guam Pell refund report" tag="PDF" accept=".pdf" file={bankFile} onFile={setBankFile} hint="Drop or click — the Online Activity / Pell refund batch PDF" />
+      <Drop label="MIP Pell refund payments" tag="XLSX" accept=".xlsx,.xls,.csv" file={mipFile} onFile={setMipFile} hint="Drop or click — Excel export from MIP" />
     </div>
     <div className="bar">
       <button disabled={!bankFile || !mipFile || busy} onClick={run}>{busy ? 'Reconciling…' : 'Reconcile'}</button>
@@ -465,7 +465,7 @@ function App() {
     {results && <>
       <div className={'verdict ' + (summary.ok ? 'ok' : 'bad')}>
         {summary.ok ? '✔ RECONCILED' : '✖ NOT RECONCILED'}
-        <span>{summary.ok ? `All ${results.length} transactions match on account and amount, and totals agree.` : `${summary.bad} of ${results.length} transaction(s) need attention${summary.sm !== summary.sb ? '; totals differ by ' + $(summary.sb - summary.sm) : ''}${!summary.hdrOk ? '; recipient rows don’t add up to the batch header total' : ''}.`}</span>
+        <span>{summary.ok ? `All ${results.length} Pell refunds match on account and amount, and totals agree.` : `${summary.bad} of ${results.length} transaction(s) need attention${summary.sm !== summary.sb ? '; totals differ by ' + $(summary.sb - summary.sm) : ''}${!summary.hdrOk ? '; recipient rows don’t add up to the batch header total' : ''}.`}</span>
       </div>
       <div className="tiles">
         <div className="tile ok"><b>{summary.good}</b><small>Reconciled{summary.notes ? ` (${summary.notes} with note)` : ''}</small></div>
@@ -503,8 +503,8 @@ function App() {
               <td><button className="ghost" onClick={() => delBank(i)} title="Remove row">✕</button></td>
             </tr>)}</tbody></table>
           <div className="hint"><button className="ghost" onClick={addBank}>+ Add bank row</button></div>
-        </> : shown.length === 0 ? <div className="hint">{tab === 'bad' ? 'Nothing to fix — every transaction reconciled.' : 'No rows.'}</div> :
-          <table><thead><tr><th>Status</th><th>Check #</th><th>Student ID</th><th>MIP name</th><th>MIP account</th><th>MIP amount</th><th>Bank name</th><th>Bank account</th><th>Bank amount</th><th>Diff</th><th>Issues / notes</th></tr></thead>
+        </> : shown.length === 0 ? <div className="hint">{tab === 'bad' ? 'Nothing to fix — every Pell refund reconciled.' : 'No rows.'}</div> :
+          <table><thead><tr><th>Status</th><th>Check #</th><th>Student ID</th><th>Student (MIP)</th><th>MIP account</th><th>MIP amount</th><th>Bank name</th><th>Bank account</th><th>Bank amount</th><th>Diff</th><th>Issues / notes</th></tr></thead>
             <tbody>{shown.map((r, i) => <tr key={i} className={r.ok ? '' : 'bad'}>
               <td><Pill r={r} /></td>
               <td className="m">{r.mip?.check}</td><td className="m">{r.mip?.id}</td>
@@ -518,7 +518,7 @@ function App() {
     </>}
 
     <footer>
-      Matching rules: each MIP line is paired with a bank recipient by account number (leading zeros and dashes ignored), falling back to last name.
+      Matching rules: each MIP Pell refund line is paired with a bank recipient by account number (leading zeros and dashes ignored), falling back to last name.
       A pair is <b>Reconciled</b> when account, amount and last name agree; the bank truncates names, so a differing first name is only flagged as a note.
       Files are processed entirely in your browser — nothing is uploaded. An internet connection is needed to load the libraries and OCR language data.
     </footer>
