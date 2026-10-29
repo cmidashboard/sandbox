@@ -870,10 +870,60 @@ function renderTrends(){
 
   // Donut: pass vs fail vs incomplete
   destroyChart('ch-donut');
+  const donutTotal = all.passed + all.failed + all.incomplete || 1;
   new Chart(document.getElementById('ch-donut').getContext('2d'),{
     type:'doughnut',
-    data:{labels:['Passed','Failed','Incomplete/W'],datasets:[{data:[all.passed,all.failed,all.incomplete],backgroundColor:['rgba(63,185,80,.7)','rgba(248,81,73,.7)','rgba(227,179,65,.7)'],borderColor:'#161b22',borderWidth:3}]},
-    options:{responsive:true,maintainAspectRatio:false,cutout:'58%',plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:12,color:'#7d8590'}},tooltip:{callbacks:{label:c=>`${c.label}: ${fmt(c.raw)}`}}}}
+    data:{
+      labels:['Passed','Failed','Incomplete/W'],
+      datasets:[{
+        data:[all.passed, all.failed, all.incomplete],
+        backgroundColor:['rgba(63,185,80,.75)','rgba(248,81,73,.75)','rgba(227,179,65,.75)'],
+        borderColor: getComputedStyle(document.documentElement).getPropertyValue('--chart-border').trim()||'#161b22',
+        borderWidth:3
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false, cutout:'55%',
+      plugins:{
+        legend:{position:'bottom',labels:{boxWidth:10,padding:14,color:getComputedStyle(document.documentElement).getPropertyValue('--chart-text').trim()||'#7d8590'}},
+        tooltip:{callbacks:{label:c=>`${c.label}: ${fmt(c.raw)} (${(c.raw/donutTotal*100).toFixed(1)}%)`}},
+        datalabels:{
+          display: ctx => ctx.dataset.data[ctx.dataIndex] > 0,
+          formatter:(val)=>{
+            const p=(val/donutTotal*100);
+            return p<4?'':`${p.toFixed(1)}%\n${fmt(val)}`;
+          },
+          color:'#fff',
+          font:{family:"'DM Sans',sans-serif", weight:'700', size:11},
+          textAlign:'center',
+          textShadowColor:'rgba(0,0,0,0.5)',
+          textShadowBlur:4
+        }
+      }
+    },
+    plugins:[{
+      id:'donutLabels',
+      afterDatasetsDraw(chart){
+        const {ctx,data}=chart;
+        const meta=chart.getDatasetMeta(0);
+        meta.data.forEach((arc,i)=>{
+          const val=data.datasets[0].data[i];
+          const pct=(val/donutTotal*100);
+          if(pct<4||!val) return;
+          const {x,y}=arc.tooltipPosition();
+          const line1=`${pct.toFixed(1)}%`;
+          const line2=fmt(val);
+          ctx.save();
+          ctx.textAlign='center'; ctx.textBaseline='middle';
+          ctx.shadowColor='rgba(0,0,0,0.6)'; ctx.shadowBlur=4;
+          ctx.font="bold 12px 'DM Sans',sans-serif"; ctx.fillStyle='#fff';
+          ctx.fillText(line1, x, y-7);
+          ctx.font="10px 'DM Sans',sans-serif";
+          ctx.fillText(line2, x, y+7);
+          ctx.restore();
+        });
+      }
+    }]
   });
 
   // Grade distribution
