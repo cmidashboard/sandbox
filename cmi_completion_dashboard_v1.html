@@ -234,7 +234,7 @@ td.mono{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);font-
       </svg>
     </div>
     <h2>CMI Student Completion Report</h2>
-    <p>Drag &amp; drop your student completion report <strong>.xlsx</strong> or <strong>.xls</strong> workbook here, or click to browse. Any filename is accepted.</p>
+    <p>Drag &amp; drop your student completion report <strong>.xlsx</strong> or <strong>.xls</strong> workbook here, or click to browse. Requires a <strong>Cleaned Data</strong> sheet. AP Term &amp; Session Length columns (from v9+ script) enable the Session Length comparison section.</p>
     <span class="upload-cta">Choose File</span>
   </div>
   <div id="upload-msg"></div>
@@ -284,6 +284,7 @@ td.mono{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);font-
     <a href="#faculty">Faculty</a>
     <a href="#programs">Programs</a>
     <a href="#gender">Gender</a>
+    <a href="#session-length">Session Length</a>
     <a href="#heatmap">Heatmap</a>
     <a href="#insights">Insights</a>
     <a href="#alerts">Alerts</a>
@@ -434,6 +435,36 @@ td.mono{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);font-
         <div class="chart-title"><span class="dot" style="--dt:var(--accent)"></span>FULL GENDER BREAKDOWN</div>
         <div class="tabs" id="gender-tbl-tabs"></div>
         <div id="gender-tbl-panels"></div>
+      </div>
+    </section>
+
+    <!-- ══ SESSION LENGTH ══ -->
+    <section class="section" id="session-length">
+      <div class="section-title">Session Length Comparison</div>
+      <div class="section-desc">Pass rates and outcomes split by session type — 15/16-Week (Full Term) vs 8-Week (Half Term). Summer T1/T2 sessions are classified as Full Term.</div>
+      <div class="kpi-grid-6" id="sl-kpis" style="margin-bottom:20px;"></div>
+      <div class="g2" style="margin-bottom:20px;">
+        <div class="chart-card"><div class="chart-title"><span class="dot" style="--dt:var(--accent)"></span>PASS RATE — FULL TERM VS 8-WEEK</div><div class="chart-wrap" style="height:220px;"><canvas id="ch-sl-bar"></canvas></div></div>
+        <div class="chart-card"><div class="chart-title"><span class="dot" style="--dt:var(--warn)"></span>ENROLLED VS PASSED BY SESSION TYPE</div><div class="chart-wrap" style="height:220px;"><canvas id="ch-sl-enroll"></canvas></div></div>
+      </div>
+      <div class="g2" style="margin-bottom:20px;">
+        <div class="chart-card">
+          <div class="chart-title"><span class="dot" style="--dt:var(--pass)"></span>FULL TERM — COURSE PASS RATES (TOP 15)</div>
+          <div class="chart-wrap" style="height:340px;"><canvas id="ch-sl-ft-courses"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title"><span class="dot" style="--dt:var(--warn)"></span>8-WEEK — COURSE PASS RATES (TOP 15)</div>
+          <div class="chart-wrap" style="height:340px;"><canvas id="ch-sl-8wk-courses"></canvas></div>
+        </div>
+      </div>
+      <div class="chart-card" style="margin-bottom:20px;">
+        <div class="chart-title"><span class="dot" style="--dt:var(--accent)"></span>DEPARTMENT PASS RATE — SESSION LENGTH COMPARISON</div>
+        <div class="chart-wrap" style="height:300px;"><canvas id="ch-sl-dept"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title"><span class="dot" style="--dt:var(--accent)"></span>FULL BREAKDOWN BY SESSION TYPE</div>
+        <div class="tabs" id="sl-tbl-tabs"></div>
+        <div id="sl-tbl-panels"></div>
       </div>
     </section>
 
@@ -630,8 +661,12 @@ function switchTab(tabsId, panelsId, idx) {
   document.querySelectorAll(`#${panelsId} .tab-panel`).forEach((p,i)=>p.classList.toggle('active',i===idx));
 }
 
+// ── SESSION LENGTH CONSTANTS ───────────────────────────────────
+const SL_FULL = '15/16-Week (Full Term)';
+const SL_8WK  = '8-Week (Half Term)';
+
 // ── STATE ──────────────────────────────────────────────────────
-let RAW = [], BY_SEM = {}, FILE_NAME = '', AY_LABEL = '';
+let RAW = [], BY_SEM = {}, BY_SESSION = {}, FILE_NAME = '', AY_LABEL = '';
 
 function deriveAYLabel(){
   // Collect all non-empty Year values from data
@@ -695,6 +730,24 @@ function parse(wb) {
   SEM_LABELS = SEM_KEYS.map(sl);
   BY_SEM = {};
   SEM_KEYS.forEach(k=>{ BY_SEM[k]=RAW.filter(r=>r['Source File']===k); });
+  // Build session-length groups from Session Length column (v9+ workbooks)
+  // Fall back: if column absent, check AP Term for -1/-2 suffix (fall/spring only)
+  BY_SESSION = {};
+  const hasSlCol = RAW.some(r => r['Session Length'] && r['Session Length'].trim());
+  if(hasSlCol) {
+    BY_SESSION[SL_FULL] = RAW.filter(r => (r['Session Length']||'').trim() === SL_FULL);
+    BY_SESSION[SL_8WK]  = RAW.filter(r => (r['Session Length']||'').trim() === SL_8WK);
+  } else {
+    // Fallback: derive from AP Term (FA/SP with -1/-2 → 8-week; summer always full)
+    const is8wk = r => {
+      const ap = (r['AP Term']||'').trim();
+      if(!ap) return false;
+      if(/^(su|summer)/i.test(ap)) return false;
+      return /^(fa|fall|sp|spring)\d{2,4}[-_]\d/i.test(ap);
+    };
+    BY_SESSION[SL_8WK]  = RAW.filter(is8wk);
+    BY_SESSION[SL_FULL] = RAW.filter(r => !is8wk(r));
+  }
   // Derive academic year label from Year column values (e.g. "2024", "2025" → "2024–25")
   AY_LABEL = deriveAYLabel();
   renderDash();
@@ -713,7 +766,7 @@ function resetApp(){
   if(confirm('Upload a new file?')){
     document.getElementById('upload-screen').style.display='flex';
     document.getElementById('dash').style.display='none';
-    finp.value=''; RAW=[]; BY_SEM={}; SEM_KEYS=[]; SEM_LABELS=[]; AY_LABEL='';
+    finp.value=''; RAW=[]; BY_SEM={}; BY_SESSION={}; SEM_KEYS=[]; SEM_LABELS=[]; AY_LABEL='';
     const ayHdr=document.getElementById('hdr-ay'); if(ayHdr) ayHdr.textContent='—';
     Chart.instances.forEach?.(c=>c.destroy());
   }
@@ -747,6 +800,7 @@ function renderDash(){
   renderFaculty();
   renderPrograms();
   renderGender();
+  renderSessionLength();
   renderHeatmap();
   renderInsights();
   renderAlerts();
@@ -774,6 +828,114 @@ function renderKPIs(){
       <div class="sem-detail">${fmt(s.n)} enrolled · ${fmt(s.passed)} passed · ${fmt(s.failed)} failed</div>
     </div>`;
   }).join('');
+}
+
+// ══ SESSION LENGTH ════════════════════════════════════════════
+function renderSessionLength(){
+  const ftRows = BY_SESSION[SL_FULL] || [];
+  const wkRows = BY_SESSION[SL_8WK]  || [];
+  const ftM = calc(ftRows);
+  const wkM = calc(wkRows);
+  const all = calc(RAW);
+  const gap = Math.abs(ftM.passRate - wkM.passRate);
+
+  // KPIs
+  document.getElementById('sl-kpis').innerHTML=`
+    <div class="kpi-card blue"><div class="kpi-label">Total Records</div><div class="kpi-value" style="color:var(--accent)">${fmt(all.n)}</div><div class="kpi-sub">${fmt(ftRows.length)} full · ${fmt(wkRows.length)} 8-wk</div></div>
+    <div class="kpi-card green"><div class="kpi-label">Full Term Pass Rate</div><div class="kpi-value" style="color:var(--pass)">${pct(ftM.passRate)}</div><div class="kpi-sub">${fmt(ftM.passed)} of ${fmt(ftM.completed)} completed</div></div>
+    <div class="kpi-card gold"><div class="kpi-label">8-Week Pass Rate</div><div class="kpi-value" style="color:var(--warn)">${pct(wkM.passRate)}</div><div class="kpi-sub">${fmt(wkM.passed)} of ${fmt(wkM.completed)} completed</div></div>
+    <div class="kpi-card ${Math.abs(gap)>5?'red':'gold'}"><div class="kpi-label">Pass Rate Gap</div><div class="kpi-value" style="color:${Math.abs(gap)>5?'var(--fail)':'var(--warn)'}">${gap.toFixed(1)}pp</div><div class="kpi-sub">${ftM.passRate>=wkM.passRate?'Full Term outperforms':'8-Week outperforms'}</div></div>
+    <div class="kpi-card blue"><div class="kpi-label">Full Term Students</div><div class="kpi-value">${fmt(ftM.students)}</div><div class="kpi-sub">${fmt(ftM.courses)} courses</div></div>
+    <div class="kpi-card purple"><div class="kpi-label">8-Week Students</div><div class="kpi-value" style="color:var(--inc)">${fmt(wkM.students)}</div><div class="kpi-sub">${fmt(wkM.courses)} courses</div></div>`;
+
+  // Pass rate bar chart
+  destroyChart('ch-sl-bar');
+  new Chart(document.getElementById('ch-sl-bar').getContext('2d'),{
+    type:'bar',
+    data:{labels:['Full Term (15/16-Wk)','8-Week (Half Term)'],datasets:[
+      {label:'Pass Rate',data:[+ftM.passRate.toFixed(1),+wkM.passRate.toFixed(1)],backgroundColor:['rgba(63,185,80,.65)','rgba(227,179,65,.65)'],borderColor:['#3fb950','#e3b341'],borderWidth:2,borderRadius:8},
+      {label:'Fail Rate',data:[+ftM.failRate.toFixed(1),+wkM.failRate.toFixed(1)],backgroundColor:['rgba(248,81,73,.35)','rgba(248,81,73,.35)'],borderColor:['#f85149','#f85149'],borderWidth:1,borderRadius:8},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10}}},
+      scales:{x:{grid:{display:false}},y:{min:0,max:105,ticks:{callback:v=>v+'%'},grid:{color:GRID_COLOR}}}}
+  });
+
+  // Enrolled vs Passed
+  destroyChart('ch-sl-enroll');
+  new Chart(document.getElementById('ch-sl-enroll').getContext('2d'),{
+    type:'bar',
+    data:{labels:['Full Term (15/16-Wk)','8-Week (Half Term)'],datasets:[
+      {label:'Enrolled', data:[ftRows.length, wkRows.length], backgroundColor:'rgba(88,166,255,.3)',borderColor:'#58a6ff',borderWidth:1,borderRadius:4},
+      {label:'Passed',   data:[ftM.passed, wkM.passed],      backgroundColor:'rgba(63,185,80,.6)',borderRadius:4},
+      {label:'Failed',   data:[ftM.failed, wkM.failed],      backgroundColor:'rgba(248,81,73,.4)',borderRadius:4},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10}}},
+      scales:{x:{grid:{display:false}},y:{grid:{color:GRID_COLOR}}}}
+  });
+
+  // Top 15 courses — full term
+  const ftCg = grpCalc(ftRows, r=>r['Course']).filter(g=>g.completed>=5).sort((a,b)=>b.passRate-a.passRate).slice(0,15);
+  destroyChart('ch-sl-ft-courses');
+  new Chart(document.getElementById('ch-sl-ft-courses').getContext('2d'),{
+    type:'bar',indexAxis:'y',
+    data:{labels:ftCg.map(g=>g.key),datasets:[{data:ftCg.map(g=>+g.passRate.toFixed(1)),backgroundColor:ftCg.map(g=>barColor(g.passRate)),borderRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.raw}%`}}},
+      scales:{x:{min:0,max:105,grid:{color:GRID_COLOR},ticks:{callback:v=>v+'%'}},y:{grid:{display:false},ticks:{font:{size:10}}}}}
+  });
+
+  // Top 15 courses — 8-week
+  const wkCg = grpCalc(wkRows, r=>r['Course']).filter(g=>g.completed>=3).sort((a,b)=>b.passRate-a.passRate).slice(0,15);
+  destroyChart('ch-sl-8wk-courses');
+  if(wkCg.length) {
+    new Chart(document.getElementById('ch-sl-8wk-courses').getContext('2d'),{
+      type:'bar',indexAxis:'y',
+      data:{labels:wkCg.map(g=>g.key),datasets:[{data:wkCg.map(g=>+g.passRate.toFixed(1)),backgroundColor:wkCg.map(g=>barColor(g.passRate)),borderRadius:4}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.raw}%`}}},
+        scales:{x:{min:0,max:105,grid:{color:GRID_COLOR},ticks:{callback:v=>v+'%'}},y:{grid:{display:false},ticks:{font:{size:10}}}}}
+    });
+  } else {
+    document.getElementById('ch-sl-8wk-courses').closest('.chart-wrap').innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--muted);font-size:13px;">No 8-week course data found</div>';
+  }
+
+  // Dept comparison
+  const depts=[...new Set(RAW.map(r=>r['Department Code']).filter(Boolean))].sort();
+  const ftDept = grpCalc(ftRows, r=>r['Department Code']).filter(g=>g.completed>0);
+  const wkDept = grpCalc(wkRows, r=>r['Department Code']).filter(g=>g.completed>0);
+  destroyChart('ch-sl-dept');
+  new Chart(document.getElementById('ch-sl-dept').getContext('2d'),{
+    type:'bar',
+    data:{labels:depts,datasets:[
+      {label:'Full Term',data:depts.map(d=>{const g=ftDept.find(x=>x.key===d);return g&&g.completed>0?+g.passRate.toFixed(1):null;}),backgroundColor:'rgba(63,185,80,.65)',borderRadius:4},
+      {label:'8-Week',   data:depts.map(d=>{const g=wkDept.find(x=>x.key===d);return g&&g.completed>0?+g.passRate.toFixed(1):null;}),backgroundColor:'rgba(227,179,65,.65)',borderRadius:4},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10}}},
+      scales:{y:{min:0,max:105,ticks:{callback:v=>v+'%'},grid:{color:GRID_COLOR}},x:{grid:{display:false}}}}
+  });
+
+  // Full table tabs — Full Term / 8-Week
+  const slTypes = [
+    {label:'Full Term (15/16-Wk)', rows:ftRows},
+    {label:'8-Week (Half Term)',    rows:wkRows},
+  ];
+  mkTabs('sl-tbl-tabs','sl-tbl-panels',slTypes.map(t=>t.label),(si)=>{
+    const rows = slTypes[si].rows;
+    const td = grpCalc(rows, r=>r['Course']).filter(g=>g.completed>=1).sort((a,b)=>a.passRate-b.passRate);
+    if(!td.length) return `<div style="padding:24px;color:var(--muted);text-align:center">No data for this session type.</div>`;
+    return `<div class="tbl-wrap"><div class="tbl-scroll"><table>
+      <thead><tr><th>Course</th><th class="r">Enrolled</th><th class="r">Passed</th><th class="r">Failed</th><th class="r">Completed</th><th class="r">Pass Rate</th><th class="r">Fail Rate</th><th>Risk</th><th>Pass Bar</th></tr></thead>
+      <tbody>${td.map(g=>`<tr>
+        <td class="mono">${esc(g.key)}</td>
+        <td class="r">${fmt(g.n)}</td>
+        <td class="r" style="color:var(--pass)">${fmt(g.passed)}</td>
+        <td class="r" style="color:var(--fail)">${fmt(g.failed)}</td>
+        <td class="r">${fmt(g.completed)}</td>
+        <td class="r" style="color:${riskColor(g.passRate)};font-weight:600">${pct(g.passRate)}</td>
+        <td class="r">${pct(g.failRate)}</td>
+        <td>${riskBadge(g.passRate)}</td>
+        <td>${passBarHTML(g.passRate)}</td>
+      </tr>`).join('')}</tbody>
+    </table></div></div>`;
+  });
 }
 
 // ══ HEATMAP ═══════════════════════════════════════════════════
@@ -1484,7 +1646,12 @@ function renderInsights(){
       <div class="dept-stat-card" style="border-top-color:var(--inc);">
         <div class="dept-code">Cohort</div><div class="dept-name">${AY_LABEL?'AY '+AY_LABEL+' Total':'All Semesters'}</div>
         <div class="dept-rate" style="color:var(--inc);font-size:24px">${fmt(m.students)}</div>
-        <div class="dept-meta">${fmt(m.courses)} courses · ${fmt(m.faculty)} faculty · 3 semesters</div>
+        <div class="dept-meta">${fmt(m.courses)} courses · ${fmt(m.faculty)} faculty · ${SEM_KEYS.length} semesters</div>
+      </div>
+      <div class="dept-stat-card" style="border-top-color:var(--warn);">
+        <div class="dept-code">Session Length Gap</div><div class="dept-name">Full Term vs 8-Week</div>
+        <div class="dept-rate" style="color:var(--warn)">${(()=>{const ft=calc(BY_SESSION[SL_FULL]||[]);const wk=calc(BY_SESSION[SL_8WK]||[]);return Math.abs(ft.passRate-wk.passRate).toFixed(1)+'pp';})()}</div>
+        <div class="dept-meta">${(()=>{const ft=calc(BY_SESSION[SL_FULL]||[]);const wk=calc(BY_SESSION[SL_8WK]||[]);return 'Full: '+pct(ft.passRate)+' · 8-Wk: '+pct(wk.passRate);})()}</div>
       </div>
     </div>`;
 }
@@ -1508,6 +1675,7 @@ function renderAlerts(){
     {cls:'info',    title:'✦ Developmental Gap',body:`Standard courses outperform developmental courses by <strong>${(stdAll.passRate-devAll.passRate).toFixed(1)}pp</strong> (${pct(stdAll.passRate)} vs ${pct(devAll.passRate)}). Bridge programs and enhanced tutoring may reduce this gap.`},
     {cls:'info',    title:'✦ Gender Parity',body:`Female students outperform male students by <strong>${Math.abs(gF.passRate-gM.passRate).toFixed(1)}pp</strong> (F: ${pct(gF.passRate)} vs M: ${pct(gM.passRate)}). Both groups show strong completion rates above 98%.`},
     {cls:'info',    title:'✦ Strong Completion',body:`Overall completion rate of <strong>${pct(m.compRate)}</strong> indicates strong academic engagement. <strong>${fmt(m.completed)}</strong> of ${fmt(m.n)} enrolled student-course records reached a graded outcome.`},
+    (()=>{const ft=calc(BY_SESSION[SL_FULL]||[]);const wk=calc(BY_SESSION[SL_8WK]||[]);const g=Math.abs(ft.passRate-wk.passRate);const cls=g>5?'warning':'info';const better=ft.passRate>=wk.passRate?'Full-Term':'8-Week';return{cls,title:`${g>5?'⚠':'✦'} Session Length Impact`,body:`<strong>${better}</strong> sessions show higher pass rates (Full Term: <strong>${pct(ft.passRate)}</strong> · 8-Week: <strong>${pct(wk.passRate)}</strong>, gap <strong>${g.toFixed(1)}pp</strong>). ${g>5?'Consider reviewing 8-week course pacing and support structures.':'Session types perform comparably.'} ${fmt((BY_SESSION[SL_8WK]||[]).length)} 8-week records across ${grpCalc(BY_SESSION[SL_8WK]||[],r=>r['Course']).length} courses.`};})(),
   ];
 
   document.getElementById('alerts-content').innerHTML=cards.map(c=>
@@ -1604,6 +1772,11 @@ td.mono{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);font-
       <div class="kpi-card gold"><div class="kpi-label">Distinct Students</div><div class="kpi-value">${fmt(m.students)}</div><div class="kpi-sub">Unique IDs</div></div>
       <div class="kpi-card purple"><div class="kpi-label">Faculty Members</div><div class="kpi-value">${fmt(m.faculty)}</div><div class="kpi-sub">Instructors</div></div>
     </div>
+  </section>
+  <section class="section">
+    <div class="section-title">Session Length Comparison</div>
+    <div class="section-desc">Pass rates split by session type — Full Term (15/16-Week) vs 8-Week (Half Term). Summer T1/T2 sessions classified as Full Term.</div>
+    ${(()=>{const ft=calc(BY_SESSION[SL_FULL]||[]);const wk=calc(BY_SESSION[SL_8WK]||[]);return`<div class="kpi-grid-6"><div class="kpi-card green"><div class="kpi-label">Full Term Pass Rate</div><div class="kpi-value">${pct(ft.passRate)}</div><div class="kpi-sub">${fmt(ft.passed)} passed · ${fmt((BY_SESSION[SL_FULL]||[]).length)} enrolled</div></div><div class="kpi-card gold"><div class="kpi-label">8-Week Pass Rate</div><div class="kpi-value">${pct(wk.passRate)}</div><div class="kpi-sub">${fmt(wk.passed)} passed · ${fmt((BY_SESSION[SL_8WK]||[]).length)} enrolled</div></div><div class="kpi-card blue"><div class="kpi-label">Pass Rate Gap</div><div class="kpi-value">${Math.abs(ft.passRate-wk.passRate).toFixed(1)}pp</div><div class="kpi-sub">${ft.passRate>=wk.passRate?'Full Term outperforms':'8-Week outperforms'}</div></div></div>`;})()}
   </section>
   <section class="section">
     <div class="section-title">Department Performance</div>
