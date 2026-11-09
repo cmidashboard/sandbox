@@ -621,7 +621,7 @@ td.mono{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);font-
     <!-- ══ SESSION LENGTH ══ -->
     <section class="section" id="session-length">
       <div class="section-title">Session Length Comparison</div>
-      <div class="section-desc">Pass rates and outcomes split by session type — 15/16-Week (Full Term) vs 8-Week (Half Term). Summer T1/T2 sessions are classified as Full Term.</div>
+      <div class="section-desc" id="sl-desc">Pass rates and outcomes split by session type — 15/16-Week (Full Term) vs 8-Week (Half Term). Summer T1/T2 sessions are classified as Full Term.</div>
       <!-- Course offering % split banner -->
       <div id="sl-split-banner" style="margin-bottom:20px;"></div>
       <div class="kpi-grid-7" id="sl-kpis" style="margin-bottom:20px;grid-template-columns:repeat(4,1fr);"></div>
@@ -1026,6 +1026,27 @@ function renderKPIs(){
 function renderSessionLength(){
   const ftRows = BY_SESSION[SL_FULL] || [];
   const wkRows = BY_SESSION[SL_8WK]  || [];
+
+  // ── Dynamic section description ─────────────────────────────────────────────
+  // Derive actual term/source-file labels from the uploaded data
+  (function updateSlDesc(){
+    const termKey = RAW.some(r => r['AP Term']) ? 'AP Term' : 'Source File';
+    const sortTerms = arr => [...new Set(arr.map(r => (r[termKey]||'').trim()).filter(Boolean))].sort();
+    const ftTerms = sortTerms(ftRows);
+    const wkTerms = sortTerms(wkRows);
+    const fmtList = (terms, max) => {
+      if (!terms.length) return '—';
+      const shown = terms.slice(0, max).join(', ');
+      return terms.length > max ? shown + ` +${terms.length - max} more` : shown;
+    };
+    const descEl = document.getElementById('sl-desc');
+    if (descEl) {
+      descEl.textContent = ftTerms.length || wkTerms.length
+        ? `Pass rates and outcomes by session type. Full-term sessions (${fmtList(ftTerms,5)}) vs. half-term 8-week sessions (${fmtList(wkTerms,5)}). Summer T1/T2 sessions are classified as Full Term.`
+        : 'Pass rates and outcomes split by session type — 15/16-Week (Full Term) vs 8-Week (Half Term). Summer T1/T2 sessions are classified as Full Term.';
+    }
+  })();
+
   const ftM = calc(ftRows);
   const wkM = calc(wkRows);
   const all = calc(RAW);
