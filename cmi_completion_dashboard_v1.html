@@ -220,6 +220,185 @@ td.mono{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);font-
 .rec-tag{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;}
 .rec-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:6px;}
 .rec-desc{font-size:12px;color:var(--muted);line-height:1.65;}
+
+/* ── PRINT / PDF ─────────────────────────────────────────────── */
+@media print {
+  /* Force CMI light palette so backgrounds & ink look good on paper */
+  :root,[data-theme]{
+    --bg:#ffffff !important;
+    --surface:#f7f8fa !important;
+    --surface2:#eef0f4 !important;
+    --border:#cdd1da !important;
+    --text:#0f1623 !important;
+    --muted:#525c72 !important;
+    --accent:#1a5fad !important;
+    --pass:#157a35 !important;
+    --fail:#b02a24 !important;
+    --warn:#8a5c00 !important;
+    --inc:#4a2d80 !important;
+    --pass-bg:rgba(21,122,53,0.08) !important;
+    --fail-bg:rgba(176,42,36,0.08) !important;
+    --warn-bg:rgba(138,92,0,0.08) !important;
+    --accent-bg:rgba(26,95,173,0.08) !important;
+    --header-grad:linear-gradient(135deg,#0f2a56 0%,#1a3d7a 60%,#1a5fad 100%) !important;
+    --chart-grid:rgba(180,185,200,0.6) !important;
+    --chart-text:#525c72 !important;
+    --chart-border:#f7f8fa !important;
+  }
+
+  /* Page setup */
+  @page{margin:16mm 14mm 16mm 14mm;size:A4 portrait;}
+  @page:first{margin-top:12mm;}
+
+  /* Hide interactive / screen-only elements */
+  #upload-screen,#loading,.btn,.btn-ghost,.header-actions,
+  .theme-switcher,.nav,.tab-btn{display:none !important;}
+
+  /* Show the dashboard */
+  #dash{display:block !important;}
+
+  /* Reset body */
+  body{background:#fff !important;color:#0f1623 !important;font-size:11pt;line-height:1.5;}
+
+  /* Header — keep gradient, shrink padding */
+  .header{
+    padding:14px 20px 12px !important;
+    background:linear-gradient(135deg,#0f2a56 0%,#1a3d7a 60%,#1a5fad 100%) !important;
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+    color:#fff !important;
+    page-break-after:avoid;
+    border-bottom:2px solid #1a5fad !important;
+  }
+  .header-eyebrow,.header-left .subtitle,.header-right,.badge{color:#a8c4e8 !important;}
+  .header-left h1{font-size:20pt !important;color:#fff !important;}
+  .header-left h1 em{color:#f4c842 !important;}
+  .header::before{display:none;}
+  /* Print date badge instead of action buttons */
+  .header-right{display:block !important;}
+  #hdr-date{color:#a8c4e8 !important;}
+
+  /* Main content */
+  .main{padding:16px 0 !important;max-width:100% !important;}
+
+  /* Sections */
+  .section{
+    margin-bottom:24px !important;
+    page-break-inside:avoid;
+  }
+  .section-title{
+    font-size:13pt !important;
+    color:#0f1623 !important;
+    border-bottom:1.5px solid #1a5fad !important;
+    padding-bottom:5px !important;
+    page-break-after:avoid;
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+  }
+  .section-desc{color:#525c72 !important;font-size:9pt !important;margin-bottom:12px !important;}
+
+  /* KPI cards — force backgrounds */
+  .kpi-card,.dept-stat-card,.sem-card,.chart-card,.rec-item,.alert-card{
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+    page-break-inside:avoid;
+    border:1px solid #cdd1da !important;
+  }
+  .kpi-card::before{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .kpi-label{color:#525c72 !important;}
+  .kpi-value{font-size:22pt !important;}
+  .kpi-sub{color:#525c72 !important;}
+
+  /* KPI grids — 3-up on print */
+  .kpi-grid-6{grid-template-columns:repeat(3,1fr) !important;gap:10px !important;}
+  .kpi-grid-7{grid-template-columns:repeat(4,1fr) !important;gap:8px !important;}
+  #sl-kpis{grid-template-columns:repeat(4,1fr) !important;}
+
+  /* Session Length split banner — force colors for print */
+  #sl-split-banner div[style*="height:14px"]{
+    -webkit-print-color-adjust:exact !important;
+    print-color-adjust:exact !important;
+  }
+
+  /* Sem cards row */
+  .sem-row{gap:10px !important;}
+  .sem-name{color:#525c72 !important;}
+  .sem-detail{color:#525c72 !important;}
+
+  /* Dept grid */
+  .dept-grid{grid-template-columns:repeat(3,1fr) !important;gap:10px !important;}
+
+  /* Charts — keep canvases but constrain height */
+  .chart-wrap canvas{max-height:220px !important;}
+  .g2,.g3{gap:12px !important;}
+  .g2 .chart-wrap canvas{max-height:200px !important;}
+
+  /* Tables */
+  .tbl-scroll{max-height:none !important;overflow:visible !important;}
+  table{font-size:9pt !important;}
+  thead th{
+    background:#1a3d7a !important;color:#fff !important;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;
+  }
+  tbody tr:nth-child(even){
+    background:#f0f2f8 !important;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;
+  }
+  tbody tr:hover{background:transparent !important;}
+
+  /* Risk badges */
+  .risk-critical,.risk-watch,.risk-good{
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;
+  }
+
+  /* Alerts */
+  .alerts-grid{grid-template-columns:1fr 1fr !important;gap:12px !important;}
+  .alert-card{
+    page-break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;
+  }
+
+  /* Tabs — show all panels, hide tab buttons */
+  .tab-panel{display:block !important;}
+  .tabs{display:none !important;}
+
+  /* Heatmap */
+  .heatmap-wrap{overflow:visible !important;}
+  .heatmap-table td,.heatmap-table th{
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;
+  }
+
+  /* Page breaks between major sections */
+  #kpis       {page-break-before:avoid;}
+  #trends     {page-break-before:always;}
+  #departments{page-break-before:always;}
+  #dev-courses{page-break-before:always;}
+  #courses    {page-break-before:always;}
+  #faculty    {page-break-before:always;}
+  #programs   {page-break-before:always;}
+  #gender     {page-break-before:always;}
+  #session-length{page-break-before:always;}
+  #heatmap    {page-break-before:always;}
+  #insights   {page-break-before:always;}
+  #alerts     {page-break-before:always;}
+  #recommendations{page-break-before:always;}
+
+  /* Hover effects off */
+  .kpi-card:hover,.dept-stat-card:hover,.sem-card:hover,
+  .chart-card:hover,.rec-item:hover{transform:none !important;box-shadow:none !important;}
+
+  /* Print footer with page numbers via CSS counter */
+  body::after{
+    content:'College of the Marshall Islands — Confidential · Page 'counter(page);
+    display:block;
+    text-align:center;
+    font-size:8pt;
+    color:#525c72;
+    margin-top:12px;
+    border-top:1px solid #cdd1da;
+    padding-top:6px;
+  }
+}
 </style>
 </head>
 <body>
@@ -263,6 +442,7 @@ td.mono{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);font-
       <div id="hdr-date"></div>
       <div class="header-actions">
         <button class="btn" onclick="dlReport()">↓ Download Report</button>
+        <button class="btn" onclick="printReport()" style="background:var(--accent-bg);border-color:var(--accent);color:var(--accent);">🖨 Print / Save PDF</button>
         <button class="btn btn-ghost" onclick="resetApp()">↑ New File</button>
       </div>
       <div class="theme-switcher">
@@ -442,10 +622,22 @@ td.mono{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);font-
     <section class="section" id="session-length">
       <div class="section-title">Session Length Comparison</div>
       <div class="section-desc">Pass rates and outcomes split by session type — 15/16-Week (Full Term) vs 8-Week (Half Term). Summer T1/T2 sessions are classified as Full Term.</div>
-      <div class="kpi-grid-6" id="sl-kpis" style="margin-bottom:20px;"></div>
+      <!-- Course offering % split banner -->
+      <div id="sl-split-banner" style="margin-bottom:20px;"></div>
+      <div class="kpi-grid-7" id="sl-kpis" style="margin-bottom:20px;grid-template-columns:repeat(4,1fr);"></div>
       <div class="g2" style="margin-bottom:20px;">
         <div class="chart-card"><div class="chart-title"><span class="dot" style="--dt:var(--accent)"></span>PASS RATE — FULL TERM VS 8-WEEK</div><div class="chart-wrap" style="height:220px;"><canvas id="ch-sl-bar"></canvas></div></div>
         <div class="chart-card"><div class="chart-title"><span class="dot" style="--dt:var(--warn)"></span>ENROLLED VS PASSED BY SESSION TYPE</div><div class="chart-wrap" style="height:220px;"><canvas id="ch-sl-enroll"></canvas></div></div>
+      </div>
+      <div class="g2" style="margin-bottom:20px;">
+        <div class="chart-card">
+          <div class="chart-title"><span class="dot" style="--dt:var(--pass)"></span>COURSES OFFERED — % OF CATALOGUE BY SESSION TYPE</div>
+          <div class="chart-wrap" style="height:240px;"><canvas id="ch-sl-course-pct"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title"><span class="dot" style="--dt:var(--accent)"></span>COURSE CATALOGUE BREAKDOWN</div>
+          <div class="chart-wrap" style="height:240px;"><canvas id="ch-sl-course-cat"></canvas></div>
+        </div>
       </div>
       <div class="g2" style="margin-bottom:20px;">
         <div class="chart-card">
@@ -839,14 +1031,81 @@ function renderSessionLength(){
   const all = calc(RAW);
   const gap = Math.abs(ftM.passRate - wkM.passRate);
 
-  // KPIs
+  // Course catalogue counts per session type
+  const totalCatalogueCourses = new Set(RAW.map(r=>r['Course']).filter(Boolean)).size;
+  const ftCourseSet = new Set(ftRows.map(r=>r['Course']).filter(Boolean));
+  const wkCourseSet = new Set(wkRows.map(r=>r['Course']).filter(Boolean));
+  const ftCourseCt = ftCourseSet.size;
+  const wkCourseCt = wkCourseSet.size;
+  const ftCoursePct = totalCatalogueCourses ? ftCourseCt / totalCatalogueCourses : 0;
+  const wkCoursePct = totalCatalogueCourses ? wkCourseCt / totalCatalogueCourses : 0;
+  // Courses offered in BOTH session types
+  const bothCourseCt = [...ftCourseSet].filter(c => wkCourseSet.has(c)).length;
+  // Courses offered in ONLY one session type
+  const ftOnlyCt = ftCourseCt - bothCourseCt;
+  const wkOnlyCt = wkCourseCt - bothCourseCt;
+  // ── Clean offering-share split (always sums to 100 %) ──────────────────
+  // Denominator = sum of distinct courses across both session types
+  // (a course offered in both is counted once per type)
+  const totalSessionCourses = ftCourseCt + wkCourseCt;
+  const ftOfferingPct = totalSessionCourses ? (ftCourseCt / totalSessionCourses) * 100 : 0;
+  const wkOfferingPct = totalSessionCourses ? (wkCourseCt / totalSessionCourses) * 100 : 0;
+  // Record-based split (always sums to 100 %)
+  const totalRec = RAW.length || 1;
+  const ftRecPct = (ftRows.length / totalRec) * 100;
+  const wkRecPct = (wkRows.length / totalRec) * 100;
+
+  // ── Course offering split banner ─────────────────────────────────────────
+  document.getElementById('sl-split-banner').innerHTML=`
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 22px;">
+      <div style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;">
+        Course Offering Distribution — % of Total Courses by Session Type
+      </div>
+      <div style="display:flex;gap:24px;align-items:center;flex-wrap:wrap;margin-bottom:14px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:14px;height:14px;border-radius:3px;background:var(--pass);flex-shrink:0;"></div>
+          <div>
+            <span style="font-size:28px;font-weight:700;color:var(--pass);font-family:'DM Mono',monospace;">${ftOfferingPct.toFixed(1)}%</span>
+            <span style="font-size:12px;color:var(--muted);margin-left:6px;">Full Term (15/16-Wk) — ${ftCourseCt} courses</span>
+          </div>
+        </div>
+        <div style="color:var(--border);font-size:20px;">vs</div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:14px;height:14px;border-radius:3px;background:var(--warn);flex-shrink:0;"></div>
+          <div>
+            <span style="font-size:28px;font-weight:700;color:var(--warn);font-family:'DM Mono',monospace;">${wkOfferingPct.toFixed(1)}%</span>
+            <span style="font-size:12px;color:var(--muted);margin-left:6px;">8-Week (Half Term) — ${wkCourseCt} courses</span>
+          </div>
+        </div>
+        <div style="margin-left:auto;text-align:right;font-size:11px;color:var(--muted);">
+          <div>${totalSessionCourses} total course-sessions &nbsp;·&nbsp; ${totalCatalogueCourses} unique catalogue courses</div>
+          <div style="margin-top:2px;">Records: ${ftRecPct.toFixed(1)}% full-term &nbsp;·&nbsp; ${wkRecPct.toFixed(1)}% 8-week</div>
+        </div>
+      </div>
+      <!-- Proportional bar -->
+      <div style="height:14px;border-radius:7px;overflow:hidden;display:flex;background:var(--surface2);">
+        <div style="width:${ftOfferingPct.toFixed(2)}%;background:var(--pass);transition:width .6s ease;position:relative;" title="Full Term ${ftOfferingPct.toFixed(1)}%">
+          ${ftOfferingPct>12?`<span style="position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:9px;font-weight:600;color:#fff;">${ftOfferingPct.toFixed(0)}%</span>`:''}
+        </div>
+        <div style="width:${wkOfferingPct.toFixed(2)}%;background:var(--warn);transition:width .6s ease;position:relative;" title="8-Week ${wkOfferingPct.toFixed(1)}%">
+          ${wkOfferingPct>12?`<span style="position:absolute;left:6px;top:50%;transform:translateY(-50%);font-size:9px;font-weight:600;color:#0d1117;">${wkOfferingPct.toFixed(0)}%</span>`:''}
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:5px;">
+        <span>Full Term</span><span>8-Week</span>
+      </div>
+    </div>`;
+
+  // KPIs — 8 cards (2 rows of 4)
   document.getElementById('sl-kpis').innerHTML=`
     <div class="kpi-card blue"><div class="kpi-label">Total Records</div><div class="kpi-value" style="color:var(--accent)">${fmt(all.n)}</div><div class="kpi-sub">${fmt(ftRows.length)} full · ${fmt(wkRows.length)} 8-wk</div></div>
     <div class="kpi-card green"><div class="kpi-label">Full Term Pass Rate</div><div class="kpi-value" style="color:var(--pass)">${pct(ftM.passRate)}</div><div class="kpi-sub">${fmt(ftM.passed)} of ${fmt(ftM.completed)} completed</div></div>
     <div class="kpi-card gold"><div class="kpi-label">8-Week Pass Rate</div><div class="kpi-value" style="color:var(--warn)">${pct(wkM.passRate)}</div><div class="kpi-sub">${fmt(wkM.passed)} of ${fmt(wkM.completed)} completed</div></div>
     <div class="kpi-card ${Math.abs(gap)>5?'red':'gold'}"><div class="kpi-label">Pass Rate Gap</div><div class="kpi-value" style="color:${Math.abs(gap)>5?'var(--fail)':'var(--warn)'}">${gap.toFixed(1)}pp</div><div class="kpi-sub">${ftM.passRate>=wkM.passRate?'Full Term outperforms':'8-Week outperforms'}</div></div>
-    <div class="kpi-card blue"><div class="kpi-label">Full Term Students</div><div class="kpi-value">${fmt(ftM.students)}</div><div class="kpi-sub">${fmt(ftM.courses)} courses</div></div>
-    <div class="kpi-card purple"><div class="kpi-label">8-Week Students</div><div class="kpi-value" style="color:var(--inc)">${fmt(wkM.students)}</div><div class="kpi-sub">${fmt(wkM.courses)} courses</div></div>`;
+    <div class="kpi-card blue"><div class="kpi-label">Full Term Courses</div><div class="kpi-value" style="color:var(--accent)">${fmt(ftCourseCt)}</div><div class="kpi-sub"><strong style="color:var(--pass)">${ftOfferingPct.toFixed(1)}%</strong> of session offerings · ${fmt(ftM.students)} students</div></div>
+    <div class="kpi-card purple"><div class="kpi-label">8-Week Courses</div><div class="kpi-value" style="color:var(--inc)">${fmt(wkCourseCt)}</div><div class="kpi-sub"><strong style="color:var(--warn)">${wkOfferingPct.toFixed(1)}%</strong> of session offerings · ${fmt(wkM.students)} students</div></div>
+    <div class="kpi-card green"><div class="kpi-label">Courses in Both</div><div class="kpi-value" style="color:var(--pass)">${fmt(bothCourseCt)}</div><div class="kpi-sub">Offered full-term AND 8-week</div></div>
+    <div class="kpi-card gold"><div class="kpi-label">Total Catalogue</div><div class="kpi-value" style="color:var(--warn)">${fmt(totalCatalogueCourses)}</div><div class="kpi-sub">${fmt(ftOnlyCt)} FT-only · ${fmt(wkOnlyCt)} 8-wk-only</div></div>`;
 
   // Pass rate bar chart
   destroyChart('ch-sl-bar');
@@ -871,6 +1130,79 @@ function renderSessionLength(){
     ]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10}}},
       scales:{x:{grid:{display:false}},y:{grid:{color:GRID_COLOR}}}}
+  });
+
+  // ── Course offering % charts ──────────────────────────────────
+  // Donut: % of catalogue offered per session type
+  destroyChart('ch-sl-course-pct');
+  new Chart(document.getElementById('ch-sl-course-pct').getContext('2d'),{
+    type:'doughnut',
+    data:{
+      labels:['Full Term Only','8-Week Only','Offered in Both'],
+      datasets:[{
+        data:[ftOnlyCt, wkOnlyCt, bothCourseCt],
+        backgroundColor:['rgba(63,185,80,.75)','rgba(227,179,65,.75)','rgba(88,166,255,.75)'],
+        borderColor:['#3fb950','#e3b341','#58a6ff'],
+        borderWidth:2,
+        hoverOffset:10,
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      cutout:'60%',
+      plugins:{
+        legend:{position:'bottom',labels:{boxWidth:12,padding:14}},
+        tooltip:{callbacks:{label:c=>{
+          const val=c.raw;
+          const pctVal=totalCatalogueCourses?((val/totalCatalogueCourses)*100).toFixed(1):'0';
+          return ` ${val} courses (${pctVal}% of ${totalCatalogueCourses} total)`;
+        }}},
+        // Inline centre label showing catalogue total
+        afterDatasetsDraw:(chart)=>{
+          const {ctx,chartArea:{top,bottom,left,right}}=chart;
+          ctx.save();
+          const cx=(left+right)/2, cy=(top+bottom)/2;
+          ctx.textAlign='center'; ctx.textBaseline='middle';
+          ctx.fillStyle=getComputedStyle(document.documentElement).getPropertyValue('--text')||'#c9d1d9';
+          ctx.font='bold 22px system-ui,sans-serif';
+          ctx.fillText(totalCatalogueCourses, cx, cy-9);
+          ctx.font='11px system-ui,sans-serif';
+          ctx.fillStyle=getComputedStyle(document.documentElement).getPropertyValue('--muted')||'#8b949e';
+          ctx.fillText('catalogue', cx, cy+10);
+          ctx.restore();
+        }
+      }
+    }
+  });
+
+  // Horizontal bar: how many courses each session type covers (% of catalogue)
+  destroyChart('ch-sl-course-cat');
+  new Chart(document.getElementById('ch-sl-course-cat').getContext('2d'),{
+    type:'bar', indexAxis:'y',
+    data:{
+      labels:['Full Term (15/16-Wk)','8-Week (Half Term)'],
+      datasets:[{
+        label:'Courses offered',
+        data:[+(ftCoursePct*100).toFixed(1), +(wkCoursePct*100).toFixed(1)],
+        backgroundColor:['rgba(63,185,80,.65)','rgba(227,179,65,.65)'],
+        borderColor:['#3fb950','#e3b341'],
+        borderWidth:2, borderRadius:8,
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{callbacks:{label:c=>{
+          const session=c.label==='Full Term (15/16-Wk)'?ftCourseCt:wkCourseCt;
+          return ` ${c.raw}% of catalogue (${session} of ${totalCatalogueCourses} courses)`;
+        }}}
+      },
+      scales:{
+        x:{min:0,max:105,ticks:{callback:v=>v+'%'},grid:{color:GRID_COLOR}},
+        y:{grid:{display:false},ticks:{font:{size:12}}}
+      }
+    }
   });
 
   // Top 15 courses — full term
@@ -1683,6 +2015,34 @@ function renderAlerts(){
   ).join('');
 }
 
+// ══ PRINT / SAVE AS PDF ═══════════════════════════════════════
+function printReport(){
+  // Freeze all chart canvases as images so they survive print spooling
+  document.querySelectorAll('canvas').forEach(cv=>{
+    if(!cv.dataset.printSrc){
+      try{
+        const img=document.createElement('img');
+        img.src=cv.toDataURL('image/png');
+        img.style.cssText='width:100%;height:100%;position:absolute;top:0;left:0;';
+        img.className='print-chart-img';
+        cv.style.position='relative';
+        cv.parentNode.style.position='relative';
+        cv.parentNode.appendChild(img);
+        cv.dataset.printSrc='1';
+      }catch(e){}
+    }
+  });
+  // Brief delay to let images settle, then print
+  setTimeout(()=>{
+    window.print();
+    // Cleanup after print dialog closes
+    setTimeout(()=>{
+      document.querySelectorAll('.print-chart-img').forEach(img=>img.remove());
+      document.querySelectorAll('canvas[data-print-src]').forEach(cv=>delete cv.dataset.printSrc);
+    },1500);
+  },120);
+}
+
 // ══ DOWNLOAD REPORT ═══════════════════════════════════════════
 function dlReport(){
   // Capture current rendered dashboard HTML (inline clone)
@@ -1775,8 +2135,26 @@ td.mono{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);font-
   </section>
   <section class="section">
     <div class="section-title">Session Length Comparison</div>
-    <div class="section-desc">Pass rates split by session type — Full Term (15/16-Week) vs 8-Week (Half Term). Summer T1/T2 sessions classified as Full Term.</div>
-    ${(()=>{const ft=calc(BY_SESSION[SL_FULL]||[]);const wk=calc(BY_SESSION[SL_8WK]||[]);return`<div class="kpi-grid-6"><div class="kpi-card green"><div class="kpi-label">Full Term Pass Rate</div><div class="kpi-value">${pct(ft.passRate)}</div><div class="kpi-sub">${fmt(ft.passed)} passed · ${fmt((BY_SESSION[SL_FULL]||[]).length)} enrolled</div></div><div class="kpi-card gold"><div class="kpi-label">8-Week Pass Rate</div><div class="kpi-value">${pct(wk.passRate)}</div><div class="kpi-sub">${fmt(wk.passed)} passed · ${fmt((BY_SESSION[SL_8WK]||[]).length)} enrolled</div></div><div class="kpi-card blue"><div class="kpi-label">Pass Rate Gap</div><div class="kpi-value">${Math.abs(ft.passRate-wk.passRate).toFixed(1)}pp</div><div class="kpi-sub">${ft.passRate>=wk.passRate?'Full Term outperforms':'8-Week outperforms'}</div></div></div>`;})()}
+    <div class="section-desc">Pass rates and course offering percentages split by session type — Full Term (15/16-Week) vs 8-Week (Half Term). Summer T1/T2 sessions classified as Full Term.</div>
+    ${(()=>{
+      const ft=calc(BY_SESSION[SL_FULL]||[]);
+      const wk=calc(BY_SESSION[SL_8WK]||[]);
+      const ftRows=BY_SESSION[SL_FULL]||[];
+      const wkRows=BY_SESSION[SL_8WK]||[];
+      const totalCat=new Set(RAW.map(r=>r['Course']).filter(Boolean)).size;
+      const ftCt=new Set(ftRows.map(r=>r['Course']).filter(Boolean)).size;
+      const wkCt=new Set(wkRows.map(r=>r['Course']).filter(Boolean)).size;
+      const ftPct=totalCat?ftCt/totalCat:0;
+      const wkPct=totalCat?wkCt/totalCat:0;
+      return`<div class="kpi-grid-7" style="grid-template-columns:repeat(4,1fr);">
+        <div class="kpi-card green"><div class="kpi-label">Full Term Pass Rate</div><div class="kpi-value">${pct(ft.passRate)}</div><div class="kpi-sub">${fmt(ft.passed)} passed · ${fmt(ftRows.length)} enrolled</div></div>
+        <div class="kpi-card gold"><div class="kpi-label">8-Week Pass Rate</div><div class="kpi-value">${pct(wk.passRate)}</div><div class="kpi-sub">${fmt(wk.passed)} passed · ${fmt(wkRows.length)} enrolled</div></div>
+        <div class="kpi-card blue"><div class="kpi-label">Pass Rate Gap</div><div class="kpi-value">${Math.abs(ft.passRate-wk.passRate).toFixed(1)}pp</div><div class="kpi-sub">${ft.passRate>=wk.passRate?'Full Term outperforms':'8-Week outperforms'}</div></div>
+        <div class="kpi-card purple"><div class="kpi-label">Total Catalogue</div><div class="kpi-value">${fmt(totalCat)}</div><div class="kpi-sub">Distinct courses</div></div>
+        <div class="kpi-card green"><div class="kpi-label">Full Term Courses</div><div class="kpi-value">${fmt(ftCt)}</div><div class="kpi-sub">${pct(ftPct)} of catalogue</div></div>
+        <div class="kpi-card gold"><div class="kpi-label">8-Week Courses</div><div class="kpi-value">${fmt(wkCt)}</div><div class="kpi-sub">${pct(wkPct)} of catalogue</div></div>
+      </div>`;
+    })()}
   </section>
   <section class="section">
     <div class="section-title">Department Performance</div>
